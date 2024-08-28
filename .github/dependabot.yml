@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - QuTech-Delft/web-team
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "opensquirrel"
+        versions: ["*"]
+      - dependency-name: "qiskit"
+        versions: [ "*" ]
+      - dependency-name: "qi-compute-api-client"
+        versions: ["*"]
+    reviewers:
+      - QuTech-Delft/web-team
+      
