@@ -1,11 +1,12 @@
+from typing import Any, List, Union
+
+from compute_api_client import BackendType, Metadata
+from qiskit.circuit import QuantumCircuit
 from qiskit.providers import BackendV2 as Backend
 from qiskit.providers.options import Options
 from qiskit.transpiler import Target
-from typing import Any, List, Union
 
 from qiskit_quantuminspire.qi_jobs import QIJob
-from compute_api_client import BackendType, Metadata
-from qiskit.circuit import QuantumCircuit
 
 
 class QIBackend(Backend):  # type: ignore[misc]

@@ -1,8 +1,9 @@
-from qiskit.result.result import Result
-from compute_api_client import Result as RawJobResult
 from typing import List
-from qiskit.result.models import ExperimentResult, ExperimentResultData
+
+from compute_api_client import Result as RawJobResult
 from qiskit.providers import JobV1 as Job
+from qiskit.result.models import ExperimentResult, ExperimentResultData
+from qiskit.result.result import Result
 
 
 class QIResult:

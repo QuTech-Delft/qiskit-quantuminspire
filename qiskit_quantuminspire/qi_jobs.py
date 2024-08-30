@@ -1,12 +1,14 @@
+from datetime import datetime, timezone
+from typing import Any, List, Union
+
+from compute_api_client import Result as JobResult
+from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1 as Job
 from qiskit.providers.backend import Backend
-from qiskit.result.result import Result
 from qiskit.providers.jobstatus import JobStatus
-from compute_api_client import Result as JobResult
-from typing import Any, List, Union
-from datetime import datetime, timezone
+from qiskit.result.result import Result
+
 from qiskit_quantuminspire.qi_results import QIResult
-from qiskit.circuit import QuantumCircuit
 
 
 class QIJob(Job):  # type: ignore[misc]
@@ -19,8 +21,7 @@ class QIJob(Job):  # type: ignore[misc]
         job_id: str,
         **kwargs: Any
     ) -> None:
-        """
-        Initialize a QIJob instance.
+        """Initialize a QIJob instance.
 
         Args:
             run_input: A single/list of Qiskit QuantumCircuit objects or hybrid algorithms.
@@ -43,7 +44,7 @@ class QIJob(Job):  # type: ignore[misc]
         self.job_id = "999"  # ID of the submitted batch-job
 
     def _fetch_job_results(self) -> List[JobResult]:
-        """Fetch results for job_ids from CJM using api client"""
+        """Fetch results for job_ids from CJM using api client."""
         raw_results = []
         for job_id in self._job_ids:
             job_result = JobResult(

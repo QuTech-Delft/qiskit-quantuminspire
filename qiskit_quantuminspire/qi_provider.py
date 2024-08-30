@@ -1,22 +1,23 @@
-from typing import List
-from qiskit_quantuminspire.qi_backend import QIBackend
-from compute_api_client import BackendType, BackendStatus, Metadata
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, List
+
+from compute_api_client import BackendStatus, BackendType, Metadata
+
+from qiskit_quantuminspire.qi_backend import QIBackend
 
 
 class QIProvider:
-    """List QIBackends integrated with QiskitBackend interface"""
+    """List QIBackends integrated with QiskitBackend interface."""
 
     def __init__(self) -> None:
         self._qiskit_backends = self._construct_backends()
 
     def _fetch_qi_backend_metadata(self) -> List[Metadata]:
-        """Fetch backend metadata using api client"""
+        """Fetch backend metadata using api client."""
         return [Metadata(id=1, backend_id=1, created_on=datetime.now(timezone.utc), data={"nqubits": 6})]
 
     def _fetch_qi_backend_types(self) -> List[BackendType]:
-        """Fetch backend types from CJM using api client"""
+        """Fetch backend types from CJM using api client."""
         backend_type_list = [
             BackendType(
                 id=2,
@@ -36,7 +37,7 @@ class QIProvider:
         return backend_type_list
 
     def _construct_backends(self) -> List[QIBackend]:
-        """Construct QIBackend using fetched backendtypes and metadata"""
+        """Construct QIBackend using fetched backendtypes and metadata."""
         qi_backend_types = self._fetch_qi_backend_types()
         qi_metadata = self._fetch_qi_backend_metadata()
         qi_backends = [

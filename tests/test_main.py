@@ -1,7 +1,8 @@
-from qiskit_quantuminspire.qi_provider import QIProvider
+from qiskit.result.result import Result
+
 from qiskit_quantuminspire.qi_backend import QIBackend
 from qiskit_quantuminspire.qi_jobs import QIJob
-from qiskit.result.result import Result
+from qiskit_quantuminspire.qi_provider import QIProvider
 
 
 def test_dummy() -> None:
