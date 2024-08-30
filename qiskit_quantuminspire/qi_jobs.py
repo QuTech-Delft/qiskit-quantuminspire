@@ -17,7 +17,7 @@ class QIJob(Job):  # type: ignore[misc]
     def __init__(
         self,
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
-        backend: Backend | None,
+        backend: Union[Backend, None],
         job_id: str,
         **kwargs: Any
     ) -> None:

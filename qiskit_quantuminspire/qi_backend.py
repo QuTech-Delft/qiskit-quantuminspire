@@ -27,7 +27,7 @@ class QIBackend(Backend):  # type: ignore[misc]
     def max_circuits(self) -> Union[int, None]:
         return None
 
-    def run(self, run_input: QuantumCircuit | List[QuantumCircuit], **options: Any) -> QIJob:
+    def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIJob:
         """Create and run a (batch)job on an QuantumInspire Backend.
 
         Args:

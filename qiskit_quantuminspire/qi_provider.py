@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Any, List
+from typing import Any, List, Union
 
 from compute_api_client import BackendStatus, BackendType, Metadata
 
@@ -46,8 +46,8 @@ class QIProvider:
         ]
         return qi_backends
 
-    def backends(self, name: str | None = None, **kwargs: Any) -> List[QIBackend]:
+    def backends(self, name: Union[str, None] = None, **kwargs: Any) -> List[QIBackend]:
         return self._construct_backends()
 
-    def get_backend(self, name: str | None = None, **kwargs: Any) -> QIBackend:
+    def get_backend(self, name: Union[str, None] = None, **kwargs: Any) -> QIBackend:
         return self._construct_backends()[0]
