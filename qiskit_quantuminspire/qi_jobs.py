@@ -3,15 +3,22 @@ from qiskit.providers.backend import Backend
 from qiskit.result.result import Result
 from qiskit.providers.jobstatus import JobStatus
 from compute_api_client import Result as JobResult
-from typing import Any, List
+from typing import Any, List, Union
 from datetime import datetime, timezone
 from qiskit_quantuminspire.qi_results import QIResult
+from qiskit.circuit import QuantumCircuit
 
 
-class QIJob(Job):
+class QIJob(Job):  # type: ignore[misc]
     """A wrapper class for QuantumInspire batch jobs to integrate with Qiskit's Job interface."""
 
-    def __init__(self, run_input: Any, backend: Backend | None, job_id: str, **kwargs) -> None:
+    def __init__(
+        self,
+        run_input: Union[QuantumCircuit, List[QuantumCircuit]],
+        backend: Backend | None,
+        job_id: str,
+        **kwargs: Any
+    ) -> None:
         """
         Initialize a QIJob instance.
 
@@ -23,24 +30,24 @@ class QIJob(Job):
             **kwargs: Additional keyword arguments passed to the parent `Job` class.
         """
         super().__init__(backend, job_id, **kwargs)
-        self._job_ids = []
+        self._job_ids: List[str] = []
         self._run_input = run_input
 
-    def submit(self):
+    def submit(self) -> None:
         """Submit the (batch)job to the quantum inspire backend.
 
         Use compute-api-client to call the cjm endpoints in the correct order, to submit the jobs.
         """
         for i in range(1, 3):
-            self._job_ids.append(i)
-        self.job_id = 999  # ID of the submitted batch-job
+            self._job_ids.append(str(i))
+        self.job_id = "999"  # ID of the submitted batch-job
 
     def _fetch_job_results(self) -> List[JobResult]:
         """Fetch results for job_ids from CJM using api client"""
         raw_results = []
         for job_id in self._job_ids:
             job_result = JobResult(
-                id=job_id,
+                id=int(job_id),
                 metadata_id=1,
                 created_on=datetime(2022, 10, 25, 15, 37, 54, 269823, tzinfo=timezone.utc),
                 execution_time_in_seconds=1.23,
@@ -52,7 +59,7 @@ class QIJob(Job):
                     "0000000010": 0.180000,
                     "0000000011": 0.290000,
                 },
-                job_id=job_id,
+                job_id=int(job_id),
             )
             raw_results.append(job_result)
         return raw_results

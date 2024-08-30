@@ -1,17 +1,18 @@
 from qiskit.providers import BackendV2 as Backend
 from qiskit.providers.options import Options
 from qiskit.transpiler import Target
-from typing import Union
+from typing import Any, List, Union
 
 from qiskit_quantuminspire.qi_jobs import QIJob
 from compute_api_client import BackendType, Metadata
+from qiskit.circuit import QuantumCircuit
 
 
-class QIBackend(Backend):
+class QIBackend(Backend):  # type: ignore[misc]
     """A wrapper class for QuantumInspire backendtypes to integrate with Qiskit's Backend interface."""
 
-    def __init__(self, backend_type: BackendType, metadata: Metadata, *args, **kwargs):
-        super().__init__(name=backend_type.name, description=backend_type.description, *args, **kwargs)
+    def __init__(self, backend_type: BackendType, metadata: Metadata, **kwargs: Any):
+        super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
         self._target = Target(num_qubits=metadata.data["nqubits"])
 
     @classmethod
@@ -25,7 +26,7 @@ class QIBackend(Backend):
     def max_circuits(self) -> Union[int, None]:
         return None
 
-    def run(self, run_input, **options) -> QIJob:
+    def run(self, run_input: QuantumCircuit | List[QuantumCircuit], **options: Any) -> QIJob:
         """Create and run a (batch)job on an QuantumInspire Backend.
 
         Args:
@@ -34,6 +35,6 @@ class QIBackend(Backend):
         Returns:
             QIJob: A reference to the batch job that was submitted.
         """
-        job = QIJob(run_input=run_input, backend=self, job_id=None)
+        job = QIJob(run_input=run_input, backend=self, job_id="some-random-id")
         job.submit()
         return job
