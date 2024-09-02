@@ -5,10 +5,6 @@ from qiskit_quantuminspire.qi_jobs import QIJob
 from qiskit_quantuminspire.qi_provider import QIProvider
 
 
-def test_dummy() -> None:
-    assert True
-
-
 def test_flow() -> None:
     provider = QIProvider()
     backend = provider.get_backend("Some-Backend")
