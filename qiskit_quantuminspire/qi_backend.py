@@ -9,6 +9,8 @@ from qiskit.transpiler import Target
 from qiskit_quantuminspire.qi_jobs import QIJob
 
 
+# Ignore type checking for QIBackend due to missing Qiskit type stubs,
+# which causes the base class 'Backend' to be treated as 'Any'.
 class QIBackend(Backend):  # type: ignore[misc]
     """A wrapper class for QuantumInspire backendtypes to integrate with Qiskit's Backend interface."""
 

@@ -11,6 +11,8 @@ from qiskit.result.result import Result
 from qiskit_quantuminspire.qi_results import QIResult
 
 
+# Ignore type checking for QIJob due to missing Qiskit type stubs,
+# which causes the base class 'Job' to be treated as 'Any'.
 class QIJob(Job):  # type: ignore[misc]
     """A wrapper class for QuantumInspire batch jobs to integrate with Qiskit's Job interface."""
 
