@@ -1,8 +1,10 @@
+import asyncio
 from datetime import datetime, timezone
 from typing import Any, List, Union
 
-from compute_api_client import BackendStatus, BackendType, Metadata
+from compute_api_client import ApiClient, BackendType, BackendTypesApi, Metadata
 
+from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.qi_backend import QIBackend
 
 
@@ -16,29 +18,16 @@ class QIProvider:
         """Fetch backend metadata using api client."""
         return Metadata(id=1, backend_id=1, created_on=datetime.now(timezone.utc), data={"nqubits": 6})
 
-    def _fetch_qi_backend_types(self) -> List[BackendType]:
+    async def _fetch_qi_backend_types(self) -> List[BackendType]:
         """Fetch backend types from CJM using api client."""
-        backend_type_list = [
-            BackendType(
-                id=2,
-                name="Spin 2",
-                infrastructure="Hetzner",
-                description="Silicon spin quantum computer",
-                image_id="abcd1234",
-                is_hardware=True,
-                features=["multiple_measurements"],
-                default_compiler_config={},
-                native_gateset={"single_qubit_gates": ["X"]},
-                status=BackendStatus.IDLE,
-                default_number_of_shots=1024,
-                max_number_of_shots=2048,
-            ),
-        ]
-        return backend_type_list
+        async with ApiClient(config()) as client:
+            backend_types_api = BackendTypesApi(client)
+            backend_type_list = await backend_types_api.read_backend_types_backend_types_get()
+        return backend_type_list.items
 
     def _construct_backends(self) -> List[QIBackend]:
         """Construct QIBackend using fetched backendtypes and metadata."""
-        qi_backend_types = self._fetch_qi_backend_types()
+        qi_backend_types = asyncio.run(self._fetch_qi_backend_types())
         qi_backends = [
             QIBackend(provider=self, backend_type=backend_type, metadata=self._fetch_qi_backend_metadata(backend_type))
             for backend_type in qi_backend_types
