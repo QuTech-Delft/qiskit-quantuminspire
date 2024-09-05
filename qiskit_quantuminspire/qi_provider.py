@@ -23,7 +23,8 @@ class QIProvider:
         async with ApiClient(config()) as client:
             backend_types_api = BackendTypesApi(client)
             backend_type_list = await backend_types_api.read_backend_types_backend_types_get()
-        return backend_type_list.items
+            backend_types: List[BackendType] = backend_type_list.items
+        return backend_types
 
     def _construct_backends(self) -> List[QIBackend]:
         """Construct QIBackend using fetched backendtypes and metadata."""

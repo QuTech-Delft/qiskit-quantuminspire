@@ -41,7 +41,7 @@ def api_settings_mock(auth_settings: AuthSettings) -> MagicMock:
     return api_settings
 
 
-def test_oauth_device_session_refresh_no_token(api_settings_mock: MagicMock, identity_provider_mock: MagicMock):
+def test_oauth_device_session_refresh_no_token(api_settings_mock: MagicMock, identity_provider_mock: MagicMock) -> None:
     # Arrange
     api_settings_mock.auths[api_settings_mock.default_host].tokens = None
     session = OauthDeviceSession("https://host.com", api_settings_mock, identity_provider_mock)
@@ -53,7 +53,7 @@ def test_oauth_device_session_refresh_no_token(api_settings_mock: MagicMock, ide
 
 def test_oauth_device_session_refresh_token_not_expired(
     api_settings_mock: MagicMock, identity_provider_mock: MagicMock
-):
+) -> None:
     # Arrange
     auth_settings = api_settings_mock.auths[api_settings_mock.default_host]
     auth_settings.tokens.generated_at = time.time()
@@ -68,7 +68,9 @@ def test_oauth_device_session_refresh_token_not_expired(
     identity_provider_mock.get_refresh_token.assert_not_called()
 
 
-def test_oauth_device_session_refresh_token_expired(api_settings_mock: MagicMock, identity_provider_mock: MagicMock):
+def test_oauth_device_session_refresh_token_expired(
+    api_settings_mock: MagicMock, identity_provider_mock: MagicMock
+) -> None:
     # Arrange
     session = OauthDeviceSession("https://host.com", api_settings_mock, identity_provider_mock)
     new_token_info: dict[str, Any] = {
@@ -92,7 +94,7 @@ def test_oauth_device_session_refresh_token_expired(api_settings_mock: MagicMock
 
 
 @responses.activate
-def test_identity_provider_get_refresh_token():
+def test_identity_provider_get_refresh_token() -> None:
     # Arrange
     token_info = {"token": "something", "some": "other_data"}
     client_id = "some_client"

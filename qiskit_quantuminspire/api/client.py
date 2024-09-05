@@ -33,8 +33,7 @@ def connect() -> None:
     host = settings.default_host
     _config = Configuration(
         host=host,
-        oauth_session=OauthDeviceSession(host, settings, IdentityProvider(settings.auths[host].well_known_endpoint)
-        ),
+        oauth_session=OauthDeviceSession(host, settings, IdentityProvider(settings.auths[host].well_known_endpoint)),
     )
 
 

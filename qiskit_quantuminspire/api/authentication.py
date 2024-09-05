@@ -1,9 +1,9 @@
 import time
-from typing import Any, Tuple
+from typing import Any, Tuple, cast
 
 import requests
 
-from qiskit_quantuminspire.api.settings import ApiSettings, AuthSettings, TokenInfo, Url
+from qiskit_quantuminspire.api.settings import ApiSettings, TokenInfo, Url
 
 
 class AuthorisationError(Exception):
@@ -32,7 +32,7 @@ class IdentityProvider:
         }
         response = requests.post(self._token_endpoint, headers=self._headers, data=data)
         response.raise_for_status()
-        return response.json()
+        return cast(dict[str, Any], response.json())
 
 
 class OauthDeviceSession:

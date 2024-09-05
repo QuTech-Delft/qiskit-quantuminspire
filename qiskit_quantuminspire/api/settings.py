@@ -71,5 +71,3 @@ def api_settings() -> ApiSettings:
         api_settings = API_SETTINGS_FILE.read_text()
         _settings = ApiSettings.model_validate_json(api_settings)
     return _settings
-
-

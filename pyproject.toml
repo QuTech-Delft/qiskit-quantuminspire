@@ -35,6 +35,7 @@ pytest-mock = "^3.14.0"
 ruff = "^0.6.4"
 freezegun = "^1.5.1"
 responses = "^0.25.3"
+types-requests = "^2.25.0"
 
 # [tool.pytest.ini_options]
 # addopts = "-v --cov --cov-report term-missing:skip-covered --cov-report xml"
