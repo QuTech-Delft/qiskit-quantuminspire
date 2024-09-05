@@ -2,7 +2,7 @@ from typing import Any
 
 import compute_api_client
 
-from qiskit_quantuminspire.api.authentication import OauthDeviceSession
+from qiskit_quantuminspire.api.authentication import IdentityProvider, OauthDeviceSession
 from qiskit_quantuminspire.api.settings import api_settings
 
 
@@ -20,14 +20,6 @@ class Configuration(compute_api_client.Configuration):  # type: ignore[misc]
 _config: Configuration | None = None
 
 
-def config() -> Configuration:
-    global _config
-    if _config is None:
-        raise ValueError("No connection configuration found. Please connect to Quantum Inspire using the CLI.")
-
-    return _config
-
-
 def connect() -> None:
     """Set connection configuration for the Quantum Inspire API."""
     global _config
@@ -39,4 +31,18 @@ def connect() -> None:
         raise ValueError("No access token found for the default host. Please connect to Quantum Inspire using the CLI.")
 
     host = settings.default_host
-    _config = Configuration(host=host, oauth_session=OauthDeviceSession(host, settings.auths[host]))
+    _config = Configuration(
+        host=host,
+        oauth_session=OauthDeviceSession(
+            host, settings.auths[host], IdentityProvider(settings.auths[host].well_known_endpoint)
+        ),
+    )
+
+
+def config() -> Configuration:
+    global _config
+    if _config is None:
+        connect()
+
+    assert _config is not None
+    return _config
