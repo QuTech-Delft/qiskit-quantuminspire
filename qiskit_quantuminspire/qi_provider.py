@@ -19,7 +19,10 @@ class QIProvider:
         return Metadata(id=1, backend_id=1, created_on=datetime.now(timezone.utc), data={"nqubits": 6})
 
     async def _fetch_qi_backend_types(self) -> List[BackendType]:
-        """Fetch backend types from CJM using api client."""
+        """Fetch backend types from CJM using api client.
+
+        (Implemented without paging only for demonstration purposes, should get a proper implementation)
+        """
         async with ApiClient(config()) as client:
             backend_types_api = BackendTypesApi(client)
             backend_type_list = await backend_types_api.read_backend_types_backend_types_get()

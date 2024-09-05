@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import compute_api_client
 
@@ -17,13 +17,16 @@ class Configuration(compute_api_client.Configuration):  # type: ignore[misc]
         return super().auth_settings()
 
 
-_config: Configuration | None = None
+_config: Optional[Configuration] = None
 
 
 def connect() -> None:
-    """Set connection configuration for the Quantum Inspire API."""
+    """Set connection configuration for the Quantum Inspire API.
+
+    Call after logging in with the CLI. Will remove old configuration.
+    """
     global _config
-    settings = api_settings()
+    settings = api_settings(clear=True)
 
     tokens = settings.auths[settings.default_host].tokens
 

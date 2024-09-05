@@ -49,3 +49,14 @@ def test_api_settings_no_configuration_file(tmpdir: str, clear_singleton: Any) -
     # Act & Assert
     with pytest.raises(FileNotFoundError):
         api_settings()
+
+
+def test_api_settings_no_configuration_file_clear(tmpdir: str, clear_singleton: Any) -> None:
+    # Arrange
+    settings._settings = ApiSettings(auths={}, default_host="https://host.com")
+    settings.API_SETTINGS_FILE = Path(tmpdir.join("non-existent.json"))
+
+    # Act & Assert
+    with pytest.raises(FileNotFoundError):
+        api_settings(clear=True)
+        assert settings._settings is None

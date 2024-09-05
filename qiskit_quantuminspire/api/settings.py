@@ -61,9 +61,13 @@ class ApiSettings(BaseModel):
 _settings: Optional[ApiSettings] = None
 
 
-def api_settings() -> ApiSettings:
+def api_settings(clear: bool = False) -> ApiSettings:
     """Return the current settings for the Quantum Inspire persistent configuration."""
     global _settings
+
+    if clear:
+        _settings = None
+
     if _settings is None:
         if not API_SETTINGS_FILE.is_file():
             raise FileNotFoundError("No configuration file found. Please connect to Quantum Inspire using the CLI.")
