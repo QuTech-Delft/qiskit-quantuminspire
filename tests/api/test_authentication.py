@@ -33,12 +33,6 @@ def auth_settings() -> AuthSettings:
 
 
 @pytest.fixture
-def api_settings(auth_settings: AuthSettings) -> ApiSettings:
-    host = "https://host.com"
-    return ApiSettings(default_host=host, auths={host: auth_settings})
-
-
-@pytest.fixture
 def api_settings_mock(auth_settings: AuthSettings) -> MagicMock:
     api_settings = MagicMock(spec=ApiSettings)
     api_settings.default_host = "https://host.com"
@@ -46,18 +40,20 @@ def api_settings_mock(auth_settings: AuthSettings) -> MagicMock:
     return api_settings
 
 
-def test_oauth_device_session_refresh_no_token(api_settings: ApiSettings, identity_provider_mock: MagicMock):
-    api_settings.auths[api_settings.default_host].tokens = None
-    session = OauthDeviceSession("https://host.com", api_settings, identity_provider_mock)
+def test_oauth_device_session_refresh_no_token(api_settings_mock: MagicMock, identity_provider_mock: MagicMock):
+    api_settings_mock.auths[api_settings_mock.default_host].tokens = None
+    session = OauthDeviceSession("https://host.com", api_settings_mock, identity_provider_mock)
 
     with pytest.raises(AuthorisationError):
         session.refresh()
 
 
-def test_oauth_device_session_refresh_token_not_expired(api_settings: ApiSettings, identity_provider_mock: MagicMock):
-    auth_settings = api_settings.auths[api_settings.default_host]
+def test_oauth_device_session_refresh_token_not_expired(
+    api_settings_mock: MagicMock, identity_provider_mock: MagicMock
+):
+    auth_settings = api_settings_mock.auths[api_settings_mock.default_host]
     auth_settings.tokens.generated_at = time.time()
-    session = OauthDeviceSession("https://host.com", api_settings, identity_provider_mock)
+    session = OauthDeviceSession("https://host.com", api_settings_mock, identity_provider_mock)
 
     token_info = session.refresh()
     assert token_info == auth_settings.tokens
