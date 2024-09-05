@@ -45,6 +45,18 @@ class ApiSettings(BaseModel):
     auths: Dict[Url, AuthSettings]
     default_host: Url
 
+    def store_tokens(self, host: Url, tokens: TokenInfo) -> None:
+        """
+
+        :param host: the hostname of the api for which the tokens are intended
+        :param tokens: OAuth access and refresh tokens
+        :return: None
+
+        This functions stores the team_member_id, access and refresh tokens in the config.json file.
+        """
+        self.auths[host].tokens = tokens
+        API_SETTINGS_FILE.write_text(self.model_dump_json(indent=2))
+
 
 _settings: Optional[ApiSettings] = None
 
@@ -61,15 +73,3 @@ def api_settings() -> ApiSettings:
     return _settings
 
 
-def store_tokens(host: Url, tokens: TokenInfo) -> None:
-    """
-
-    :param host: the hostname of the api for which the tokens are intended
-    :param tokens: OAuth access and refresh tokens
-    :return: None
-
-    This functions stores the team_member_id, access and refresh tokens in the config.json file.
-    """
-    settings = api_settings()
-    api_settings().auths[host].tokens = tokens
-    API_SETTINGS_FILE.write_text(settings.model_dump_json(indent=2))

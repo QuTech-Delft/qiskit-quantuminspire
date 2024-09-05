@@ -3,7 +3,7 @@ from typing import Any, Tuple
 
 import requests
 
-from qiskit_quantuminspire.api.settings import AuthSettings, TokenInfo, Url, store_tokens
+from qiskit_quantuminspire.api.settings import ApiSettings, AuthSettings, TokenInfo, Url
 
 
 class AuthorisationError(Exception):
@@ -36,11 +36,12 @@ class IdentityProvider:
 
 
 class OauthDeviceSession:
-    def __init__(self, host: Url, settings: AuthSettings, identity_provider: IdentityProvider):
-        self._settings = settings
+    def __init__(self, host: Url, settings: ApiSettings, identity_provider: IdentityProvider):
+        self._api_settings = settings
+        _auth_settings = settings.auths[host]
         self._host = host
-        self._client_id = settings.client_id
-        self._token_info = settings.tokens
+        self._client_id = _auth_settings.client_id
+        self._token_info = _auth_settings.tokens
         self._refresh_time_reduction = 5  # the number of seconds to refresh the expiration time
         self._identity_provider = identity_provider
 
@@ -55,7 +56,7 @@ class OauthDeviceSession:
             self._token_info = TokenInfo(
                 **self._identity_provider.get_refresh_token(self._client_id, self._token_info.refresh_token)
             )
-            store_tokens(self._host, self._token_info)
+            self._api_settings.store_tokens(self._host, self._token_info)
             return self._token_info
         except requests.HTTPError as e:
             raise AuthorisationError(f"An error occurred during token refresh: {e}")
