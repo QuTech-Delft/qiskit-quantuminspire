@@ -20,6 +20,7 @@ def test_store_tokens(auth_settings: AuthSettings, tmpdir: str, clear_singleton:
     stored_tokens_path = Path(tmpdir.join("tokens.json"))
 
     # Act
+    assert auth_settings.tokens is not None
     api_settings.store_tokens(host=host, tokens=auth_settings.tokens, path=stored_tokens_path)
 
     # Assert
