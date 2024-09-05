@@ -16,24 +16,6 @@ def identity_provider_mock() -> MagicMock:
 
 
 @pytest.fixture
-def auth_settings() -> AuthSettings:
-    return AuthSettings(
-        client_id="client_id",
-        code_challenge_method="code_challenge_method",
-        code_verifyer_length=1,
-        well_known_endpoint="https://host.com/well-known-endpoint",
-        tokens=TokenInfo(
-            access_token="access_token",
-            expires_in=100,
-            refresh_token="refresh_token",
-            refresh_expires_in=1000,
-            generated_at=1,
-        ),
-        team_member_id=1,
-    )
-
-
-@pytest.fixture
 def api_settings_mock(auth_settings: AuthSettings) -> MagicMock:
     api_settings = MagicMock(spec=ApiSettings)
     api_settings.default_host = "https://host.com"
