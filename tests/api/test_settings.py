@@ -1,19 +1,11 @@
 from pathlib import Path
-from typing import Any
 
 import pytest
 
-import qiskit_quantuminspire.api.settings as settings
 from qiskit_quantuminspire.api.settings import ApiSettings, AuthSettings
 
 
-@pytest.fixture
-def clear_singleton() -> None:
-    settings._settings = None
-    settings.API_SETTINGS_FILE = Path.home() / ".quantuminspire" / "config.json"
-
-
-def test_store_tokens(auth_settings: AuthSettings, tmpdir: str, clear_singleton: Any) -> None:
+def test_store_tokens(auth_settings: AuthSettings, tmpdir: str) -> None:
     # Arrange
     host = "https://host.com"
     api_settings = ApiSettings(auths={host: auth_settings}, default_host=host)
@@ -27,7 +19,7 @@ def test_store_tokens(auth_settings: AuthSettings, tmpdir: str, clear_singleton:
     assert api_settings == api_settings.model_validate_json(stored_tokens_path.read_text())
 
 
-def test_api_settings_read_file(auth_settings: AuthSettings, tmpdir: str, clear_singleton: Any) -> None:
+def test_api_settings_read_file(auth_settings: AuthSettings, tmpdir: str) -> None:
     # Arrange
     settings_file = Path(tmpdir.join("config.json"))
     host = "https://host.com"
@@ -41,7 +33,7 @@ def test_api_settings_read_file(auth_settings: AuthSettings, tmpdir: str, clear_
     assert settings_stored == settings_read
 
 
-def test_api_settings_no_configuration_file(tmpdir: str, clear_singleton: Any) -> None:
+def test_api_settings_no_configuration_file(tmpdir: str) -> None:
     # Arrange
     settings_file = Path(tmpdir.join("non-existent.json"))
 
