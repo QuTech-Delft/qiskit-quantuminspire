@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 
 import qiskit_quantuminspire.api.settings as settings
-from qiskit_quantuminspire.api.settings import ApiSettings, AuthSettings, api_settings
+from qiskit_quantuminspire.api.settings import ApiSettings, AuthSettings
 
 
 @pytest.fixture
@@ -33,10 +33,9 @@ def test_api_settings_read_file(auth_settings: AuthSettings, tmpdir: str, clear_
     host = "https://host.com"
     settings_stored = ApiSettings(auths={host: auth_settings}, default_host=host)
     settings_file.write_text(settings_stored.model_dump_json())
-    settings.API_SETTINGS_FILE = settings_file
 
     # Act
-    settings_read = api_settings()
+    settings_read = ApiSettings.from_config_file(path=settings_file)
 
     # Assert
     assert settings_stored == settings_read
@@ -44,19 +43,8 @@ def test_api_settings_read_file(auth_settings: AuthSettings, tmpdir: str, clear_
 
 def test_api_settings_no_configuration_file(tmpdir: str, clear_singleton: Any) -> None:
     # Arrange
-    settings.API_SETTINGS_FILE = Path(tmpdir.join("non-existent.json"))
+    settings_file = Path(tmpdir.join("non-existent.json"))
 
     # Act & Assert
     with pytest.raises(FileNotFoundError):
-        api_settings()
-
-
-def test_api_settings_no_configuration_file_clear(tmpdir: str, clear_singleton: Any) -> None:
-    # Arrange
-    settings._settings = ApiSettings(auths={}, default_host="https://host.com")
-    settings.API_SETTINGS_FILE = Path(tmpdir.join("non-existent.json"))
-
-    # Act & Assert
-    with pytest.raises(FileNotFoundError):
-        api_settings(clear=True)
-        assert settings._settings is None
+        ApiSettings.from_config_file(path=settings_file)

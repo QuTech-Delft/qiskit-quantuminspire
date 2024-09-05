@@ -12,8 +12,9 @@ def api_settings_mock(auth_settings: AuthSettings, mocker: MockerFixture) -> Mag
     api_settings = MagicMock(spec=ApiSettings)
     api_settings.default_host = "https://host.com"
     api_settings.auths = {api_settings.default_host: auth_settings}
+    api_settings.from_config_file.return_value = api_settings
 
-    mocker.patch("qiskit_quantuminspire.api.client.api_settings", return_value=api_settings)
+    mocker.patch("qiskit_quantuminspire.api.client.ApiSettings", return_value=api_settings)
 
     return api_settings
 

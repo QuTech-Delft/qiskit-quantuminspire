@@ -57,21 +57,11 @@ class ApiSettings(BaseModel):
         self.auths[host].tokens = tokens
         path.write_text(self.model_dump_json(indent=2))
 
-
-_settings: Optional[ApiSettings] = None
-
-
-def api_settings(clear: bool = False) -> ApiSettings:
-    """Return the current settings for the Quantum Inspire persistent configuration."""
-    global _settings
-
-    if clear:
-        _settings = None
-
-    if _settings is None:
-        if not API_SETTINGS_FILE.is_file():
+    @classmethod
+    def from_config_file(cls, path: Path = API_SETTINGS_FILE) -> ApiSettings:
+        """Load the configuration from a file."""
+        if not path.is_file():
             raise FileNotFoundError("No configuration file found. Please connect to Quantum Inspire using the CLI.")
 
-        api_settings = API_SETTINGS_FILE.read_text()
-        _settings = ApiSettings.model_validate_json(api_settings)
-    return _settings
+        api_settings = path.read_text()
+        return ApiSettings.model_validate_json(api_settings)

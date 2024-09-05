@@ -3,7 +3,7 @@ from typing import Any, Optional
 import compute_api_client
 
 from qiskit_quantuminspire.api.authentication import IdentityProvider, OauthDeviceSession
-from qiskit_quantuminspire.api.settings import api_settings
+from qiskit_quantuminspire.api.settings import ApiSettings
 
 
 class Configuration(compute_api_client.Configuration):  # type: ignore[misc]
@@ -26,7 +26,7 @@ def connect() -> None:
     Call after logging in with the CLI. Will remove old configuration.
     """
     global _config
-    settings = api_settings(clear=True)
+    settings = ApiSettings.from_config_file()
 
     tokens = settings.auths[settings.default_host].tokens
 
