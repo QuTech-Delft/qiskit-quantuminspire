@@ -2,9 +2,10 @@ import asyncio
 from datetime import datetime, timezone
 from typing import Any, List, Union
 
-from compute_api_client import ApiClient, BackendType, BackendTypesApi, Metadata
+from compute_api_client import ApiClient, BackendType, BackendTypesApi, Metadata, PageBackendType
 
 from qiskit_quantuminspire.api.client import config
+from qiskit_quantuminspire.api.pagination import PageReader
 from qiskit_quantuminspire.qi_backend import QIBackend
 
 
@@ -24,9 +25,11 @@ class QIProvider:
         (Implemented without paging only for demonstration purposes, should get a proper implementation)
         """
         async with ApiClient(config()) as client:
+            page_reader = PageReader[PageBackendType, BackendType]()
             backend_types_api = BackendTypesApi(client)
-            backend_type_list = await backend_types_api.read_backend_types_backend_types_get()
-            backend_types: List[BackendType] = backend_type_list.items
+            backend_types: List[BackendType] = await page_reader.get_all(
+                backend_types_api.read_backend_types_backend_types_get
+            )
         return backend_types
 
     def _construct_backends(self) -> List[QIBackend]:
