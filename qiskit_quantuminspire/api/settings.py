@@ -49,9 +49,9 @@ class ApiSettings(BaseModel):
         """Stores the team_member_id, access and refresh tokens in the config.json file.
 
         Args:
-            host (Url): The hostname of the API for which the tokens are intended.
-            tokens (TokenInfo): OAuth access and refresh tokens.
-            path (Path, optional): The path to the config.json file. Defaults to API_SETTINGS_FILE.
+            host: The hostname of the API for which the tokens are intended.
+            tokens: OAuth access and refresh tokens.
+            path: The path to the config.json file. Defaults to API_SETTINGS_FILE.
         Returns:
             None
         """
