@@ -46,13 +46,14 @@ class ApiSettings(BaseModel):
     default_host: Url
 
     def store_tokens(self, host: Url, tokens: TokenInfo, path: Path = API_SETTINGS_FILE) -> None:
-        """
+        """Stores the team_member_id, access and refresh tokens in the config.json file.
 
-        :param host: the hostname of the api for which the tokens are intended
-        :param tokens: OAuth access and refresh tokens
-        :return: None
-
-        This functions stores the team_member_id, access and refresh tokens in the config.json file.
+        Args:
+            host (Url): The hostname of the API for which the tokens are intended.
+            tokens (TokenInfo): OAuth access and refresh tokens.
+            path (Path, optional): The path to the config.json file. Defaults to API_SETTINGS_FILE.
+        Returns:
+            None
         """
         self.auths[host].tokens = tokens
         path.write_text(self.model_dump_json(indent=2))
