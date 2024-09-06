@@ -47,7 +47,7 @@ def test_oauth_device_session_refresh_token_not_expired(
     # Assert
     assert token_info == auth_settings.tokens
 
-    identity_provider_mock.get_refresh_token.assert_not_called()
+    identity_provider_mock.refresh_access_token.assert_not_called()
 
 
 def test_oauth_device_session_refresh_token_expired(
@@ -63,7 +63,7 @@ def test_oauth_device_session_refresh_token_expired(
         "generated_at": time.time(),
     }
 
-    identity_provider_mock.get_refresh_token.return_value = new_token_info
+    identity_provider_mock.refresh_access_token.return_value = new_token_info
 
     # Act
     token_info = session.refresh()
@@ -71,12 +71,12 @@ def test_oauth_device_session_refresh_token_expired(
     # Assert
     assert token_info == TokenInfo(**new_token_info)
 
-    identity_provider_mock.get_refresh_token.assert_called_once_with("client_id", "refresh_token")
+    identity_provider_mock.refresh_access_token.assert_called_once_with("client_id", "refresh_token")
     api_settings_mock.store_tokens.assert_called_once_with("https://host.com", token_info)
 
 
 @responses.activate
-def test_identity_provider_get_refresh_token() -> None:
+def test_identity_provider_refresh_access_token() -> None:
     # Arrange
     token_info = {"token": "something", "some": "other_data"}
     client_id = "some_client"
