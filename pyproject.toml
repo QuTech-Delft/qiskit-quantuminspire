@@ -20,7 +20,7 @@ classifiers = [
 python = "^3.9"
 qiskit = "^1.2.0"
 qi-compute-api-client = "^0.33.0"
-pydantic = "^2.8.2"
+pydantic = "^2.9.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
