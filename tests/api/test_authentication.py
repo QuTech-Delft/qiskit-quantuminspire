@@ -102,7 +102,7 @@ def test_identity_provider_get_refresh_token() -> None:
     # Act
     provider = IdentityProvider("https://host.com/well-known-endpoint")
 
-    token = provider.get_refresh_token(client_id, old_refresh_token)
+    token = provider.refresh_access_token(client_id, old_refresh_token)
 
     # Assert
     assert token == token_info

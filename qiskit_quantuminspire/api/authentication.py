@@ -24,7 +24,7 @@ class IdentityProvider:
         config = response.json()
         return config["token_endpoint"], config["device_authorization_endpoint"]
 
-    def get_refresh_token(self, client_id: str, refresh_token: str) -> dict[str, Any]:
+    def refresh_access_token(self, client_id: str, refresh_token: str) -> dict[str, Any]:
         data = {
             "grant_type": "refresh_token",
             "client_id": client_id,
@@ -54,7 +54,7 @@ class OauthDeviceSession:
 
         try:
             self._token_info = TokenInfo(
-                **self._identity_provider.get_refresh_token(self._client_id, self._token_info.refresh_token)
+                **self._identity_provider.refresh_access_token(self._client_id, self._token_info.refresh_token)
             )
             self._api_settings.store_tokens(self._host, self._token_info)
             return self._token_info
