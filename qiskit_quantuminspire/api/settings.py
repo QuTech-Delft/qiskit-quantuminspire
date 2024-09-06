@@ -17,14 +17,14 @@ class TokenInfo(BaseModel):
     """A pydantic model for storing all information regarding oauth access and refresh tokens."""
 
     access_token: str
-    expires_in: int
+    expires_in: int  # [s]
     refresh_token: str
-    refresh_expires_in: Optional[int] = None
+    refresh_expires_in: Optional[int] = None  # [s]
     generated_at: float = Field(default_factory=time.time)
 
     @property
     def access_expires_at(self) -> float:
-        """Timestamp containing the time when the access token will expire."""
+        """Unix timestamp containing the time when the access token will expire."""
         return self.generated_at + self.expires_in
 
 
