@@ -7,6 +7,9 @@ from qiskit_quantuminspire.api.settings import ApiSettings
 
 
 class Configuration(compute_api_client.Configuration):  # type: ignore[misc]
+    """Original Configuration class in compute_api_client does not handle refreshing bearer tokens, so we need to add
+    some functionality."""
+
     def __init__(self, host: str, oauth_session: OauthDeviceSession, **kwargs: Any):
         self._oauth_session = oauth_session
         super().__init__(host=host, **kwargs)

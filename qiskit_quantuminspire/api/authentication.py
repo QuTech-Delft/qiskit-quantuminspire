@@ -13,6 +13,8 @@ class AuthorisationError(Exception):
 
 
 class IdentityProvider:
+    """Class for interfacing with the IdentityProvider."""
+
     def __init__(self, well_known_endpoint: str):
         self._well_known_endpoint = well_known_endpoint
         self._token_endpoint, self._device_endpoint = self._get_endpoints()
@@ -36,6 +38,8 @@ class IdentityProvider:
 
 
 class OauthDeviceSession:
+    """Class for storing OAuth session information and refreshing tokens when needed."""
+
     def __init__(self, host: Url, settings: ApiSettings, identity_provider: IdentityProvider):
         self._api_settings = settings
         _auth_settings = settings.auths[host]
