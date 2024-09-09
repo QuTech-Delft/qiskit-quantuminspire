@@ -1,10 +1,12 @@
+import math
 from typing import Any, List, Union
 
-from compute_api_client import BackendType, Metadata
-from qiskit.circuit import QuantumCircuit
+from compute_api_client import BackendType
+from qiskit.circuit import Gate, QuantumCircuit
+from qiskit.circuit.library import IGate, RXGate, RYGate, get_standard_gate_name_mapping
 from qiskit.providers import BackendV2 as Backend
 from qiskit.providers.options import Options
-from qiskit.transpiler import Target
+from qiskit.transpiler import CouplingMap, Target
 
 from qiskit_quantuminspire.qi_jobs import QIJob
 
@@ -14,9 +16,29 @@ from qiskit_quantuminspire.qi_jobs import QIJob
 class QIBackend(Backend):  # type: ignore[misc]
     """A wrapper class for QuantumInspire backendtypes to integrate with Qiskit's Backend interface."""
 
-    def __init__(self, backend_type: BackendType, metadata: Metadata, **kwargs: Any):
+    _max_shots: int
+
+    _CQASM_QISKIT_GATE_MAPPING: dict[str, Gate] = {
+        "i": IGate(),
+        "x90": RXGate(math.pi / 2),
+        "mx90": RXGate(-math.pi / 2),
+        "y90": RYGate(math.pi / 2),
+        "my90": RYGate(-math.pi / 2),
+    }
+
+    def __init__(self, backend_type: BackendType, **kwargs: Any):
         super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
-        self._target = Target(num_qubits=metadata.data["nqubits"])
+        self._max_shots = backend_type.max_number_of_shots
+        all_supported_gates: list[str] = list(get_standard_gate_name_mapping().keys()) + list(
+            self._CQASM_QISKIT_GATE_MAPPING.keys()
+        )
+        available_gates = [gate.lower() for gate in backend_type.gateset if gate.lower() in all_supported_gates]
+        self._target = Target().from_configuration(
+            basis_gates=available_gates,
+            num_qubits=backend_type.nqubits,
+            coupling_map=CouplingMap(backend_type.topology),
+            custom_name_mapping=self._CQASM_QISKIT_GATE_MAPPING,
+        )
 
     @classmethod
     def _default_options(cls) -> Options:
@@ -24,6 +46,10 @@ class QIBackend(Backend):  # type: ignore[misc]
 
     def target(self) -> Target:
         return self._target
+
+    @property
+    def max_shots(self) -> int:
+        return self._max_shots
 
     @property
     def max_circuits(self) -> Union[int, None]:
