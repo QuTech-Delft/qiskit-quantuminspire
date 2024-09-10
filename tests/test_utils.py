@@ -11,6 +11,10 @@ from qiskit_quantuminspire.utils import is_coupling_map_complete
         (CouplingMap.from_full(10), True),
         (CouplingMap([[1, 0], [0, 1], [1, 2], [2, 1], [2, 0], [0, 2]]), True),
         (CouplingMap([[0, 1], [1, 0], [2, 3], [3, 2]]), False),  # symmetric, but unconnected
+        (
+            CouplingMap([[0, 1], [1, 0], [1, 2], [2, 1], [2, 3], [3, 2]]),
+            False,
+        ),  # symmetric, connected, but not semicomplete
     ],
 )
 def test_is_coupling_map_complete(coupling_map: CouplingMap, is_complete: bool):
