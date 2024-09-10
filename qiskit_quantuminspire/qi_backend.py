@@ -79,9 +79,7 @@ class QIBackend(Backend):  # type: ignore[misc]
         coupling_map_complete = is_coupling_map_complete(coupling_map)
 
         if len(unknown_gates) > 0:
-            logging.warning(
-                f"Ignoring unknown native gate(s) {unknown_gates} for backend {backend_type.name}", unknown_gates
-            )
+            logging.warning(f"Ignoring unknown native gate(s) {unknown_gates} for backend {backend_type.name}")
 
         if "toffoli" in available_gates and not coupling_map_complete:
             available_gates.remove("toffoli")
