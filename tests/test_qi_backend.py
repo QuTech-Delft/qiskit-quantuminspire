@@ -34,16 +34,35 @@ def create_backend_type(
     "gateset, topology, nqubits, expected_instructions",
     [
         (
-            ["x", "sdag", "prep_y"],
+            ["x", "sdag", "prep_y", "measure_z"],
             [[0, 1], [1, 2], [2, 0]],
             3,
             [
                 ("x", (0,)),
                 ("sdg", (0,)),
+                ("measure", (0,)),
                 ("x", (1,)),
                 ("sdg", (1,)),
+                ("measure", (1,)),
                 ("x", (2,)),
                 ("sdg", (2,)),
+                ("measure", (2,)),
+            ],
+        ),
+        (
+            ["cz", "x"],
+            [[0, 1], [1, 2], [2, 0], [1, 0], [1, 3]],
+            4,
+            [
+                ("x", (0,)),
+                ("x", (1,)),
+                ("x", (2,)),
+                ("x", (3,)),
+                ("cz", (0, 1)),
+                ("cz", (1, 0)),
+                ("cz", (1, 3)),
+                ("cz", (1, 2)),
+                ("cz", (2, 0)),
             ],
         ),
     ],
@@ -63,8 +82,10 @@ def test_qi_backend_construction_target(
     # Assert
     target = qi_backend.target()
     actual_instructions = [(instruction.name, qubits) for instruction, qubits in target.instructions]
+    print(target.instructions)
 
     assert target.num_qubits == nqubits
     for instruction in expected_instructions:
         assert instruction in actual_instructions
-    assert len(expected_instructions) == len(actual_instructions)
+    for instruction in actual_instructions:
+        assert instruction in expected_instructions

@@ -3,7 +3,7 @@ import math
 from typing import Any, List, Union
 
 from compute_api_client import BackendType
-from qiskit.circuit import Gate, QuantumCircuit
+from qiskit.circuit import Instruction, Measure, QuantumCircuit
 from qiskit.circuit.library import (
     CCXGate,
     CPhaseGate,
@@ -27,7 +27,7 @@ from qiskit_quantuminspire.utils import is_coupling_map_complete
 _THETA = Parameter("ϴ")
 
 # Custom gate mapping for gates whose name do not match between cQASM and Qiskit
-_CQASM_QISKIT_GATE_MAPPING: dict[str, Gate] = {
+_CQASM_QISKIT_GATE_MAPPING: dict[str, Instruction] = {
     "i": IGate(),
     "x90": RXGate(math.pi / 2),
     "mx90": RXGate(-math.pi / 2),
@@ -38,17 +38,17 @@ _CQASM_QISKIT_GATE_MAPPING: dict[str, Gate] = {
     "tdag": TdgGate(),
     "cr": CPhaseGate(_THETA),
     "cnot": CXGate(),
+    "measure_z": Measure(),
 }
 
 _IGNORED_GATES: list[str] = [
-    # Prep and measure not viewed as separate gates in Qiskit
+    # Prep not viewed as separate gates in Qiskit
     "prep_x",
     "prep_y",
     "prep_z",
-    "measure",
+    # Measure x and y not natively supported https://github.com/Qiskit/qiskit/issues/3967
     "measure_x",
     "measure_y",
-    "measure_z",
     "measure_all",
     # May be supportable through parameterized CPhaseGate.
     # For now, direct usage of CPhaseGate is required
