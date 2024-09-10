@@ -17,5 +17,5 @@ from qiskit_quantuminspire.utils import is_coupling_map_complete
         ),  # symmetric, connected, but not semicomplete
     ],
 )
-def test_is_coupling_map_complete(coupling_map: CouplingMap, is_complete: bool):
+def test_is_coupling_map_complete(coupling_map: CouplingMap, is_complete: bool) -> None:
     assert is_coupling_map_complete(coupling_map) == is_complete
