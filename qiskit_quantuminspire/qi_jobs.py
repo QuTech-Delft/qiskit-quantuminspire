@@ -1,13 +1,14 @@
 from datetime import datetime, timezone
 from typing import Any, List, Union
 
-from compute_api_client import Result as JobResult
+from compute_api_client import ApiClient, BatchJob, BatchJobsApi, BatchJobStatus, Result as JobResult
 from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1 as Job
 from qiskit.providers.backend import Backend
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.result.result import Result
 
+from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.qi_results import QIResult
 
 
@@ -21,7 +22,7 @@ class QIJob(Job):  # type: ignore[misc]
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
         backend: Union[Backend, None],
         job_id: str,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         """Initialize a QIJob instance.
 
@@ -73,6 +74,18 @@ class QIJob(Job):  # type: ignore[misc]
         processed_results = QIResult(raw_results).process(self)
         return processed_results
 
-    def status(self) -> JobStatus:
+    async def status(self) -> JobStatus:
         """Return the status of the (batch)job, among the values of ``JobStatus``."""
-        return JobStatus.DONE
+        async with ApiClient(config()) as client:
+            api_instance = BatchJobsApi(client)
+            batch_jobs: List[BatchJob] = api_instance.read_batch_jobs_batch_jobs_get(job_id=self.job_id).items
+
+            match batch_jobs[0].status:
+                case BatchJobStatus.QUEUED | BatchJobStatus.RESERVED | BatchJobStatus.PLANNED:
+                    return JobStatus.QUEUED
+                case BatchJobStatus.RUNNING:
+                    return JobStatus.RUNNING
+                case BatchJobStatus.FINISHED:
+                    return JobStatus.DONE
+                case _:
+                    return JobStatus.ERROR
