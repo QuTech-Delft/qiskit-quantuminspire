@@ -27,10 +27,15 @@ def page_reader_mock(mocker: MockFixture) -> AsyncMock:
 
 
 def test_qi_provider_construct(mock_api: Any, page_reader_mock: AsyncMock) -> None:
+    # Arrange
     page_reader_mock.get_all.return_value = [
         create_backend_type(name="qi_backend_1"),
         create_backend_type(name="spin"),
     ]
+
+    # Act
     provider = QIProvider()
+
+    # Assert
     assert len(provider.backends()) == 2
     assert all([isinstance(backend, QIBackend) for backend in provider.backends()])
