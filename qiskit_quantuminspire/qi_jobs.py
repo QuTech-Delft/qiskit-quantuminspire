@@ -1,13 +1,14 @@
-from datetime import datetime, timezone
+import asyncio
 from typing import Any, List, Union
 
-from compute_api_client import Result as JobResult
+from compute_api_client import ApiClient, Result as JobResult, ResultsApi
 from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1 as Job
 from qiskit.providers.backend import Backend
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.result.result import Result
 
+from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.qi_results import QIResult
 
 
@@ -21,7 +22,7 @@ class QIJob(Job):  # type: ignore[misc]
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
         backend: Union[Backend, None],
         job_id: str,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         """Initialize a QIJob instance.
 
@@ -45,31 +46,20 @@ class QIJob(Job):  # type: ignore[misc]
             self._job_ids.append(str(i))
         self.job_id = "999"  # ID of the submitted batch-job
 
-    def _fetch_job_results(self) -> List[JobResult]:
+    async def _fetch_job_results(self) -> List[JobResult]:
         """Fetch results for job_ids from CJM using api client."""
-        raw_results = []
-        for job_id in self._job_ids:
-            job_result = JobResult(
-                id=int(job_id),
-                metadata_id=1,
-                created_on=datetime(2022, 10, 25, 15, 37, 54, 269823, tzinfo=timezone.utc),
-                execution_time_in_seconds=1.23,
-                shots_requested=100,
-                shots_done=100,
-                results={
-                    "0000000000": 0.270000,
-                    "0000000001": 0.260000,
-                    "0000000010": 0.180000,
-                    "0000000011": 0.290000,
-                },
-                job_id=int(job_id),
-            )
-            raw_results.append(job_result)
-        return raw_results
+        results = None
+        async with ApiClient(config()) as client:
+            results_api = ResultsApi(client)
+            result_tasks = [results_api.read_results_by_job_id_results_job_job_id_get(int(id)) for id in self._job_ids]
+            results = await asyncio.gather(*result_tasks, return_exceptions=True)
+        return results
 
     def result(self) -> Result:
         """Return the results of the job."""
-        raw_results = self._fetch_job_results()
+        if self.status() is not JobStatus.DONE:
+            raise RuntimeError(f"Job status is {self.status}.")
+        raw_results = asyncio.run(self._fetch_job_results())
         processed_results = QIResult(raw_results).process(self)
         return processed_results
 

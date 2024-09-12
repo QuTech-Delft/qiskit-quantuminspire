@@ -23,21 +23,35 @@ class QIResult:
         """
 
         results = []
+        batch_job_success = [False] * len(self._raw_results)
 
-        for result in self._raw_results:
+        for idx, result in enumerate(self._raw_results):
+            counts = {}
+            shots = 0
+            experiment_success = False
+
+            if isinstance(result, RawJobResult):
+                shots = result.shots_done
+                experiment_success = result.shots_done > 0
+                counts = {hex(int(key, 2)): value for key, value in result.results.items()}
+                batch_job_success[idx] = True
+
+            experiment_data = ExperimentResultData(
+                counts=counts,
+            )
             experiment_result = ExperimentResult(
-                shots=result.shots_done,
-                success=True,
-                data=ExperimentResultData(),
+                shots=shots,
+                success=experiment_success,
+                data=experiment_data,
             )
             results.append(experiment_result)
 
         result = Result(
             backend_name=job.backend().name,
             backend_version="1.0.0",
-            qobj_id=1234,
+            qobj_id="1234",
             job_id=job.job_id,
-            success=True,
+            success=all(batch_job_success),
             results=results,
         )
         return result
