@@ -36,7 +36,7 @@ def qi_job(qi_backend: QIBackend) -> QIJob:
     return QIJob(run_input="", backend=qi_backend, job_id="some-id")
 
 
-def test_process(qi_job: QIJob):
+def test_process(qi_job: QIJob) -> None:
     qi_job._job_ids = ["1"]  # The jobs in the batch job
     qi_job.job_id = "100"  # The batch job ID
     raw_results = []
@@ -80,7 +80,7 @@ def test_process(qi_job: QIJob):
     assert processed_results.to_dict() == expected_results.to_dict()
 
 
-def test_process_handles_failed_job(qi_job: QIJob):
+def test_process_handles_failed_job(qi_job: QIJob) -> None:
     qi_job._job_ids = ["1"]  # The jobs in the batch job
     qi_job.job_id = "100"  # The batch job ID
     raw_results = [Exception("Bad Result")]
