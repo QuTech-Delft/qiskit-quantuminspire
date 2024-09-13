@@ -40,4 +40,6 @@ def dumps(circuit: QuantumCircuit) -> str:
 
         getattr(builder, _QISKIT_TO_OPENSQUIRREL_MAPPING[name])(*qubit_operands, *clbit_operands, *params)
 
-    return writer.circuit_to_string(builder.to_circuit())
+    cqasm: str = writer.circuit_to_string(builder.to_circuit())
+
+    return cqasm
