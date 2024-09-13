@@ -98,6 +98,7 @@ class QIBackend(Backend):  # type: ignore[misc]
     def _default_options(cls) -> Options:
         return Options(shots=1024, optimization_level=1)
 
+    @property
     def target(self) -> Target:
         return self._target
 

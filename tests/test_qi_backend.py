@@ -67,7 +67,7 @@ def test_qi_backend_construction_target(
     qi_backend = QIBackend(backend_type=backend_type)
 
     # Assert
-    target = qi_backend.target()
+    target = qi_backend.target
     actual_instructions = [(instruction.name, qubits) for instruction, qubits in target.instructions]
 
     assert target.num_qubits == nqubits
@@ -100,7 +100,7 @@ def test_qi_backend_construction_toffoli_gate_unsupported(
     with caplog.at_level(logging.WARNING):
         qi_backend = QIBackend(backend_type=backend_type)
 
-    target = qi_backend.target()
+    target = qi_backend.target
     actual_instructions = [(instruction.name, qubits) for instruction, qubits in target.instructions]
 
     # Assert
@@ -124,7 +124,7 @@ def test_qi_backend_construction_unknown_gate_ignored(
     with caplog.at_level(logging.WARNING):
         qi_backend = QIBackend(backend_type=backend_type)
 
-    target = qi_backend.target()
+    target = qi_backend.target
     actual_instructions = [(instruction.name, qubits) for instruction, qubits in target.instructions]
 
     # Assert
