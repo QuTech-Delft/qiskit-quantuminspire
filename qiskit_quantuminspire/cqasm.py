@@ -35,8 +35,9 @@ def dumps(circuit: QuantumCircuit) -> str:
         qubit_operands = [Qubit(qubit._index) for qubit in circuit_instruction.qubits]
         clbit_operands = [Bit(clbit._index) for clbit in circuit_instruction.clbits]
 
+        # Only used as circuit compilation directive
         if name == "barrier":
-            continue  # Should be ignored?
+            continue
 
         getattr(builder, _QISKIT_TO_OPENSQUIRREL_MAPPING[name])(*qubit_operands, *clbit_operands, *params)
 
