@@ -39,7 +39,13 @@ def dumps(circuit: QuantumCircuit) -> str:
         if name == "barrier":
             continue
 
-        getattr(builder, _QISKIT_TO_OPENSQUIRREL_MAPPING[name])(*qubit_operands, *clbit_operands, *params)
+        try:
+            getattr(builder, _QISKIT_TO_OPENSQUIRREL_MAPPING[name])(*qubit_operands, *clbit_operands, *params)
+        except KeyError:
+            raise NotImplementedError(
+                f"Unsupported instruction: {name}. Please edit your circuit or use Qiskit transpilation to support "
+                + "your selected backend."
+            )
 
     cqasm: str = writer.circuit_to_string(builder.to_circuit())
 
