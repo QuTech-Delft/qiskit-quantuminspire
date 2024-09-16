@@ -55,6 +55,10 @@ _IGNORED_GATES: list[str] = [
     "crk",
 ]
 
+_ALL_SUPPORTED_GATES: list[str] = list(get_standard_gate_name_mapping().keys()) + list(
+    _CQASM_QISKIT_GATE_MAPPING.keys()
+)
+
 
 # Ignore type checking for QIBackend due to missing Qiskit type stubs,
 # which causes the base class 'Backend' to be treated as 'Any'.
@@ -68,13 +72,9 @@ class QIBackend(Backend):  # type: ignore[misc]
 
         self._max_shots = backend_type.max_number_of_shots
 
-        all_supported_gates: list[str] = list(get_standard_gate_name_mapping().keys()) + list(
-            _CQASM_QISKIT_GATE_MAPPING.keys()
-        )
-
         native_gates = [gate.lower() for gate in backend_type.gateset]
-        available_gates = [gate for gate in native_gates if gate in all_supported_gates]
-        unknown_gates = set(native_gates) - set(all_supported_gates) - set(_IGNORED_GATES)
+        available_gates = [gate for gate in native_gates if gate in _ALL_SUPPORTED_GATES]
+        unknown_gates = set(native_gates) - set(_ALL_SUPPORTED_GATES) - set(_IGNORED_GATES)
         coupling_map = CouplingMap(backend_type.topology)
         coupling_map_complete = is_coupling_map_complete(coupling_map)
 
