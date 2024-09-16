@@ -69,6 +69,7 @@ class QIBackend(Backend):  # type: ignore[misc]
 
     def __init__(self, backend_type: BackendType, **kwargs: Any):
         super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
+        self._id = backend_type.id
 
         self._max_shots = backend_type.max_number_of_shots
 
@@ -110,7 +111,11 @@ class QIBackend(Backend):  # type: ignore[misc]
     def max_circuits(self) -> Union[int, None]:
         return None
 
-    def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIJob:
+    @property
+    def id(self) -> str:
+        return str(self._id)
+
+    async def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIJob:
         """Create and run a (batch)job on an QuantumInspire Backend.
 
         Args:
@@ -120,5 +125,5 @@ class QIBackend(Backend):  # type: ignore[misc]
             QIJob: A reference to the batch job that was submitted.
         """
         job = QIJob(run_input=run_input, backend=self, job_id="some-random-id")
-        job.submit()
+        await job.submit()
         return job
