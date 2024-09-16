@@ -124,6 +124,6 @@ class QIBackend(Backend):  # type: ignore[misc]
         Returns:
             QIJob: A reference to the batch job that was submitted.
         """
-        job = QIJob(run_input=run_input, backend=self, job_id="some-random-id")
+        job = QIJob(run_input=run_input, backend=self)
         await job.submit()
         return job

@@ -3,7 +3,30 @@ from dataclasses import dataclass
 from functools import cache
 from typing import Any, Dict, List, Optional, Union
 
-from compute_api_client import ApiClient, PageResult, Result as RawJobResult, ResultsApi
+from compute_api_client import (
+    Algorithm,
+    AlgorithmIn,
+    AlgorithmsApi,
+    AlgorithmType,
+    ApiClient,
+    BatchJob,
+    BatchJobIn,
+    BatchJobsApi,
+    Commit,
+    CommitIn,
+    CommitsApi,
+    CompileStage,
+    File,
+    FileIn,
+    FilesApi,
+    JobIn,
+    JobsApi,
+    Project,
+    ProjectIn,
+    ProjectsApi,
+    Result as JobResult,
+    ShareType,
+)
 from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1 as Job
 from qiskit.providers.backend import Backend
