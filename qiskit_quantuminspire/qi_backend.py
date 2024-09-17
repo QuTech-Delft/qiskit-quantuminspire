@@ -69,7 +69,7 @@ class QIBackend(Backend):  # type: ignore[misc]
 
     def __init__(self, backend_type: BackendType, **kwargs: Any):
         super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
-        self._id = backend_type.id
+        self._id: int = backend_type.id
 
         self._max_shots = backend_type.max_number_of_shots
 
