@@ -112,8 +112,8 @@ class QIBackend(Backend):  # type: ignore[misc]
         return None
 
     @property
-    def id(self) -> str:
-        return str(self._id)
+    def id(self) -> int:
+        return self._id
 
     async def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIJob:
         """Create and run a (batch)job on an QuantumInspire Backend.

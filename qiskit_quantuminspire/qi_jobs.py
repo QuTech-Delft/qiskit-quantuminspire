@@ -57,8 +57,8 @@ class QIJob(Job):  # type: ignore[misc]
         self,
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
         backend: Union[Backend, None],
-        job_id: str,
-        **kwargs: Any,
+        job_id: Optional[str] = None,
+        **kwargs: Any
     ) -> None:
         """Initialize a QIJob instance.
 
@@ -82,23 +82,37 @@ class QIJob(Job):  # type: ignore[misc]
         Use compute-api-client to call the cjm endpoints in the correct order, to submit the jobs.
         """
         options = self.backend().options
+        configuration = config()
         # call create algorithm
-        async with ApiClient(config()) as api_client:
-            project = await self._create_project(api_client)
-            algorithm = await self._create_algorithm(api_client, project)
-            commit = await self._create_commit(api_client, algorithm)
-            file = await self._create_file(api_client, commit)
-            batch_job = await self._create_batch_job(api_client, backend_type_id=self.backend().id)
-            job: Job = await self._create_job(
-                api_client, file, batch_job, number_of_shots=options.get("shots", default=1000)
-            )
-            await self._enqueue_batch_job(api_client, batch_job)
-            self.job_id = job.id  # TODO: this is also provided in the constructor. Why?
+        async with ApiClient(configuration) as api_client:
 
-    async def _create_project(self, api_client: ApiClient) -> Project:
+            # always create a list
+            circuits: List[QuantumCircuit] = []
+            if isinstance(self._run_input, QuantumCircuit):
+                circuits.append(self._run_input)
+            else:
+                circuits = self._run_input
+
+            project = await self._create_project(api_client, configuration.auth_settings().team_member_id)
+            batch_job = await self._create_batch_job(api_client, backend_type_id=self.backend().id)
+
+            # iterate over the circuits
+            for circuit in circuits:
+                algorithm = await self._create_algorithm(api_client, project)
+                commit = await self._create_commit(api_client, algorithm)
+                file = await self._create_file(api_client, commit, circuit)
+                job: Job = await self._create_job(
+                    api_client, file, batch_job, number_of_shots=options.get("shots", default=1000)
+                )
+                self._job_ids.append(job.job_id())
+
+            await self._enqueue_batch_job(api_client, batch_job)
+            self.job_id = batch_job.id
+
+    async def _create_project(self, api_client: ApiClient, owner_id: int) -> Project:
         api_instance = ProjectsApi(api_client)
         obj = ProjectIn(
-            owner_id=self.auth_settings.owner_id,
+            owner_id=owner_id,
             name=self.program_name,
             description="Project created by SDK",
             starred=False,
@@ -120,11 +134,11 @@ class QIJob(Job):  # type: ignore[misc]
         )
         return await api_instance.create_commit_commits_post(obj)
 
-    async def _create_file(self, api_client: ApiClient, commit: Commit) -> File:
+    async def _create_file(self, api_client: ApiClient, commit: Commit, circuit: QuantumCircuit) -> File:
         api_instance = FilesApi(api_client)
         obj = FileIn(
             commit_id=commit.id,
-            content="",  # TODO: the cQasm
+            content=str(circuit),  # TODO: use cQasm here
             language_id=1,
             compile_stage=CompileStage.NONE,
             compile_properties={},
