@@ -1,7 +1,5 @@
-from typing import List
-
-from compute_api_client import Result as RawJobResult
 from qiskit.providers import JobV1 as Job
+from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
@@ -9,48 +7,65 @@ from qiskit.result.result import Result
 class QIResult:
     """Handle QuantumInspire (batch job) results to integrate with Qiskit's Result interface."""
 
-    def __init__(self, qinspire_results: List[RawJobResult]) -> None:
-        self._raw_results = qinspire_results
-
-    def process(self, job: Job) -> Result:
-        """Process the raw job results obtained from QuantumInspire.
+    def __init__(self, job: Job) -> None:
+        """Initialize the result processor for QuantumInspire job results.
 
         Args:
             job: The (batch) job for which the results were obtained. While specified as `Job`
-            to avoid circular dependency, it is a `QIJob`.
+                to avoid circular dependency, it is a `QIJob`.
         Returns:
-            The processed results as a Qiskit Result.
+            None.
         """
 
+        self._job = job  # The batch job
+
+    def process(self) -> Result:
+        """Process the raw job results obtained from QuantumInspire."""
+
         results = []
-        batch_job_success = [False] * len(self._raw_results)
+        batch_job_success = [False] * len(self._job.circuits_run_data)
 
-        for idx, result in enumerate(self._raw_results):
-            counts = {}
-            shots = 0
-            experiment_success = False
+        for idx, ciruit_data in enumerate(self._job.circuits_run_data):
+            result_header = QobjExperimentHeader(name=ciruit_data.circuit.name)
+            circuit_results = ciruit_data.results
 
-            if isinstance(result, RawJobResult):
-                shots = result.shots_done
-                experiment_success = result.shots_done > 0
-                counts = {hex(int(key, 2)): value for key, value in result.results.items()}
-                batch_job_success[idx] = True
+            if not circuit_results:
+                # For failed job, there are no results
+                experiment_data = ExperimentResultData(
+                    counts={},
+                )
+                experiment_result = ExperimentResult(
+                    shots=0,
+                    success=False,
+                    data=experiment_data,
+                    header=result_header,
+                )
+                results.append(experiment_result)
+            else:
+                results_valid = [False] * len(circuit_results)
+                for idx_res, result in enumerate(circuit_results):
+                    shots = result.shots_done
+                    experiment_success = result.shots_done > 0
+                    counts = {hex(int(key, 2)): value for key, value in result.results.items()}
+                    results_valid[idx_res] = experiment_success
 
-            experiment_data = ExperimentResultData(
-                counts=counts,
-            )
-            experiment_result = ExperimentResult(
-                shots=shots,
-                success=experiment_success,
-                data=experiment_data,
-            )
-            results.append(experiment_result)
+                    experiment_data = ExperimentResultData(
+                        counts=counts,
+                    )
+                    experiment_result = ExperimentResult(
+                        shots=shots,
+                        success=experiment_success,
+                        data=experiment_data,
+                        header=result_header,
+                    )
+                    results.append(experiment_result)
+                batch_job_success[idx] = all(results_valid)
 
         result = Result(
-            backend_name=job.backend().name,
+            backend_name=self._job.backend().name,
             backend_version="1.0.0",
-            qobj_id="1234",
-            job_id=job.job_id,
+            qobj_id="",
+            job_id=self._job.job_id,
             success=all(batch_job_success),
             results=results,
         )

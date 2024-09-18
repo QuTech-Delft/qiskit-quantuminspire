@@ -3,7 +3,6 @@
         "qiskit_quantuminspire"
     ],
     "editor.codeActionsOnSave": {},
-    "editor.formatOnSave": true,
     "black-formatter.path": [
         "${command:python.interpreterPath}"
     ],
