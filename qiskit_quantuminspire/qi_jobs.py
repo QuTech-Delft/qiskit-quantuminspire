@@ -16,7 +16,9 @@ from qiskit_quantuminspire.qi_results import QIResult
 class CircuitExecutionData:
     """Class for bookkeping of individual jobs."""
 
-    def __init__(self, circuit: QuantumCircuit, job_id: int = None, results: List[RawJobResult] = None) -> None:
+    def __init__(
+        self, circuit: QuantumCircuit, job_id: Union[int, None] = None, results: Union[List[RawJobResult], None] = None
+    ) -> None:
         self.job_id = job_id
         self.circuit = circuit
         self.results = [] if results is None else results
@@ -77,7 +79,7 @@ class QIJob(Job):  # type: ignore[misc]
 
             for circuit_data, result_item in zip(self.circuits_run_data, result_items):
                 circuit_data.results = result_item
-            
+
     def result(self) -> Result:
         """Return the results of the job."""
         if not self.done():

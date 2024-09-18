@@ -48,7 +48,7 @@ def test_result_raises_error_when_status_not_done(mocker: MockerFixture) -> None
 )
 def test_fetch_job_result(
     mocker: MockerFixture,
-    page_reader_mock: MockerFixture,
+    page_reader_mock: AsyncMock,
     circuits: Union[QuantumCircuit, List[QuantumCircuit]],
     expected_n_jobs: int,
 ) -> None:
@@ -76,4 +76,3 @@ def test_fetch_job_result(
     assert len(job.circuits_run_data) == expected_n_jobs
 
     assert all(circuit_data.results for circuit_data in job.circuits_run_data)
-
