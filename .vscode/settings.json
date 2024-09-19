@@ -2,10 +2,6 @@
     "python.analysis.extraPaths": [
         "qiskit_quantuminspire"
     ],
-    "editor.codeActionsOnSave": {},
-    "black-formatter.path": [
-        "${command:python.interpreterPath}"
-    ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.testing.pytestPath": "${command:python.interpreterPath}",

@@ -1,27 +1,28 @@
 import asyncio
-from typing import Any, List, Union
+from dataclasses import dataclass
+from functools import cache
+from typing import Any, Dict, List, Optional, Union
 
 from compute_api_client import ApiClient, PageResult, Result as RawJobResult, ResultsApi
 from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1 as Job
 from qiskit.providers.backend import Backend
 from qiskit.providers.jobstatus import JobStatus
+from qiskit.qobj import QobjExperimentHeader
+from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
-from qiskit_quantuminspire.qi_results import QIResult
 
 
+@dataclass
 class CircuitExecutionData:
-    """Class for bookkeping of individual jobs."""
+    """Class for book-keeping of individual jobs."""
 
-    def __init__(
-        self, circuit: QuantumCircuit, job_id: Union[int, None] = None, results: Union[List[RawJobResult], None] = None
-    ) -> None:
-        self.job_id = job_id
-        self.circuit = circuit
-        self.results = [] if results is None else results
+    circuit: QuantumCircuit
+    job_id: Optional[int] = None
+    results: Optional[RawJobResult] = None
 
 
 # Ignore type checking for QIJob due to missing Qiskit type stubs,
@@ -46,7 +47,6 @@ class QIJob(Job):  # type: ignore[misc]
             **kwargs: Additional keyword arguments passed to the parent `Job` class.
         """
         super().__init__(backend, job_id, **kwargs)
-        self._cached_result: Union[Result, None] = None
         self.circuits_run_data: List[CircuitExecutionData] = (
             [CircuitExecutionData(circuit=run_input)]
             if isinstance(run_input, QuantumCircuit)
@@ -78,18 +78,67 @@ class QIJob(Job):  # type: ignore[misc]
             result_items = await asyncio.gather(*result_tasks)
 
             for circuit_data, result_item in zip(self.circuits_run_data, result_items):
-                circuit_data.results = result_item
+                circuit_data.results = None if not result_item else result_item[0]
 
+    @cache
     def result(self) -> Result:
         """Return the results of the job."""
         if not self.done():
             raise RuntimeError(f"(Batch)Job status is {self.status()}.")
-        if self._cached_result:
-            return self._cached_result
         asyncio.run(self._fetch_job_results())
-        self._cached_result = QIResult(self).process()
-        return self._cached_result
+        return self._process_results()
 
     def status(self) -> JobStatus:
         """Return the status of the (batch)job, among the values of ``JobStatus``."""
         return JobStatus.DONE
+
+    def _process_results(self) -> Result:
+        """Process the raw job results obtained from QuantumInspire."""
+
+        results = []
+        batch_job_success = [False] * len(self.circuits_run_data)
+
+        for idx, circuit_data in enumerate(self.circuits_run_data):
+            qi_result = circuit_data.results
+            circuit_name = circuit_data.circuit.name
+
+            if qi_result is None:
+                experiment_result = self._get_experiment_result(circuit_name=circuit_name)
+                results.append(experiment_result)
+                continue
+            experiment_result = self._get_experiment_result(
+                circuit_name=circuit_name,
+                shots=qi_result.shots_done,
+                counts={hex(int(key, 2)): value for key, value in qi_result.results.items()},
+                experiment_success=qi_result.shots_done > 0,
+            )
+            results.append(experiment_result)
+            batch_job_success[idx] = qi_result.shots_done > 0
+
+        result = Result(
+            backend_name=self.backend().name,
+            backend_version="1.0.0",
+            qobj_id="",
+            job_id=self.job_id,
+            success=all(batch_job_success),
+            results=results,
+        )
+        return result
+
+    @staticmethod
+    def _get_experiment_result(
+        circuit_name: str,
+        shots: int = 0,
+        counts: Optional[Dict[str, int]] = None,
+        experiment_success: bool = False,
+    ) -> ExperimentResult:
+        """Create an ExperimentResult instance based on RawJobResult parameters."""
+        experiment_data = ExperimentResultData(
+            counts={} if counts is None else counts,
+        )
+        return ExperimentResult(
+            shots=shots,
+            success=experiment_success,
+            data=experiment_data,
+            header=QobjExperimentHeader(name=circuit_name),
+        )
