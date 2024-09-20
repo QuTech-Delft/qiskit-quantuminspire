@@ -40,6 +40,9 @@ def dumps(circuit: QuantumCircuit) -> str:
             continue
 
         try:
+            # Get the gate's method in the CircuitBuilder class, call with operands
+            # All of the builder's methods follow the same pattern, first the qubit operands, then parameters
+            # Only method with classical bit operands is measure, which does not have parameters
             getattr(builder, _QISKIT_TO_OPENSQUIRREL_MAPPING[name])(*qubit_operands, *clbit_operands, *params)
         except KeyError:
             raise NotImplementedError(
