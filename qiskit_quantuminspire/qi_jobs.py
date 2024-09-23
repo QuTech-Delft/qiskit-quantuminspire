@@ -57,7 +57,7 @@ class QIJob(Job):  # type: ignore[misc]
         self,
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
         backend: Union[Backend, None],
-        job_id: Optional[str] = None,
+        batch_job_id: Optional[int] = None,
         **kwargs: Any
     ) -> None:
         """Initialize a QIJob instance.
@@ -69,7 +69,7 @@ class QIJob(Job):  # type: ignore[misc]
             job_id: A unique identifier for the (batch)job.
             **kwargs: Additional keyword arguments passed to the parent `Job` class.
         """
-        super().__init__(backend, job_id, **kwargs)
+        super().__init__(backend, batch_job_id, **kwargs)
         self.circuits_run_data: List[CircuitExecutionData] = (
             [CircuitExecutionData(circuit=run_input)]
             if isinstance(run_input, QuantumCircuit)
@@ -96,18 +96,22 @@ class QIJob(Job):  # type: ignore[misc]
             project = await self._create_project(api_client, configuration.auth_settings().team_member_id)
             batch_job = await self._create_batch_job(api_client, backend_type_id=self.backend().id)
 
-            # iterate over the circuits
-            for circuit in circuits:
-                algorithm = await self._create_algorithm(api_client, project)
-                commit = await self._create_commit(api_client, algorithm)
-                file = await self._create_file(api_client, commit, circuit)
+            async def job_run_sequence(
+                in_api_client: ApiClient, in_project: Project, in_batch_job: BatchJob, circuit: QuantumCircuit
+            ) -> None:
+                algorithm = await self._create_algorithm(in_api_client, in_project.id)
+                commit = await self._create_commit(in_api_client, algorithm.id)
+                file = await self._create_file(in_api_client, commit.id, circuit)
                 job: Job = await self._create_job(
-                    api_client, file, batch_job, number_of_shots=options.get("shots", default=1000)
+                    in_api_client, file.id, in_batch_job.id, number_of_shots=options.get("shots", default=1000)
                 )
                 self._job_ids.append(job.job_id())
 
+            # iterate over the circuits
+            run_coroutines = (job_run_sequence(api_client, project, batch_job, circuit) for circuit in circuits)
+            await asyncio.gather(*run_coroutines)
             await self._enqueue_batch_job(api_client, batch_job)
-            self.job_id = batch_job.id
+            self.batch_job_id = batch_job.id
 
     async def _create_project(self, api_client: ApiClient, owner_id: int) -> Project:
         api_instance = ProjectsApi(api_client)
@@ -119,26 +123,26 @@ class QIJob(Job):  # type: ignore[misc]
         )
         return await api_instance.create_project_projects_post(obj)
 
-    async def _create_algorithm(self, api_client: ApiClient, project: Project) -> Algorithm:
+    async def _create_algorithm(self, api_client: ApiClient, project_id: int) -> Algorithm:
         api_instance = AlgorithmsApi(api_client)
         obj = AlgorithmIn(
-            project_id=project.id, type=AlgorithmType.QUANTUM, shared=ShareType.PRIVATE, name=self.program_name
+            project_id=project_id, type=AlgorithmType.QUANTUM, shared=ShareType.PRIVATE, name=self.program_name
         )
         return await api_instance.create_algorithm_algorithms_post(obj)
 
-    async def _create_commit(self, api_client: ApiClient, algorithm: Algorithm) -> Commit:
+    async def _create_commit(self, api_client: ApiClient, algorithm_id: int) -> Commit:
         api_instance = CommitsApi(api_client)
         obj = CommitIn(
             description="Commit created by SDK",
-            algorithm_id=algorithm.id,
+            algorithm_id=algorithm_id,
         )
         return await api_instance.create_commit_commits_post(obj)
 
-    async def _create_file(self, api_client: ApiClient, commit: Commit, circuit: QuantumCircuit) -> File:
+    async def _create_file(self, api_client: ApiClient, commit_id: int, circuit: QuantumCircuit) -> File:
         api_instance = FilesApi(api_client)
         obj = FileIn(
-            commit_id=commit.id,
-            content=str(circuit),  # TODO: use cQasm here
+            commit_id=commit_id,
+            content="version 3.0\nqubit[2] q\nH q[0]",  # TODO: get cQasm here
             language_id=1,
             compile_stage=CompileStage.NONE,
             compile_properties={},
@@ -151,15 +155,15 @@ class QIJob(Job):  # type: ignore[misc]
         return await api_instance.create_batch_job_batch_jobs_post(obj)
 
     async def _create_job(
-        self, api_client: ApiClient, file: File, batch_job: BatchJob, number_of_shots: Optional[int] = None
+        self, api_client: ApiClient, file_id: int, batch_job_id: int, number_of_shots: Optional[int] = None
     ) -> Job:
         api_instance = JobsApi(api_client)
-        obj = JobIn(file_id=file.id, batch_job_id=batch_job.id, number_of_shots=number_of_shots)
+        obj = JobIn(file_id=file_id, batch_job_id=batch_job_id, number_of_shots=number_of_shots)
         return await api_instance.create_job_jobs_post(obj)
 
-    async def _enqueue_batch_job(self, api_client: ApiClient, batch_job: BatchJob) -> BatchJob:
+    async def _enqueue_batch_job(self, api_client: ApiClient, batch_job_id: int) -> BatchJob:
         api_instance = BatchJobsApi(api_client)
-        return await api_instance.enqueue_batch_job_batch_jobs_id_enqueue_patch(batch_job.id)
+        return await api_instance.enqueue_batch_job_batch_jobs_id_enqueue_patch(batch_job_id)
 
     async def _fetch_job_results(self) -> None:
         """Fetch results for job_ids from CJM using api client."""
