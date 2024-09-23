@@ -79,8 +79,8 @@ def mock_files_api(mocker: MockerFixture, mock_commits_api: MagicMock) -> MagicM
 def mock_job_api(mocker: MockerFixture, mock_files_api: MagicMock) -> MagicMock:
     jobs_api_mock = AsyncMock()
     job_mock = MagicMock()
-    job_mock.id = 1
     jobs_api_mock.create_job_jobs_post.return_value = job_mock
+    job_mock.id = 1
     mocker.patch("qiskit_quantuminspire.qi_jobs.JobsApi", return_value=jobs_api_mock)
     return jobs_api_mock
 
