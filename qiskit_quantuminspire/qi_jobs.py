@@ -21,10 +21,12 @@ from compute_api_client import (
     FilesApi,
     JobIn,
     JobsApi,
+    PageResult,
     Project,
     ProjectIn,
     ProjectsApi,
-    Result as JobResult,
+    Result as RawJobResult,
+    ResultsApi,
     ShareType,
 )
 from qiskit.circuit import QuantumCircuit
@@ -57,8 +59,8 @@ class QIJob(Job):  # type: ignore[misc]
         self,
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
         backend: Union[Backend, None],
-        batch_job_id: Optional[int] = None,
-        **kwargs: Any
+        job_id: Optional[int] = None,
+        **kwargs: Any,
     ) -> None:
         """Initialize a QIJob instance.
 
@@ -69,12 +71,14 @@ class QIJob(Job):  # type: ignore[misc]
             job_id: A unique identifier for the (batch)job.
             **kwargs: Additional keyword arguments passed to the parent `Job` class.
         """
-        super().__init__(backend, batch_job_id, **kwargs)
+        super().__init__(backend, job_id, **kwargs)
         self.circuits_run_data: List[CircuitExecutionData] = (
             [CircuitExecutionData(circuit=run_input)]
             if isinstance(run_input, QuantumCircuit)
             else [CircuitExecutionData(circuit=circuit) for circuit in run_input]
         )
+        self.program_name = "Program created by SDK"
+        self.batch_job_id: Union[int, None] = None
 
     async def submit(self) -> None:
         """Submit the (batch)job to the quantum inspire backend.
@@ -86,29 +90,28 @@ class QIJob(Job):  # type: ignore[misc]
         # call create algorithm
         async with ApiClient(configuration) as api_client:
 
-            # always create a list
-            circuits: List[QuantumCircuit] = []
-            if isinstance(self._run_input, QuantumCircuit):
-                circuits.append(self._run_input)
-            else:
-                circuits = self._run_input
-
             project = await self._create_project(api_client, configuration.auth_settings().team_member_id)
             batch_job = await self._create_batch_job(api_client, backend_type_id=self.backend().id)
 
             async def job_run_sequence(
-                in_api_client: ApiClient, in_project: Project, in_batch_job: BatchJob, circuit: QuantumCircuit
+                in_api_client: ApiClient,
+                in_project: Project,
+                in_batch_job: BatchJob,
+                circuit_data: CircuitExecutionData,
             ) -> None:
                 algorithm = await self._create_algorithm(in_api_client, in_project.id)
                 commit = await self._create_commit(in_api_client, algorithm.id)
-                file = await self._create_file(in_api_client, commit.id, circuit)
+                file = await self._create_file(in_api_client, commit.id, circuit_data.circuit)
                 job: Job = await self._create_job(
                     in_api_client, file.id, in_batch_job.id, number_of_shots=options.get("shots", default=1000)
                 )
-                self._job_ids.append(job.job_id())
+                circuit_data.job_id = job.job_id()
 
             # iterate over the circuits
-            run_coroutines = (job_run_sequence(api_client, project, batch_job, circuit) for circuit in circuits)
+            run_coroutines = (
+                job_run_sequence(api_client, project, batch_job, circuit_run_data)
+                for circuit_run_data in self.circuits_run_data
+            )
             await asyncio.gather(*run_coroutines)
             await self._enqueue_batch_job(api_client, batch_job)
             self.batch_job_id = batch_job.id
@@ -221,7 +224,7 @@ class QIJob(Job):  # type: ignore[misc]
             backend_name=self.backend().name,
             backend_version="1.0.0",
             qobj_id="",
-            job_id=self.job_id,
+            job_id=self.batch_job_id,
             success=all(batch_job_success),
             results=results,
         )

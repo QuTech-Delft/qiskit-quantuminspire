@@ -36,7 +36,7 @@ def test_result(mocker: MockerFixture) -> None:
 
     qc = QuantumCircuit(2, 2)
 
-    job = QIJob(run_input=qc, backend=None, job_id="some-id")
+    job = QIJob(run_input=qc, backend=None)
 
     mocker.patch.object(job, "done", return_value=True)
 
@@ -54,7 +54,7 @@ def test_result(mocker: MockerFixture) -> None:
 
 
 def test_result_raises_error_when_status_not_done(mocker: MockerFixture) -> None:
-    job = QIJob(run_input="", backend=None, job_id="some-id")
+    job = QIJob(run_input="", backend=None)
     mocker.patch.object(job, "done", return_value=False)
     with pytest.raises(RuntimeError):
         job.result()
@@ -76,7 +76,7 @@ def test_fetch_job_result(
 
     page_reader_mock.get_all.side_effect = [[MagicMock()] for _ in range(expected_n_jobs)]
 
-    job = QIJob(run_input=circuits, backend=None, job_id="some-id")
+    job = QIJob(run_input=circuits, backend=None)
 
     asyncio.run(job._fetch_job_results())
 
@@ -94,7 +94,7 @@ def test_fetch_job_result_handles_invalid_results(
 
     page_reader_mock.get_all.side_effect = [[], [None]]
 
-    job = QIJob(run_input=circuits, backend=None, job_id="some-id")
+    job = QIJob(run_input=circuits, backend=None)
 
     asyncio.run(job._fetch_job_results())
 
@@ -107,9 +107,9 @@ def test_process_results() -> None:
     qi_backend = create_backend_type(name="qi_backend_1")
     qc = QuantumCircuit(2, 2)
 
-    qi_job = QIJob(run_input=qc, backend=qi_backend, job_id="some-id")
-    batch_job_id = "100"
-    qi_job.job_id = batch_job_id
+    qi_job = QIJob(run_input=qc, backend=qi_backend)
+    batch_job_id = 100
+    qi_job.batch_job_id = batch_job_id
     individual_job_id = 1
     qi_job.circuits_run_data[0].job_id = 1  #  Individual job_id
     qi_job.circuits_run_data[0].results = RawJobResult(
@@ -125,7 +125,7 @@ def test_process_results() -> None:
             "0000000010": 256,
             "0000000011": 256,
         },
-        job_id=int(qi_job.job_id),
+        job_id=10,
     )
     processed_results = qi_job._process_results()
     experiment_data = ExperimentResultData(counts={"0x0": 256, "0x1": 256, "0x2": 256, "0x3": 256})
@@ -156,9 +156,9 @@ def test_process_results_handles_invalid_results() -> None:
     qi_backend = create_backend_type(name="qi_backend_1")
     qc = QuantumCircuit(2, 2)
 
-    qi_job = QIJob(run_input=qc, backend=qi_backend, job_id="some-id")
-    batch_job_id = "100"
-    qi_job.job_id = batch_job_id
+    qi_job = QIJob(run_input=qc, backend=qi_backend)
+    batch_job_id = 100
+    qi_job.batch_job_id = batch_job_id
     qi_job.circuits_run_data[0].job_id = 1  # Individual job_id
 
     qi_job.circuits_run_data[0].results = None

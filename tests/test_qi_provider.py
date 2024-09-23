@@ -9,6 +9,7 @@ from qiskit_quantuminspire.qi_backend import QIBackend
 from qiskit_quantuminspire.qi_provider import QIProvider
 from tests.helpers import create_backend_type
 
+
 @pytest.fixture
 def page_reader_mock(mocker: MockFixture) -> AsyncMock:
     # Simply calling mocker.patch() doesn't work because PageReader is a generic class

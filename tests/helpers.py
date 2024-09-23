@@ -25,5 +25,5 @@ def create_backend_type(
         max_number_of_shots=max_number_of_shots,
         infrastructure="QCI",
         description="A Quantum Inspire backend",
-        native_gateset=""
+        native_gateset="",
     )
