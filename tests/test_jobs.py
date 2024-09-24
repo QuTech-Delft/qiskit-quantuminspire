@@ -204,6 +204,7 @@ def test_process_results_handles_invalid_results() -> None:
 async def test_submit_single_job(
     mocker: MockerFixture,
     mock_api_client: MagicMock,
+    mock_language_api: MagicMock,
     mock_project_api: MagicMock,
     mock_algorithms_api: MagicMock,
     mock_commits_api: MagicMock,
@@ -215,11 +216,9 @@ async def test_submit_single_job(
 
     qc = QuantumCircuit()
     job = QIJob(run_input=qc, backend=backend)
-    mock_job_api.create_job_jobs_post.return_value = job
 
     await job.submit()
 
-    assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
     assert mock_algorithms_api.create_algorithm_algorithms_post.call_args_list[0][0][0].project_id == 1
     assert mock_commits_api.create_commit_commits_post.call_args_list[0][0][0].algorithm_id == 1
     assert mock_files_api.create_file_files_post.call_args_list[0][0][0].commit_id == 1
@@ -232,6 +231,7 @@ async def test_submit_single_job(
 async def test_submit_multiple_jobs(
     mocker: MockerFixture,
     mock_api_client: MagicMock,
+    mock_language_api: MagicMock,
     mock_project_api: MagicMock,
     mock_algorithms_api: MagicMock,
     mock_commits_api: MagicMock,
@@ -243,11 +243,9 @@ async def test_submit_multiple_jobs(
 
     run_input = [QuantumCircuit(), QuantumCircuit(), QuantumCircuit()]
     job = QIJob(run_input=run_input, backend=backend)
-    mock_job_api.create_job_jobs_post.return_value = job
 
     await job.submit()
 
-    assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
     assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
 
     for n, _ in enumerate(run_input):

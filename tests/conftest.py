@@ -35,6 +35,20 @@ def mock_api_client(mocker: MockerFixture) -> MagicMock:
 
 
 @pytest.fixture
+def mock_language_api(mocker: MockerFixture) -> MagicMock:
+
+    language_api_mock = AsyncMock()
+    language_page_mock = MagicMock()
+    language_mock = MagicMock()
+    language_mock.name = "cQasm v3"
+    language_mock.id = 1
+    language_page_mock.items = [language_mock]
+    language_api_mock.read_languages_languages_get.return_value = language_page_mock
+    mocker.patch("qiskit_quantuminspire.qi_jobs.LanguagesApi", return_value=language_api_mock)
+    return language_api_mock
+
+
+@pytest.fixture
 def mock_project_api(mocker: MockerFixture, mock_api_client: MagicMock) -> MagicMock:
 
     project_api_mock = AsyncMock()
@@ -79,8 +93,8 @@ def mock_files_api(mocker: MockerFixture, mock_commits_api: MagicMock) -> MagicM
 def mock_job_api(mocker: MockerFixture, mock_files_api: MagicMock) -> MagicMock:
     jobs_api_mock = AsyncMock()
     job_mock = MagicMock()
-    jobs_api_mock.create_job_jobs_post.return_value = job_mock
     job_mock.id = 1
+    jobs_api_mock.create_job_jobs_post.return_value = job_mock
     mocker.patch("qiskit_quantuminspire.qi_jobs.JobsApi", return_value=jobs_api_mock)
     return jobs_api_mock
 

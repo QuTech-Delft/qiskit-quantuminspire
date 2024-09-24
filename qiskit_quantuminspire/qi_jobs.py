@@ -21,6 +21,8 @@ from compute_api_client import (
     FilesApi,
     JobIn,
     JobsApi,
+    Language,
+    LanguagesApi,
     PageResult,
     Project,
     ProjectIn,
@@ -39,6 +41,7 @@ from qiskit.result.result import Result
 
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
+from qiskit_quantuminspire.api.settings import ApiSettings
 from qiskit_quantuminspire.cqasm import dumps as cqasm_dumps
 
 
@@ -87,10 +90,18 @@ class QIJob(Job):  # type: ignore[misc]
         """
         options = self.backend().options
         configuration = config()
+        settings = ApiSettings.from_config_file()
+
         # call create algorithm
         async with ApiClient(configuration) as api_client:
+            language = await self._get_language(api_client, "cqasm")
+            if language is None:
+                raise RuntimeError("No cqasm language id returned by the platform")
 
-            project = await self._create_project(api_client, configuration.auth_settings().team_member_id)
+            team_member_id = settings.auths[settings.default_host].team_member_id
+            assert isinstance(team_member_id, int)
+
+            project = await self._create_project(api_client, team_member_id)
             batch_job = await self._create_batch_job(api_client, backend_type_id=self.backend().id)
 
             async def job_run_sequence(
@@ -101,14 +112,14 @@ class QIJob(Job):  # type: ignore[misc]
             ) -> None:
                 algorithm = await self._create_algorithm(in_api_client, in_project.id)
                 commit = await self._create_commit(in_api_client, algorithm.id)
-                file = await self._create_file(in_api_client, commit.id, circuit_data.circuit)
+                file = await self._create_file(in_api_client, commit.id, language.id, circuit_data.circuit)
                 job: Job = await self._create_job(
                     in_api_client,
                     file.id,
                     in_batch_job.id,
                     number_of_shots=options.get("shots", default=self.backend().default_shots),
                 )
-                circuit_data.job_id = job.job_id()
+                circuit_data.job_id = job.id
 
             # iterate over the circuits
             run_coroutines = (
@@ -116,7 +127,7 @@ class QIJob(Job):  # type: ignore[misc]
                 for circuit_run_data in self.circuits_run_data
             )
             await asyncio.gather(*run_coroutines)
-            await self._enqueue_batch_job(api_client, batch_job)
+            await self._enqueue_batch_job(api_client, batch_job.id)
             self.batch_job_id = batch_job.id
 
     async def _create_project(self, api_client: ApiClient, owner_id: int) -> Project:
@@ -144,12 +155,14 @@ class QIJob(Job):  # type: ignore[misc]
         )
         return await api_instance.create_commit_commits_post(obj)
 
-    async def _create_file(self, api_client: ApiClient, commit_id: int, circuit: QuantumCircuit) -> File:
+    async def _create_file(
+        self, api_client: ApiClient, commit_id: int, language_id: int, circuit: QuantumCircuit
+    ) -> File:
         api_instance = FilesApi(api_client)
         obj = FileIn(
             commit_id=commit_id,
             content=cqasm_dumps(circuit),
-            language_id=1,
+            language_id=language_id,
             compile_stage=CompileStage.NONE,
             compile_properties={},
         )
@@ -170,6 +183,15 @@ class QIJob(Job):  # type: ignore[misc]
     async def _enqueue_batch_job(self, api_client: ApiClient, batch_job_id: int) -> BatchJob:
         api_instance = BatchJobsApi(api_client)
         return await api_instance.enqueue_batch_job_batch_jobs_id_enqueue_patch(batch_job_id)
+
+    async def _get_language(self, api_client: ApiClient, language_name: str) -> Language | None:
+        language_api_instance = LanguagesApi(api_client)
+        languages_page = await language_api_instance.read_languages_languages_get()
+        for lan in languages_page.items:
+            if language_name.lower() in lan.name.lower():
+                return lan
+
+        return None
 
     async def _fetch_job_results(self) -> None:
         """Fetch results for job_ids from CJM using api client."""
