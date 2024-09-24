@@ -39,6 +39,7 @@ from qiskit.result.result import Result
 
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
+from qiskit_quantuminspire.cqasm import dumps as cqasm_dumps
 
 
 @dataclass
@@ -59,7 +60,6 @@ class QIJob(Job):  # type: ignore[misc]
         self,
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
         backend: Union[Backend, None],
-        job_id: Optional[int] = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a QIJob instance.
@@ -71,7 +71,7 @@ class QIJob(Job):  # type: ignore[misc]
             job_id: A unique identifier for the (batch)job.
             **kwargs: Additional keyword arguments passed to the parent `Job` class.
         """
-        super().__init__(backend, job_id, **kwargs)
+        super().__init__(backend, "", **kwargs)
         self.circuits_run_data: List[CircuitExecutionData] = (
             [CircuitExecutionData(circuit=run_input)]
             if isinstance(run_input, QuantumCircuit)
@@ -103,7 +103,10 @@ class QIJob(Job):  # type: ignore[misc]
                 commit = await self._create_commit(in_api_client, algorithm.id)
                 file = await self._create_file(in_api_client, commit.id, circuit_data.circuit)
                 job: Job = await self._create_job(
-                    in_api_client, file.id, in_batch_job.id, number_of_shots=options.get("shots", default=1000)
+                    in_api_client,
+                    file.id,
+                    in_batch_job.id,
+                    number_of_shots=options.get("shots", default=self.backend().default_shots),
                 )
                 circuit_data.job_id = job.job_id()
 
@@ -145,7 +148,7 @@ class QIJob(Job):  # type: ignore[misc]
         api_instance = FilesApi(api_client)
         obj = FileIn(
             commit_id=commit_id,
-            content="version 3.0\nqubit[2] q\nH q[0]",  # TODO: get cQasm here
+            content=cqasm_dumps(circuit),
             language_id=1,
             compile_stage=CompileStage.NONE,
             compile_properties={},
@@ -224,7 +227,7 @@ class QIJob(Job):  # type: ignore[misc]
             backend_name=self.backend().name,
             backend_version="1.0.0",
             qobj_id="",
-            job_id=self.batch_job_id,
+            job_id=str(self.batch_job_id),
             success=all(batch_job_success),
             results=results,
         )

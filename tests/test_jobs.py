@@ -154,7 +154,7 @@ def test_process_results() -> None:
         backend_name="qi_backend_1",
         backend_version="1.0.0",
         qobj_id="",
-        job_id=batch_job_id,
+        job_id="100",
         success=True,
         results=[experiment_result],
         date=None,
@@ -182,7 +182,7 @@ def test_process_results_handles_invalid_results() -> None:
         backend_name="qi_backend_1",
         backend_version="1.0.0",
         qobj_id="",
-        job_id=batch_job_id,
+        job_id="100",
         success=False,
         results=[
             ExperimentResult(
