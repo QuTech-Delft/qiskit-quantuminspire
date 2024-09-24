@@ -28,6 +28,13 @@ def mock_api_client(mocker: MockerFixture) -> MagicMock:
         return_value=config_mock,
     )
 
+    api_settings = MagicMock()
+    auth_settings = MagicMock()
+    auth_settings.team_member_id = 1
+    api_settings.default_host = "url"
+    api_settings.auths = {"url": auth_settings}
+    mocker.patch("qiskit_quantuminspire.qi_jobs.ApiSettings.from_config_file", return_value=api_settings)
+
     return mocker.patch(
         "qiskit_quantuminspire.qi_jobs.ApiClient",
         autospec=True,

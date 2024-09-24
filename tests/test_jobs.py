@@ -219,6 +219,9 @@ async def test_submit_single_job(
 
     await job.submit()
 
+    print(mock_project_api.create_project_projects_post.call_args_list)
+
+    assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
     assert mock_algorithms_api.create_algorithm_algorithms_post.call_args_list[0][0][0].project_id == 1
     assert mock_commits_api.create_commit_commits_post.call_args_list[0][0][0].algorithm_id == 1
     assert mock_files_api.create_file_files_post.call_args_list[0][0][0].commit_id == 1
@@ -246,6 +249,7 @@ async def test_submit_multiple_jobs(
 
     await job.submit()
 
+    assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
     assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
 
     for n, _ in enumerate(run_input):
