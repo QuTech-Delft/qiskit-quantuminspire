@@ -184,7 +184,7 @@ class QIJob(Job):  # type: ignore[misc]
         api_instance = BatchJobsApi(api_client)
         return await api_instance.enqueue_batch_job_batch_jobs_id_enqueue_patch(batch_job_id)
 
-    async def _get_language(self, api_client: ApiClient, language_name: str) -> Language | None:
+    async def _get_language(self, api_client: ApiClient, language_name: str) -> Union[Language, None]:
         language_api_instance = LanguagesApi(api_client)
         languages_page = await language_api_instance.read_languages_languages_get()
         for lan in languages_page.items:
