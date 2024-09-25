@@ -12,6 +12,7 @@ from compute_api_client import (
     BatchJob,
     BatchJobIn,
     BatchJobsApi,
+    BatchJobStatus,
     Commit,
     CommitIn,
     CommitsApi,
@@ -220,7 +221,26 @@ class QIJob(Job):  # type: ignore[misc]
 
     def status(self) -> JobStatus:
         """Return the status of the (batch)job, among the values of ``JobStatus``."""
-        return JobStatus.DONE
+
+        # mapping of QI2 BatchJobStatus to Qiskit JobStatus
+        status_map = {
+            BatchJobStatus.QUEUED: JobStatus.QUEUED,
+            BatchJobStatus.RESERVED: JobStatus.QUEUED,
+            BatchJobStatus.PLANNED: JobStatus.QUEUED,
+            BatchJobStatus.RUNNING: JobStatus.RUNNING,
+            BatchJobStatus.FINISHED: JobStatus.DONE,
+        }
+
+        batch_job = asyncio.run(self._fetch_batchjob_status())
+        return status_map[batch_job.status]
+
+    async def _fetch_batchjob_status(self) -> BatchJob:
+        async with ApiClient(config()) as api_client:
+            api_instance = BatchJobsApi(api_client)
+            batchsjob_page = await api_instance.read_batch_jobs_batch_jobs_get(id=self.batch_job_id)
+            if not batchsjob_page.items:
+                raise RuntimeError(f"No (batch)job in platform with id {self.batch_job_id}")
+            return batchsjob_page.items[0]
 
     def _process_results(self) -> Result:
         """Process the raw job results obtained from QuantumInspire."""

@@ -7,6 +7,7 @@ import pytest
 from compute_api_client import Result as RawJobResult
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit
+from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
@@ -219,8 +220,6 @@ async def test_submit_single_job(
 
     await job.submit()
 
-    print(mock_project_api.create_project_projects_post.call_args_list)
-
     assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
     assert mock_algorithms_api.create_algorithm_algorithms_post.call_args_list[0][0][0].project_id == 1
     assert mock_commits_api.create_commit_commits_post.call_args_list[0][0][0].algorithm_id == 1
@@ -260,3 +259,24 @@ async def test_submit_multiple_jobs(
 
     assert mock_job_api.create_job_jobs_post.call_count == 3
     assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
+
+
+def test_job_status(
+    mocker: MockerFixture,
+    mock_api_client: MagicMock,
+    mock_language_api: MagicMock,
+    mock_project_api: MagicMock,
+    mock_algorithms_api: MagicMock,
+    mock_commits_api: MagicMock,
+    mock_files_api: MagicMock,
+    mock_batchjob_api: MagicMock,
+    mock_job_api: MagicMock,
+    backend: MagicMock,
+) -> None:
+
+    qc = QuantumCircuit()
+    job = QIJob(run_input=qc, backend=backend)
+
+    status = job.status()
+
+    assert status == JobStatus.QUEUED

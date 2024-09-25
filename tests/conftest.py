@@ -1,6 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+from compute_api_client import BatchJobStatus
 from pytest_mock import MockerFixture
 
 from qiskit_quantuminspire.api.pagination import PageReader
@@ -109,8 +110,12 @@ def mock_job_api(mocker: MockerFixture, mock_files_api: MagicMock) -> MagicMock:
 @pytest.fixture()
 def mock_batchjob_api(mocker: MockerFixture) -> MagicMock:
     batchjobs_api_mock = AsyncMock()
-    batchjob_mock = MagicMock()
+    batchjob_page_mock = MagicMock()
+    batchjob_mock = AsyncMock()
     batchjob_mock.id = 1
+    batchjob_mock.status = BatchJobStatus.QUEUED
+    batchjob_page_mock.items = [batchjob_mock]
     batchjobs_api_mock.create_batch_job_batch_jobs_post.return_value = batchjob_mock
+    batchjobs_api_mock.read_batch_jobs_batch_jobs_get.return_value = batchjob_page_mock
     mocker.patch("qiskit_quantuminspire.qi_jobs.BatchJobsApi", return_value=batchjobs_api_mock)
     return batchjobs_api_mock
