@@ -1,6 +1,6 @@
 import asyncio
 from datetime import datetime, timezone
-from typing import List, Union
+from typing import Any, List, Union
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -32,11 +32,25 @@ def mock_configs_apis(mocker: MockerFixture) -> None:
     )
 
 
+@pytest.fixture()
+def backend(mocker: MockerFixture) -> MagicMock:
+    backend_mock = MagicMock()
+    backend_mock.options = MagicMock()
+
+    def get_mock(var: str, default: Any = None) -> Any:
+        options = {"number_of_shots": 1000}
+        return options.get(var)
+
+    backend_mock.options.get = get_mock
+    backend_mock.id = 0
+    return backend_mock
+
+
 def test_result(mocker: MockerFixture) -> None:
 
     qc = QuantumCircuit(2, 2)
 
-    job = QIJob(run_input=qc, backend=None, job_id="some-id")
+    job = QIJob(run_input=qc, backend=None)
 
     mocker.patch.object(job, "done", return_value=True)
 
@@ -54,7 +68,7 @@ def test_result(mocker: MockerFixture) -> None:
 
 
 def test_result_raises_error_when_status_not_done(mocker: MockerFixture) -> None:
-    job = QIJob(run_input="", backend=None, job_id="some-id")
+    job = QIJob(run_input="", backend=None)
     mocker.patch.object(job, "done", return_value=False)
     with pytest.raises(RuntimeError):
         job.result()
@@ -76,7 +90,7 @@ def test_fetch_job_result(
 
     page_reader_mock.get_all.side_effect = [[MagicMock()] for _ in range(expected_n_jobs)]
 
-    job = QIJob(run_input=circuits, backend=None, job_id="some-id")
+    job = QIJob(run_input=circuits, backend=None)
 
     asyncio.run(job._fetch_job_results())
 
@@ -94,7 +108,7 @@ def test_fetch_job_result_handles_invalid_results(
 
     page_reader_mock.get_all.side_effect = [[], [None]]
 
-    job = QIJob(run_input=circuits, backend=None, job_id="some-id")
+    job = QIJob(run_input=circuits, backend=None)
 
     asyncio.run(job._fetch_job_results())
 
@@ -107,9 +121,9 @@ def test_process_results() -> None:
     qi_backend = create_backend_type(name="qi_backend_1")
     qc = QuantumCircuit(2, 2)
 
-    qi_job = QIJob(run_input=qc, backend=qi_backend, job_id="some-id")
-    batch_job_id = "100"
-    qi_job.job_id = batch_job_id
+    qi_job = QIJob(run_input=qc, backend=qi_backend)
+    batch_job_id = 100
+    qi_job.batch_job_id = batch_job_id
     individual_job_id = 1
     qi_job.circuits_run_data[0].job_id = 1  #  Individual job_id
     qi_job.circuits_run_data[0].results = RawJobResult(
@@ -125,7 +139,7 @@ def test_process_results() -> None:
             "0000000010": 256,
             "0000000011": 256,
         },
-        job_id=int(qi_job.job_id),
+        job_id=10,
     )
     processed_results = qi_job._process_results()
     experiment_data = ExperimentResultData(counts={"0x0": 256, "0x1": 256, "0x2": 256, "0x3": 256})
@@ -140,7 +154,7 @@ def test_process_results() -> None:
         backend_name="qi_backend_1",
         backend_version="1.0.0",
         qobj_id="",
-        job_id=batch_job_id,
+        job_id="100",
         success=True,
         results=[experiment_result],
         date=None,
@@ -156,9 +170,9 @@ def test_process_results_handles_invalid_results() -> None:
     qi_backend = create_backend_type(name="qi_backend_1")
     qc = QuantumCircuit(2, 2)
 
-    qi_job = QIJob(run_input=qc, backend=qi_backend, job_id="some-id")
-    batch_job_id = "100"
-    qi_job.job_id = batch_job_id
+    qi_job = QIJob(run_input=qc, backend=qi_backend)
+    batch_job_id = 100
+    qi_job.batch_job_id = batch_job_id
     qi_job.circuits_run_data[0].job_id = 1  # Individual job_id
 
     qi_job.circuits_run_data[0].results = None
@@ -168,7 +182,7 @@ def test_process_results_handles_invalid_results() -> None:
         backend_name="qi_backend_1",
         backend_version="1.0.0",
         qobj_id="",
-        job_id=batch_job_id,
+        job_id="100",
         success=False,
         results=[
             ExperimentResult(
@@ -184,3 +198,65 @@ def test_process_results_handles_invalid_results() -> None:
         header=None,
     )
     assert processed_results.to_dict() == expected_results.to_dict()
+
+
+@pytest.mark.asyncio
+async def test_submit_single_job(
+    mocker: MockerFixture,
+    mock_api_client: MagicMock,
+    mock_language_api: MagicMock,
+    mock_project_api: MagicMock,
+    mock_algorithms_api: MagicMock,
+    mock_commits_api: MagicMock,
+    mock_files_api: MagicMock,
+    mock_job_api: MagicMock,
+    mock_batchjob_api: MagicMock,
+    backend: MagicMock,
+) -> None:
+
+    qc = QuantumCircuit()
+    job = QIJob(run_input=qc, backend=backend)
+
+    await job.submit()
+
+    print(mock_project_api.create_project_projects_post.call_args_list)
+
+    assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
+    assert mock_algorithms_api.create_algorithm_algorithms_post.call_args_list[0][0][0].project_id == 1
+    assert mock_commits_api.create_commit_commits_post.call_args_list[0][0][0].algorithm_id == 1
+    assert mock_files_api.create_file_files_post.call_args_list[0][0][0].commit_id == 1
+    assert mock_job_api.create_job_jobs_post.call_args_list[0][0][0].file_id == 1
+    assert mock_job_api.create_job_jobs_post.call_count == 1
+    assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_submit_multiple_jobs(
+    mocker: MockerFixture,
+    mock_api_client: MagicMock,
+    mock_language_api: MagicMock,
+    mock_project_api: MagicMock,
+    mock_algorithms_api: MagicMock,
+    mock_commits_api: MagicMock,
+    mock_files_api: MagicMock,
+    mock_batchjob_api: MagicMock,
+    mock_job_api: MagicMock,
+    backend: MagicMock,
+) -> None:
+
+    run_input = [QuantumCircuit(), QuantumCircuit(), QuantumCircuit()]
+    job = QIJob(run_input=run_input, backend=backend)
+
+    await job.submit()
+
+    assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
+    assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
+
+    for n, _ in enumerate(run_input):
+        assert mock_algorithms_api.create_algorithm_algorithms_post.call_args_list[n][0][0].project_id == 1
+        assert mock_commits_api.create_commit_commits_post.call_args_list[n][0][0].algorithm_id == 1
+        assert mock_files_api.create_file_files_post.call_args_list[n][0][0].commit_id == 1
+        assert mock_job_api.create_job_jobs_post.call_args_list[n][0][0].file_id == 1
+
+    assert mock_job_api.create_job_jobs_post.call_count == 3
+    assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import math
 from typing import Any, List, Union
@@ -69,8 +70,10 @@ class QIBackend(Backend):  # type: ignore[misc]
 
     def __init__(self, backend_type: BackendType, **kwargs: Any):
         super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
+        self._id: int = backend_type.id
 
-        self._max_shots = backend_type.max_number_of_shots
+        self._max_shots: int = backend_type.max_number_of_shots
+        self._default_shots: int = backend_type.default_number_of_shots
 
         native_gates = [gate.lower() for gate in backend_type.gateset]
         available_gates = [gate for gate in native_gates if gate in _ALL_SUPPORTED_GATES]
@@ -110,6 +113,14 @@ class QIBackend(Backend):  # type: ignore[misc]
     def max_circuits(self) -> Union[int, None]:
         return None
 
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def default_shots(self) -> int:
+        return self._default_shots
+
     def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIJob:
         """Create and run a (batch)job on an QuantumInspire Backend.
 
@@ -119,6 +130,6 @@ class QIBackend(Backend):  # type: ignore[misc]
         Returns:
             QIJob: A reference to the batch job that was submitted.
         """
-        job = QIJob(run_input=run_input, backend=self, job_id="some-random-id")
-        job.submit()
+        job = QIJob(run_input=run_input, backend=self)
+        asyncio.run(job.submit())
         return job
