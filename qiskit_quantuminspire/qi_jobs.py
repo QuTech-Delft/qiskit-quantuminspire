@@ -39,10 +39,10 @@ from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
+from qiskit_quantuminspire import cqasm
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
 from qiskit_quantuminspire.api.settings import ApiSettings
-from qiskit_quantuminspire.cqasm import dumps as cqasm_dumps
 
 
 @dataclass
@@ -161,7 +161,7 @@ class QIJob(Job):  # type: ignore[misc]
         api_instance = FilesApi(api_client)
         obj = FileIn(
             commit_id=commit_id,
-            content=cqasm_dumps(circuit),
+            content=cqasm.dumps(circuit),
             language_id=language_id,
             compile_stage=CompileStage.NONE,
             compile_properties={},
