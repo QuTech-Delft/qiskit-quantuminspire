@@ -37,7 +37,7 @@ class PageReader(Generic[PageType, ItemType]):
 
     async def get_single(self, api_call: Callable[..., Awaitable[PageType]], **kwargs: Any) -> Union[ItemType, None]:
         """Get a single item from an API call that supports paging."""
-        response = cast(PageInterface[ItemType], await api_call(page=1, **kwargs))
+        response = cast(PageInterface[ItemType], await api_call(**kwargs))
         if len(response.items) > 1:
             raise RuntimeError(f"Response contains more than one item -> {kwargs}.")
 
