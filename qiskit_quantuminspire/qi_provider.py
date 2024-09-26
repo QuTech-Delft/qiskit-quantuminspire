@@ -3,9 +3,9 @@ from typing import List, Union
 
 from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBackendType
 
-from qiskit_quantuminspire.provider import Provider
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
+from qiskit_quantuminspire.provider import Provider
 from qiskit_quantuminspire.qi_backend import QIBackend
 
 

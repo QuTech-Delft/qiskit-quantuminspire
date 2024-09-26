@@ -9,7 +9,7 @@ class Provider(ABC):
 
     @abstractmethod
     def get_backend(self, name: Optional[str] = None) -> BackendV2:
-        """Get a backend by name"""
+        """Get a backend by name."""
         pass
 
     @abstractmethod

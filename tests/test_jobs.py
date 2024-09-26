@@ -48,7 +48,6 @@ def backend(mocker: MockerFixture) -> MagicMock:
 
 
 def test_result(mocker: MockerFixture) -> None:
-
     qc = QuantumCircuit(2, 2)
 
     job = QIJob(run_input=qc, backend=None)
@@ -89,7 +88,6 @@ def test_fetch_job_result(
     expected_n_jobs: int,
     mock_configs_apis: None,
 ) -> None:
-
     page_reader_mock.get_all.side_effect = [[MagicMock()] for _ in range(expected_n_jobs)]
 
     job = QIJob(run_input=circuits, backend=None)
@@ -105,7 +103,6 @@ def test_fetch_job_result_handles_invalid_results(
     page_reader_mock: AsyncMock,
     mock_configs_apis: None,
 ) -> None:
-
     circuits = [QuantumCircuit(1, 1), QuantumCircuit(2, 2)]
 
     page_reader_mock.get_all.side_effect = [[], [None]]
@@ -168,7 +165,6 @@ def test_process_results() -> None:
 
 
 def test_process_results_handles_invalid_results() -> None:
-
     qi_backend = create_backend_type(name="qi_backend_1")
     qc = QuantumCircuit(2, 2)
 
@@ -202,8 +198,7 @@ def test_process_results_handles_invalid_results() -> None:
     assert processed_results.to_dict() == expected_results.to_dict()
 
 
-@pytest.mark.asyncio
-async def test_submit_single_job(
+def test_submit_single_job(
     mocker: MockerFixture,
     mock_api_client: MagicMock,
     mock_language_api: MagicMock,
@@ -215,11 +210,10 @@ async def test_submit_single_job(
     mock_batchjob_api: MagicMock,
     backend: MagicMock,
 ) -> None:
-
     qc = QuantumCircuit()
     job = QIJob(run_input=qc, backend=backend)
 
-    await job.submit()
+    job.submit()
 
     assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
     assert mock_algorithms_api.create_algorithm_algorithms_post.call_args_list[0][0][0].project_id == 1
@@ -230,8 +224,7 @@ async def test_submit_single_job(
     assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
 
 
-@pytest.mark.asyncio
-async def test_submit_multiple_jobs(
+def test_submit_multiple_jobs(
     mocker: MockerFixture,
     mock_api_client: MagicMock,
     mock_language_api: MagicMock,
@@ -243,11 +236,10 @@ async def test_submit_multiple_jobs(
     mock_job_api: MagicMock,
     backend: MagicMock,
 ) -> None:
-
     run_input = [QuantumCircuit(), QuantumCircuit(), QuantumCircuit()]
     job = QIJob(run_input=run_input, backend=backend)
 
-    await job.submit()
+    job.submit()
 
     assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
     assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
@@ -274,7 +266,6 @@ def test_job_status(
     mock_job_api: MagicMock,
     backend: MagicMock,
 ) -> None:
-
     qc = QuantumCircuit()
     job = QIJob(run_input=qc, backend=backend)
 
