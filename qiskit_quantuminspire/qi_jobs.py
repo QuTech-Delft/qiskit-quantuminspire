@@ -1,7 +1,8 @@
 import asyncio
 from dataclasses import dataclass
 from functools import cache
-from typing import Any, BinaryIO, Dict, List, Optional, Self, Union, cast
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Self, Union, cast
 
 from compute_api_client import (
     Algorithm,
@@ -37,7 +38,7 @@ from compute_api_client import (
 from qiskit import qpy
 from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1
-from qiskit.providers.backend import Backend
+from qiskit.providers.backend import BackendV2
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
@@ -67,7 +68,7 @@ class QIJob(JobV1):  # type: ignore[misc]
     def __init__(
         self,
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
-        backend: Union[Backend, None],
+        backend: Union[BackendV2, None],
         **kwargs: Any,
     ) -> None:
         """Initialize a QIJob instance.
@@ -251,7 +252,7 @@ class QIJob(JobV1):  # type: ignore[misc]
 
             return batch_job
 
-    def dump(self, file_path: str) -> None:
+    def dump(self, file_path: Union[str, Path]) -> None:
         """Serialize job information in this class to a file."""
         with open(file_path, "wb") as file:
             for circuit_data in self.circuits_run_data:
@@ -262,23 +263,25 @@ class QIJob(JobV1):  # type: ignore[misc]
             qpy.dump([circuit_data.circuit for circuit_data in self.circuits_run_data], file)
 
     @classmethod
-    def load(cls, provider: Provider, file_path: str) -> Self:
+    def load(cls, provider: Provider, file_path: Union[str, Path]) -> Self:
         """Recover a prior job from a file written by QIJob.dump()."""
         with open(file_path, "rb") as file:
             circuits = qpy.load(file)
 
             if len(circuits) == 0:
                 raise ValueError(f"No circuits found in file {file_path}")
-            
+
             try:
                 backend_name = circuits[0].metadata["backend_name"]
                 batch_job_id = circuits[0].metadata["batch_job_id"]
             except KeyError:
                 raise ValueError(f"Invalid file format: {file_path}")
-            
+
+            circuits = cast(list[QuantumCircuit], circuits)
+
             job = cls(circuits, provider.get_backend(backend_name))
             job.batch_job_id = batch_job_id
-            
+
             for circuit_data in job.circuits_run_data:
                 circuit_data.job_id = circuit_data.circuit.metadata.get("job_id")
 
