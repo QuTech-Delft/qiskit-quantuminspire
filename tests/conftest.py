@@ -110,14 +110,13 @@ def mock_job_api(mocker: MockerFixture, mock_files_api: MagicMock) -> MagicMock:
 @pytest.fixture()
 def mock_batchjob_api(mocker: MockerFixture) -> MagicMock:
     batchjobs_api_mock = AsyncMock()
-    batchjob_page_mock = MagicMock(name="relat")
-    batchjob_mock = AsyncMock(name="batchjob")
+    batchjob_page_mock = MagicMock()
+    batchjob_mock = AsyncMock()
     batchjob_mock.id = 1
     batchjob_mock.status = BatchJobStatus.QUEUED
     batchjob_page_mock.pages = 1
     batchjob_page_mock.items = [batchjob_mock]
     batchjobs_api_mock.create_batch_job_batch_jobs_post.return_value = batchjob_mock
     batchjobs_api_mock.read_batch_jobs_batch_jobs_get = AsyncMock(return_value=batchjob_page_mock)
-    print(f"Api mock = {batchjobs_api_mock.read_batch_jobs_batch_jobs_get}")
     mocker.patch("qiskit_quantuminspire.qi_jobs.BatchJobsApi", return_value=batchjobs_api_mock)
     return batchjobs_api_mock
