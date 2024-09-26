@@ -1,7 +1,7 @@
 import asyncio
 from dataclasses import dataclass
 from functools import cache
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 from compute_api_client import (
     Algorithm,
@@ -19,6 +19,7 @@ from compute_api_client import (
     File,
     FileIn,
     FilesApi,
+    Job,
     JobIn,
     JobsApi,
     Language,
@@ -32,7 +33,7 @@ from compute_api_client import (
     ShareType,
 )
 from qiskit.circuit import QuantumCircuit
-from qiskit.providers import JobV1 as Job
+from qiskit.providers import JobV1
 from qiskit.providers.backend import Backend
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
@@ -56,7 +57,7 @@ class CircuitExecutionData:
 
 # Ignore type checking for QIJob due to missing Qiskit type stubs,
 # which causes the base class 'Job' to be treated as 'Any'.
-class QIJob(Job):  # type: ignore[misc]
+class QIJob(JobV1):  # type: ignore[misc]
     """A wrapper class for QuantumInspire batch jobs to integrate with Qiskit's Job interface."""
 
     def __init__(
@@ -83,12 +84,15 @@ class QIJob(Job):  # type: ignore[misc]
         self.program_name = "Program created by SDK"
         self.batch_job_id: Union[int, None] = None
 
-    async def submit(self) -> None:
+    def submit(self) -> None:
+        asyncio.run(self._submit_async())
+
+    async def _submit_async(self) -> None:
         """Submit the (batch)job to the quantum inspire backend.
 
         Use compute-api-client to call the cjm endpoints in the correct order, to submit the jobs.
         """
-        options = self.backend().options
+        options = cast(dict[str, Any], self.backend().options)
         configuration = config()
         settings = ApiSettings.from_config_file()
 
@@ -117,7 +121,7 @@ class QIJob(Job):  # type: ignore[misc]
                     in_api_client,
                     file.id,
                     in_batch_job.id,
-                    number_of_shots=options.get("shots", default=self.backend().default_shots),
+                    number_of_shots=options.get("shots", self.backend().default_shots),
                 )
                 circuit_data.job_id = job.id
 
@@ -236,6 +240,7 @@ class QIJob(Job):  # type: ignore[misc]
                 experiment_result = self._get_experiment_result(circuit_name=circuit_name)
                 results.append(experiment_result)
                 continue
+
             experiment_result = self._get_experiment_result(
                 circuit_name=circuit_name,
                 shots=qi_result.shots_done,
