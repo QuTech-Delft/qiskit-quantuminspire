@@ -1,14 +1,15 @@
 import asyncio
-from typing import Any, List, Union
+from typing import List, Union
 
 from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBackendType
 
+from qiskit_quantuminspire.provider import Provider
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
 from qiskit_quantuminspire.qi_backend import QIBackend
 
 
-class QIProvider:
+class QIProvider(Provider):
     """List QIBackends integrated with QiskitBackend interface."""
 
     def __init__(self) -> None:
@@ -33,8 +34,14 @@ class QIProvider:
         qi_backends = [QIBackend(provider=self, backend_type=backend_type) for backend_type in qi_backend_types]
         return qi_backends
 
-    def backends(self, name: Union[str, None] = None, **kwargs: Any) -> List[QIBackend]:
+    def backends(self) -> List[QIBackend]:
         return self._qiskit_backends
 
-    def get_backend(self, name: Union[str, None] = None, **kwargs: Any) -> QIBackend:
-        return self._qiskit_backends[0]
+    def get_backend(self, name: Union[str, None] = None) -> QIBackend:
+        if name is None:
+            return self._qiskit_backends[0]
+
+        for backend in self._qiskit_backends:
+            if backend.name == name:
+                return backend
+        raise ValueError(f"Backend {name} not found")

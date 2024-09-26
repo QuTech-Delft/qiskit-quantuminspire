@@ -131,5 +131,5 @@ class QIBackend(Backend):  # type: ignore[misc]
             QIJob: A reference to the batch job that was submitted.
         """
         job = QIJob(run_input=run_input, backend=self)
-        asyncio.run(job.submit())
+        job.submit()
         return job

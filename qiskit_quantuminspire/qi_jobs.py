@@ -1,7 +1,7 @@
 import asyncio
 from dataclasses import dataclass
 from functools import cache
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, BinaryIO, Dict, List, Optional, Self, Union, cast
 
 from compute_api_client import (
     Algorithm,
@@ -34,6 +34,7 @@ from compute_api_client import (
     ResultsApi,
     ShareType,
 )
+from qiskit import qpy
 from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1
 from qiskit.providers.backend import Backend
@@ -46,6 +47,7 @@ from qiskit_quantuminspire import cqasm
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
 from qiskit_quantuminspire.api.settings import ApiSettings
+from qiskit_quantuminspire.provider import Provider
 
 
 @dataclass
@@ -74,7 +76,6 @@ class QIJob(JobV1):  # type: ignore[misc]
             run_input: A single/list of Qiskit QuantumCircuit object(s).
             backend: The backend on which the job is run. While specified as `Backend` to avoid
                 circular dependency, it is a `QIBackend`.
-            job_id: A unique identifier for the (batch)job.
             **kwargs: Additional keyword arguments passed to the parent `Job` class.
         """
         super().__init__(backend, "", **kwargs)
@@ -249,6 +250,39 @@ class QIJob(JobV1):  # type: ignore[misc]
                 raise RuntimeError(f"Not (batch)job with id {self.batch_job_id}")
 
             return batch_job
+
+    def dump(self, file_path: str) -> None:
+        """Serialize job information in this class to a file."""
+        with open(file_path, "wb") as file:
+            for circuit_data in self.circuits_run_data:
+                circuit_data.circuit.metadata["job_id"] = circuit_data.job_id
+                circuit_data.circuit.metadata["backend_name"] = self.backend().name
+                circuit_data.circuit.metadata["batch_job_id"] = self.batch_job_id
+
+            qpy.dump([circuit_data.circuit for circuit_data in self.circuits_run_data], file)
+
+    @classmethod
+    def load(cls, provider: Provider, file_path: str) -> Self:
+        """Recover a prior job from a file written by QIJob.dump()."""
+        with open(file_path, "rb") as file:
+            circuits = qpy.load(file)
+
+            if len(circuits) == 0:
+                raise ValueError(f"No circuits found in file {file_path}")
+            
+            try:
+                backend_name = circuits[0].metadata["backend_name"]
+                batch_job_id = circuits[0].metadata["batch_job_id"]
+            except KeyError:
+                raise ValueError(f"Invalid file format: {file_path}")
+            
+            job = cls(circuits, provider.get_backend(backend_name))
+            job.batch_job_id = batch_job_id
+            
+            for circuit_data in job.circuits_run_data:
+                circuit_data.job_id = circuit_data.circuit.metadata.get("job_id")
+
+            return job
 
     def _process_results(self) -> Result:
         """Process the raw job results obtained from QuantumInspire."""
