@@ -5,11 +5,11 @@ from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBack
 
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
-from qiskit_quantuminspire.provider import Provider
+from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.qi_backend import QIBackend
 
 
-class QIProvider(Provider):
+class QIProvider(BaseProvider):
     """List QIBackends integrated with QiskitBackend interface."""
 
     def __init__(self) -> None:

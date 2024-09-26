@@ -1,19 +1,36 @@
 import asyncio
+import tempfile
 from datetime import datetime, timezone
-from typing import Any, List, Union
+from typing import Any, List, Optional, Union
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from compute_api_client import Result as RawJobResult
 from pytest_mock import MockerFixture
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, qpy
+from qiskit.providers import BackendV2
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
+from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.qi_jobs import QIJob
 from tests.helpers import create_backend_type
+
+
+class SingleBackendProvider(BaseProvider):
+    """Returns only the provided backend and raises error on fetching backend with wrong name."""
+
+    def __init__(self, backend: BackendV2) -> None:
+        self.backend = backend
+
+    def get_backend(self, name: Optional[str] = None) -> BackendV2:
+        assert name == self.backend.name
+        return self.backend
+
+    def backends(self) -> List[BackendV2]:
+        return [self.backend]
 
 
 @pytest.fixture
@@ -44,6 +61,7 @@ def backend(mocker: MockerFixture) -> MagicMock:
 
     backend_mock.options.get = get_mock
     backend_mock.id = 0
+    backend_mock.name = "qi_backend_1"
     return backend_mock
 
 
@@ -272,3 +290,61 @@ def test_job_status(
     status = job.status()
 
     assert status == JobStatus.QUEUED
+
+
+def test_serialize_deserialize(backend: MagicMock) -> None:
+    # Arrange
+    qc1 = QuantumCircuit(3)
+    qc2 = QuantumCircuit(3)
+
+    qc2.h([0, 1])
+    qc2.measure_all()
+
+    qc1.x(0)
+    qc1.y(1)
+    qc1.z(2)
+    qc1.measure_all()
+
+    job = QIJob(run_input=[qc1, qc2], backend=backend)
+    job.circuits_run_data[0].job_id = 1
+    job.circuits_run_data[1].job_id = 2
+
+    # Act
+    with tempfile.TemporaryDirectory() as temp_dir:
+        out_file = temp_dir + "/test.qpy"
+        job.serialize(out_file)
+
+        loaded_job = QIJob.deserialize(SingleBackendProvider(backend), out_file)
+
+        # Assert
+        assert loaded_job.circuits_run_data == job.circuits_run_data
+        assert loaded_job.backend() == job.backend()
+
+
+def test_deserialize_raises_error_on_missing_metadata(backend: MagicMock) -> None:
+    # Arrange
+    qc = QuantumCircuit(3)
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        out_file = temp_dir + "/test.qpy"
+
+        # Dump with qpy so that metadata normally added by QIJob.serialize is missing
+        with open(out_file, "wb") as f:
+            qpy.dump([qc], f)
+
+        # Act/Assert
+        with pytest.raises(ValueError):
+            QIJob.deserialize(SingleBackendProvider(backend), out_file)
+
+
+def test_serialize_on_empty_job_raises_error(backend: MagicMock) -> None:
+    # Arrange
+    job = QIJob(run_input=[], backend=backend)
+
+    # Act
+    with tempfile.TemporaryDirectory() as temp_dir:
+        out_file = temp_dir + "/test.qpy"
+
+        # Act/Assert
+        with pytest.raises(ValueError):
+            job.serialize(out_file)

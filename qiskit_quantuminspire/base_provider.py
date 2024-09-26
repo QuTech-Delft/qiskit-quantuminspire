@@ -4,7 +4,7 @@ from typing import Optional
 from qiskit.providers import BackendV2
 
 
-class Provider(ABC):
+class BaseProvider(ABC):
     """Base class for a provider."""
 
     @abstractmethod

@@ -48,7 +48,7 @@ from qiskit_quantuminspire import cqasm
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
 from qiskit_quantuminspire.api.settings import ApiSettings
-from qiskit_quantuminspire.provider import Provider
+from qiskit_quantuminspire.base_provider import BaseProvider
 
 
 @dataclass
@@ -252,8 +252,11 @@ class QIJob(JobV1):  # type: ignore[misc]
 
             return batch_job
 
-    def dump(self, file_path: Union[str, Path]) -> None:
+    def serialize(self, file_path: Union[str, Path]) -> None:
         """Serialize job information in this class to a file."""
+        if len(self.circuits_run_data) == 0:
+            raise ValueError("No circuits to serialize")
+
         with open(file_path, "wb") as file:
             for circuit_data in self.circuits_run_data:
                 circuit_data.circuit.metadata["job_id"] = circuit_data.job_id
@@ -263,17 +266,17 @@ class QIJob(JobV1):  # type: ignore[misc]
             qpy.dump([circuit_data.circuit for circuit_data in self.circuits_run_data], file)
 
     @classmethod
-    def load(cls, provider: Provider, file_path: Union[str, Path]) -> Self:
+    def deserialize(cls, provider: BaseProvider, file_path: Union[str, Path]) -> Self:
         """Recover a prior job from a file written by QIJob.dump()."""
         with open(file_path, "rb") as file:
             circuits = qpy.load(file)
 
-            if len(circuits) == 0:
-                raise ValueError(f"No circuits found in file {file_path}")
+            # Qiskit doesn't seem to allow serialization of an empty list of circuits
+            assert len(circuits) > 0
 
             try:
-                backend_name = circuits[0].metadata["backend_name"]
-                batch_job_id = circuits[0].metadata["batch_job_id"]
+                backend_name = cast(str, circuits[0].metadata["backend_name"])
+                batch_job_id = cast(int, circuits[0].metadata["batch_job_id"])
             except KeyError:
                 raise ValueError(f"Invalid file format: {file_path}")
 
