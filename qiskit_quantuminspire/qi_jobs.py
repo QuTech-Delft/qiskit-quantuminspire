@@ -24,6 +24,7 @@ from compute_api_client import (
     JobsApi,
     Language,
     LanguagesApi,
+    PageBatchJob,
     PageResult,
     Project,
     ProjectIn,
@@ -237,10 +238,13 @@ class QIJob(Job):  # type: ignore[misc]
     async def _fetch_batchjob_status(self) -> BatchJob:
         async with ApiClient(config()) as api_client:
             api_instance = BatchJobsApi(api_client)
-            batchsjob_page = await api_instance.read_batch_jobs_batch_jobs_get(id=self.batch_job_id)
-            if not batchsjob_page.items:
-                raise RuntimeError(f"No (batch)job in platform with id {self.batch_job_id}")
-            return batchsjob_page.items[0]
+
+            page_reader = PageReader[PageBatchJob, BatchJob]()
+            batch_job = await page_reader.get_single(api_instance.read_batch_jobs_batch_jobs_get, id=self.batch_job_id)
+            if batch_job is None:
+                raise RuntimeError(f"Not (batch)job with id {self.batch_job_id}")
+
+            return batch_job
 
     def _process_results(self) -> Result:
         """Process the raw job results obtained from QuantumInspire."""

@@ -1,4 +1,4 @@
-from typing import Any, Awaitable, Callable, Generic, List, Optional, TypeVar, cast
+from typing import Any, Awaitable, Callable, Generic, List, Optional, TypeVar, Union, cast
 
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
@@ -34,3 +34,11 @@ class PageReader(Generic[PageType, ItemType]):
             if response.pages is None or page > response.pages:
                 break
         return items
+
+    async def get_single(self, api_call: Callable[..., Awaitable[PageType]], **kwargs: Any) -> Union[ItemType, None]:
+        """Get a single item from an API call that supports paging."""
+        response = cast(PageInterface[ItemType], await api_call(page=1, **kwargs))
+        if len(response.items) > 1:
+            raise RuntimeError(f"Response contains more than one item -> {kwargs}.")
+
+        return response.items[0] if response.items else None
