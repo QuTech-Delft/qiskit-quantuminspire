@@ -57,10 +57,36 @@ jobs:
         run: pip install tox
       - name: run tox test
         run: tox -e test
+  e2e-test:
+    name: End to End testing
+    needs: [lint, unit-test]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        backend-name:
+          - "Stubbed"
+          - "QX emulator"
+    env:
+      E2E_USERNAME:  ${{ secrets.E2E_USERNAME }}
+      E2E_PASSWORD:  ${{ secrets.E2E_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: "1.3.2"
+      - name: Install packages
+        run: poetry install
+      - name: Run e2e test
+        run: poetry run python tests/e2e_test.py "${{ matrix.backend-name }}"
   complete:
     # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
     name: Report status
-    needs: [lint, unit-test]
+    needs: [lint, unit-test, e2e-test]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
@@ -76,7 +102,7 @@ jobs:
         run: exit 1
   auto-merge-dependabot:
     name: Auto merge dependabot PR
-    needs: [lint, unit-test]
+    needs: [lint, unit-test, e2e-test]
     if: ${{ (github.event_name == 'pull_request') && (github.actor == 'dependabot[bot]') }}
     runs-on: ubuntu-latest
     permissions:

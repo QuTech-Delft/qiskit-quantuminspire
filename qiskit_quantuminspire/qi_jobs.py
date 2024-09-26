@@ -248,7 +248,7 @@ class QIJob(JobV1):  # type: ignore[misc]
             page_reader = PageReader[PageBatchJob, BatchJob]()
             batch_job = await page_reader.get_single(api_instance.read_batch_jobs_batch_jobs_get, id=self.batch_job_id)
             if batch_job is None:
-                raise RuntimeError(f"Not (batch)job with id {self.batch_job_id}")
+                raise RuntimeError(f"No (batch)job with id {self.batch_job_id}")
 
             return batch_job
 

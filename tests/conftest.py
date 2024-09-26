@@ -12,7 +12,9 @@ def page_reader_mock(mocker: MockerFixture) -> AsyncMock:
     # Simply calling mocker.patch() doesn't work because PageReader is a generic class
     page_reader_mock = AsyncMock()
     page_reader_mock.get_all = AsyncMock()
+    page_reader_mock.get_single = AsyncMock()
     mocker.patch.object(PageReader, "get_all", page_reader_mock.get_all)
+    mocker.patch.object(PageReader, "get_single", page_reader_mock.get_single)
     return page_reader_mock
 
 
