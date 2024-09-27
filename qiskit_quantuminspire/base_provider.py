@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Sequence
 
 from qiskit.providers import BackendV2
 
@@ -13,6 +13,6 @@ class BaseProvider(ABC):
         pass
 
     @abstractmethod
-    def backends(self) -> list[BackendV2]:
+    def backends(self) -> Sequence[BackendV2]:
         """Return all backends for this provider."""
         pass

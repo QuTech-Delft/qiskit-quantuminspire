@@ -1,5 +1,5 @@
 import asyncio
-from typing import List, Union
+from typing import List, Sequence, Union
 
 from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBackendType
 
@@ -34,7 +34,7 @@ class QIProvider(BaseProvider):
         qi_backends = [QIBackend(provider=self, backend_type=backend_type) for backend_type in qi_backend_types]
         return qi_backends
 
-    def backends(self) -> List[QIBackend]:
+    def backends(self) -> Sequence[QIBackend]:
         return self._qiskit_backends
 
     def get_backend(self, name: Union[str, None] = None) -> QIBackend:

@@ -2,7 +2,7 @@ import asyncio
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Self, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from compute_api_client import (
     Algorithm,
@@ -266,7 +266,7 @@ class QIJob(JobV1):  # type: ignore[misc]
             qpy.dump([circuit_data.circuit for circuit_data in self.circuits_run_data], file)
 
     @classmethod
-    def deserialize(cls, provider: BaseProvider, file_path: Union[str, Path]) -> Self:
+    def deserialize(cls, provider: BaseProvider, file_path: Union[str, Path]) -> "QIJob":
         """Recover a prior job from a file written by QIJob.dump()."""
         with open(file_path, "rb") as file:
             circuits = qpy.load(file)
