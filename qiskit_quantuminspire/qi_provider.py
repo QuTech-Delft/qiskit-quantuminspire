@@ -1,5 +1,5 @@
 import asyncio
-from typing import List, Sequence, Union
+from typing import Any, List, Optional, Sequence
 
 from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBackendType
 
@@ -37,11 +37,17 @@ class QIProvider(BaseProvider):
     def backends(self) -> Sequence[QIBackend]:
         return self._qiskit_backends
 
-    def get_backend(self, name: Union[str, None] = None) -> QIBackend:
-        if name is None:
-            return self._qiskit_backends[0]
+    def get_backend(self, name: Optional[str] = None, id: Optional[int] = None) -> QIBackend:
+        filter_arguments: dict[str, Any] = {}
+
+        if name is not None:
+            filter_arguments["name"] = name
+
+        if id is not None:
+            filter_arguments["id"] = id
 
         for backend in self._qiskit_backends:
-            if backend.name == name:
+            if all(getattr(backend, key) == value for key, value in filter_arguments.items()):
                 return backend
+
         raise ValueError(f"Backend {name} not found")
