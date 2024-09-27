@@ -8,7 +8,7 @@ class BaseProvider(ABC):
     """Base class for a provider."""
 
     @abstractmethod
-    def get_backend(self, name: Optional[str] = None) -> BackendV2:
+    def get_backend(self, name: Optional[str] = None, id: Optional[int] = None) -> BackendV2:
         """Get a backend by name."""
         pass
 

@@ -15,6 +15,7 @@ from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
 from qiskit_quantuminspire.base_provider import BaseProvider
+from qiskit_quantuminspire.qi_backend import QIBackend
 from qiskit_quantuminspire.qi_jobs import QIJob
 from tests.helpers import create_backend_type
 
@@ -22,11 +23,16 @@ from tests.helpers import create_backend_type
 class SingleBackendProvider(BaseProvider):
     """Returns only the provided backend and raises error on fetching backend with wrong name."""
 
-    def __init__(self, backend: BackendV2) -> None:
+    def __init__(self, backend: QIBackend) -> None:
         self.backend = backend
 
-    def get_backend(self, name: Optional[str] = None) -> BackendV2:
-        assert name == self.backend.name
+    def get_backend(self, name: Optional[str] = None, id: Optional[int] = None) -> QIBackend:
+        if name:
+            assert name == self.backend.name
+
+        if id:
+            assert id == self.backend.id
+
         return self.backend
 
     def backends(self) -> List[BackendV2]:

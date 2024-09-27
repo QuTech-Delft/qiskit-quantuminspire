@@ -260,7 +260,8 @@ class QIJob(JobV1):  # type: ignore[misc]
         with open(file_path, "wb") as file:
             for circuit_data in self.circuits_run_data:
                 circuit_data.circuit.metadata["job_id"] = circuit_data.job_id
-                circuit_data.circuit.metadata["backend_name"] = self.backend().name
+                circuit_data.circuit.metadata["backend_type_name"] = self.backend().name
+                circuit_data.circuit.metadata["backend_type_id"] = self.backend().id
                 circuit_data.circuit.metadata["batch_job_id"] = self.batch_job_id
 
             qpy.dump([circuit_data.circuit for circuit_data in self.circuits_run_data], file)
@@ -275,14 +276,15 @@ class QIJob(JobV1):  # type: ignore[misc]
             assert len(circuits) > 0
 
             try:
-                backend_name = cast(str, circuits[0].metadata["backend_name"])
+                backend_name = cast(str, circuits[0].metadata["backend_type_name"])
+                backend_id = cast(int, circuits[0].metadata["backend_type_id"])
                 batch_job_id = cast(int, circuits[0].metadata["batch_job_id"])
             except KeyError:
                 raise ValueError(f"Invalid file format: {file_path}")
 
             circuits = cast(list[QuantumCircuit], circuits)
 
-            job = cls(circuits, provider.get_backend(backend_name))
+            job = cls(circuits, provider.get_backend(backend_name, backend_id))
             job.batch_job_id = batch_job_id
 
             for circuit_data in job.circuits_run_data:
