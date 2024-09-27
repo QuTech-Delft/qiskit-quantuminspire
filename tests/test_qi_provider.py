@@ -58,7 +58,8 @@ def test_get_backend_no_arguments_gets_first(backend_repository: Any) -> None:
     assert backend.id == 10
 
 
-def test_get_backend_raises_value_error_if_not_found(backend_repository: Any) -> None:
+@pytest.mark.parametrize("name,id", [("not_existing", None), (None, 6), ("not_existing", 6)])
+def test_get_backend_raises_value_error_if_not_found(name: str, id: int, backend_repository: Any) -> None:
     # Arrange
     provider = QIProvider()
 
