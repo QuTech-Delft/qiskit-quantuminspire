@@ -16,7 +16,7 @@ def backend_repository(mock_job_api: Any, page_reader_mock: AsyncMock) -> None:
     ]
 
 
-def test_qi_provider_construct(backend_repository: Any) -> None:
+def test_qi_provider_construct(backend_repository: None) -> None:
     # Act
     provider = QIProvider()
 
@@ -25,7 +25,7 @@ def test_qi_provider_construct(backend_repository: Any) -> None:
     assert all([isinstance(backend, QIBackend) for backend in provider.backends()])
 
 
-def test_get_backend_by_name(backend_repository: Any) -> None:
+def test_get_backend_by_name(backend_repository: None) -> None:
     # Arrange
     provider = QIProvider()
 
@@ -36,7 +36,7 @@ def test_get_backend_by_name(backend_repository: Any) -> None:
     assert backend.id == 10
 
 
-def test_get_backend_by_id(backend_repository: Any) -> None:
+def test_get_backend_by_id(backend_repository: None) -> None:
     # Arrange
     provider = QIProvider()
 
@@ -59,7 +59,7 @@ def test_get_backend_no_arguments_gets_first(backend_repository: None) -> None:
 
 
 @pytest.mark.parametrize("name,id", [("not_existing", None), (None, 6), ("not_existing", 6)])
-def test_get_backend_raises_value_error_if_not_found(name: str, id: int, backend_repository: Any) -> None:
+def test_get_backend_raises_value_error_if_not_found(name: str, id: int, backend_repository: None) -> None:
     # Arrange
     provider = QIProvider()
 
