@@ -47,7 +47,7 @@ def test_get_backend_by_id(backend_repository: Any) -> None:
     assert backend.name == "spin"
 
 
-def test_get_backend_no_arguments_gets_first(backend_repository: Any) -> None:
+def test_get_backend_no_arguments_gets_first(backend_repository: None) -> None:
     # Arrange
     provider = QIProvider()
 
