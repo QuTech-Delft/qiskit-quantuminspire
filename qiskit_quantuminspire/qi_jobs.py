@@ -253,7 +253,15 @@ class QIJob(JobV1):  # type: ignore[misc]
             return batch_job
 
     def serialize(self, file_path: Union[str, Path]) -> None:
-        """Serialize job information in this class to a file."""
+        """Serialize job information in this class to a file.
+
+        Uses Qiskit serialization to write circuits to a .qpy file, and includes
+        backend and and batch_job information in the metadata so that we can recover
+        the associated data later.
+
+        Args:
+            file_path: The path to the file where the job information will be stored.
+        """
         if len(self.circuits_run_data) == 0:
             raise ValueError("No circuits to serialize")
 
@@ -268,7 +276,12 @@ class QIJob(JobV1):  # type: ignore[misc]
 
     @classmethod
     def deserialize(cls, provider: BaseProvider, file_path: Union[str, Path]) -> "QIJob":
-        """Recover a prior job from a file written by QIJob.dump()."""
+        """Recover a prior job from a file written by QIJob.serialize().
+
+        Args:
+            provider: Used to get the backend on which the original job ran.
+            file_path: The path to the file where the job information is stored.
+        """
         with open(file_path, "rb") as file:
             circuits = qpy.load(file)
 
