@@ -1,14 +1,15 @@
 import asyncio
-from typing import Any, List, Union
+from typing import Any, List, Optional, Sequence
 
 from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBackendType
 
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
+from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.qi_backend import QIBackend
 
 
-class QIProvider:
+class QIProvider(BaseProvider):
     """List QIBackends integrated with QiskitBackend interface."""
 
     def __init__(self) -> None:
@@ -33,8 +34,20 @@ class QIProvider:
         qi_backends = [QIBackend(provider=self, backend_type=backend_type) for backend_type in qi_backend_types]
         return qi_backends
 
-    def backends(self, name: Union[str, None] = None, **kwargs: Any) -> List[QIBackend]:
+    def backends(self) -> Sequence[QIBackend]:
         return self._qiskit_backends
 
-    def get_backend(self, name: Union[str, None] = None, **kwargs: Any) -> QIBackend:
-        return self._qiskit_backends[0]
+    def get_backend(self, name: Optional[str] = None, id: Optional[int] = None) -> QIBackend:
+        filter_arguments: dict[str, Any] = {}
+
+        if name is not None:
+            filter_arguments["name"] = name
+
+        if id is not None:
+            filter_arguments["id"] = id
+
+        for backend in self._qiskit_backends:
+            if all(getattr(backend, key) == value for key, value in filter_arguments.items()):
+                return backend
+
+        raise ValueError(f"Backend {name} not found")

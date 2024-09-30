@@ -1,7 +1,8 @@
 import asyncio
 from dataclasses import dataclass
 from functools import cache
-from typing import Any, Dict, List, Optional, Union
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union, cast
 
 from compute_api_client import (
     Algorithm,
@@ -20,6 +21,7 @@ from compute_api_client import (
     File,
     FileIn,
     FilesApi,
+    Job,
     JobIn,
     JobsApi,
     Language,
@@ -33,9 +35,10 @@ from compute_api_client import (
     ResultsApi,
     ShareType,
 )
+from qiskit import qpy
 from qiskit.circuit import QuantumCircuit
-from qiskit.providers import JobV1 as Job
-from qiskit.providers.backend import Backend
+from qiskit.providers import JobV1
+from qiskit.providers.backend import BackendV2
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
@@ -45,6 +48,7 @@ from qiskit_quantuminspire import cqasm
 from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
 from qiskit_quantuminspire.api.settings import ApiSettings
+from qiskit_quantuminspire.base_provider import BaseProvider
 
 
 @dataclass
@@ -58,13 +62,13 @@ class CircuitExecutionData:
 
 # Ignore type checking for QIJob due to missing Qiskit type stubs,
 # which causes the base class 'Job' to be treated as 'Any'.
-class QIJob(Job):  # type: ignore[misc]
+class QIJob(JobV1):  # type: ignore[misc]
     """A wrapper class for QuantumInspire batch jobs to integrate with Qiskit's Job interface."""
 
     def __init__(
         self,
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
-        backend: Union[Backend, None],
+        backend: Union[BackendV2, None],
         **kwargs: Any,
     ) -> None:
         """Initialize a QIJob instance.
@@ -73,7 +77,6 @@ class QIJob(Job):  # type: ignore[misc]
             run_input: A single/list of Qiskit QuantumCircuit object(s).
             backend: The backend on which the job is run. While specified as `Backend` to avoid
                 circular dependency, it is a `QIBackend`.
-            job_id: A unique identifier for the (batch)job.
             **kwargs: Additional keyword arguments passed to the parent `Job` class.
         """
         super().__init__(backend, "", **kwargs)
@@ -85,12 +88,15 @@ class QIJob(Job):  # type: ignore[misc]
         self.program_name = "Program created by SDK"
         self.batch_job_id: Union[int, None] = None
 
-    async def submit(self) -> None:
+    def submit(self) -> None:
+        asyncio.run(self._submit_async())
+
+    async def _submit_async(self) -> None:
         """Submit the (batch)job to the quantum inspire backend.
 
         Use compute-api-client to call the cjm endpoints in the correct order, to submit the jobs.
         """
-        options = self.backend().options
+        options = cast(dict[str, Any], self.backend().options)
         configuration = config()
         settings = ApiSettings.from_config_file()
 
@@ -119,7 +125,7 @@ class QIJob(Job):  # type: ignore[misc]
                     in_api_client,
                     file.id,
                     in_batch_job.id,
-                    number_of_shots=options.get("shots", default=self.backend().default_shots),
+                    number_of_shots=options.get("shots", self.backend().default_shots),
                 )
                 circuit_data.job_id = job.id
 
@@ -246,6 +252,59 @@ class QIJob(Job):  # type: ignore[misc]
 
             return batch_job
 
+    def serialize(self, file_path: Union[str, Path]) -> None:
+        """Serialize job information in this class to a file.
+
+        Uses Qiskit serialization to write circuits to a .qpy file, and includes
+        backend and and batch_job information in the metadata so that we can recover
+        the associated data later.
+
+        Args:
+            file_path: The path to the file where the job information will be stored.
+        """
+        if len(self.circuits_run_data) == 0:
+            raise ValueError("No circuits to serialize")
+
+        with open(file_path, "wb") as file:
+            for circuit_data in self.circuits_run_data:
+                circuit_data.circuit.metadata["job_id"] = circuit_data.job_id
+                circuit_data.circuit.metadata["backend_type_name"] = self.backend().name
+                circuit_data.circuit.metadata["backend_type_id"] = self.backend().id
+                circuit_data.circuit.metadata["batch_job_id"] = self.batch_job_id
+
+            qpy.dump([circuit_data.circuit for circuit_data in self.circuits_run_data], file)
+
+    @classmethod
+    def deserialize(cls, provider: BaseProvider, file_path: Union[str, Path]) -> "QIJob":
+        """Recover a prior job from a file written by QIJob.serialize().
+
+        Args:
+            provider: Used to get the backend on which the original job ran.
+            file_path: The path to the file where the job information is stored.
+        """
+        with open(file_path, "rb") as file:
+            circuits = qpy.load(file)
+
+            # Qiskit doesn't seem to allow serialization of an empty list of circuits
+            assert len(circuits) > 0
+
+            try:
+                backend_name = cast(str, circuits[0].metadata["backend_type_name"])
+                backend_id = cast(int, circuits[0].metadata["backend_type_id"])
+                batch_job_id = cast(int, circuits[0].metadata["batch_job_id"])
+            except KeyError:
+                raise ValueError(f"Invalid file format: {file_path}")
+
+            circuits = cast(list[QuantumCircuit], circuits)
+
+            job = cls(circuits, provider.get_backend(backend_name, backend_id))
+            job.batch_job_id = batch_job_id
+
+            for circuit_data in job.circuits_run_data:
+                circuit_data.job_id = circuit_data.circuit.metadata.get("job_id")
+
+            return job
+
     def _process_results(self) -> Result:
         """Process the raw job results obtained from QuantumInspire."""
 
@@ -260,6 +319,7 @@ class QIJob(Job):  # type: ignore[misc]
                 experiment_result = self._get_experiment_result(circuit_name=circuit_name)
                 results.append(experiment_result)
                 continue
+
             experiment_result = self._get_experiment_result(
                 circuit_name=circuit_name,
                 shots=qi_result.shots_done,

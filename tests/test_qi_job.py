@@ -1,19 +1,42 @@
 import asyncio
+import tempfile
 from datetime import datetime, timezone
-from typing import Any, List, Union
+from typing import Any, List, Optional, Union
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from compute_api_client import Result as RawJobResult
 from pytest_mock import MockerFixture
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, qpy
+from qiskit.providers import BackendV2
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
+from qiskit_quantuminspire.base_provider import BaseProvider
+from qiskit_quantuminspire.qi_backend import QIBackend
 from qiskit_quantuminspire.qi_jobs import QIJob
 from tests.helpers import create_backend_type
+
+
+class SingleBackendProvider(BaseProvider):
+    """Returns only the provided backend and raises error on fetching backend with wrong name."""
+
+    def __init__(self, backend: QIBackend) -> None:
+        self.backend = backend
+
+    def get_backend(self, name: Optional[str] = None, id: Optional[int] = None) -> QIBackend:
+        if name:
+            assert name == self.backend.name
+
+        if id:
+            assert id == self.backend.id
+
+        return self.backend
+
+    def backends(self) -> List[BackendV2]:
+        return [self.backend]
 
 
 @pytest.fixture
@@ -44,11 +67,11 @@ def backend(mocker: MockerFixture) -> MagicMock:
 
     backend_mock.options.get = get_mock
     backend_mock.id = 0
+    backend_mock.name = "qi_backend_1"
     return backend_mock
 
 
 def test_result(mocker: MockerFixture) -> None:
-
     qc = QuantumCircuit(2, 2)
 
     job = QIJob(run_input=qc, backend=None)
@@ -89,7 +112,6 @@ def test_fetch_job_result(
     expected_n_jobs: int,
     mock_configs_apis: None,
 ) -> None:
-
     page_reader_mock.get_all.side_effect = [[MagicMock()] for _ in range(expected_n_jobs)]
 
     job = QIJob(run_input=circuits, backend=None)
@@ -105,7 +127,6 @@ def test_fetch_job_result_handles_invalid_results(
     page_reader_mock: AsyncMock,
     mock_configs_apis: None,
 ) -> None:
-
     circuits = [QuantumCircuit(1, 1), QuantumCircuit(2, 2)]
 
     page_reader_mock.get_all.side_effect = [[], [None]]
@@ -168,7 +189,6 @@ def test_process_results() -> None:
 
 
 def test_process_results_handles_invalid_results() -> None:
-
     qi_backend = create_backend_type(name="qi_backend_1")
     qc = QuantumCircuit(2, 2)
 
@@ -202,8 +222,7 @@ def test_process_results_handles_invalid_results() -> None:
     assert processed_results.to_dict() == expected_results.to_dict()
 
 
-@pytest.mark.asyncio
-async def test_submit_single_job(
+def test_submit_single_job(
     mocker: MockerFixture,
     mock_api_client: MagicMock,
     mock_language_api: MagicMock,
@@ -215,11 +234,10 @@ async def test_submit_single_job(
     mock_batchjob_api: MagicMock,
     backend: MagicMock,
 ) -> None:
-
     qc = QuantumCircuit()
     job = QIJob(run_input=qc, backend=backend)
 
-    await job.submit()
+    job.submit()
 
     assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
     assert mock_algorithms_api.create_algorithm_algorithms_post.call_args_list[0][0][0].project_id == 1
@@ -230,8 +248,7 @@ async def test_submit_single_job(
     assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
 
 
-@pytest.mark.asyncio
-async def test_submit_multiple_jobs(
+def test_submit_multiple_jobs(
     mocker: MockerFixture,
     mock_api_client: MagicMock,
     mock_language_api: MagicMock,
@@ -243,11 +260,10 @@ async def test_submit_multiple_jobs(
     mock_job_api: MagicMock,
     backend: MagicMock,
 ) -> None:
-
     run_input = [QuantumCircuit(), QuantumCircuit(), QuantumCircuit()]
     job = QIJob(run_input=run_input, backend=backend)
 
-    await job.submit()
+    job.submit()
 
     assert mock_project_api.create_project_projects_post.call_args_list[0][0][0].owner_id == 1
     assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
@@ -274,10 +290,67 @@ def test_job_status(
     mock_job_api: MagicMock,
     backend: MagicMock,
 ) -> None:
-
     qc = QuantumCircuit()
     job = QIJob(run_input=qc, backend=backend)
 
     status = job.status()
 
     assert status == JobStatus.QUEUED
+
+
+def test_serialize_deserialize(backend: MagicMock) -> None:
+    # Arrange
+    qc1 = QuantumCircuit(3)
+    qc2 = QuantumCircuit(3)
+
+    qc2.h([0, 1])
+    qc2.measure_all()
+
+    qc1.x(0)
+    qc1.y(1)
+    qc1.z(2)
+    qc1.measure_all()
+
+    job = QIJob(run_input=[qc1, qc2], backend=backend)
+    job.circuits_run_data[0].job_id = 1
+    job.circuits_run_data[1].job_id = 2
+
+    # Act
+    with tempfile.TemporaryDirectory() as temp_dir:
+        out_file = temp_dir + "/test.qpy"
+        job.serialize(out_file)
+
+        loaded_job = QIJob.deserialize(SingleBackendProvider(backend), out_file)
+
+        # Assert
+        assert loaded_job.circuits_run_data == job.circuits_run_data
+        assert loaded_job.backend() == job.backend()
+
+
+def test_deserialize_raises_error_on_missing_metadata(backend: MagicMock) -> None:
+    # Arrange
+    qc = QuantumCircuit(3)
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        out_file = temp_dir + "/test.qpy"
+
+        # Dump with qpy so that metadata normally added by QIJob.serialize is missing
+        with open(out_file, "wb") as f:
+            qpy.dump([qc], f)
+
+        # Act/Assert
+        with pytest.raises(ValueError):
+            QIJob.deserialize(SingleBackendProvider(backend), out_file)
+
+
+def test_serialize_on_empty_job_raises_error(backend: MagicMock) -> None:
+    # Arrange
+    job = QIJob(run_input=[], backend=backend)
+
+    # Act
+    with tempfile.TemporaryDirectory() as temp_dir:
+        out_file = temp_dir + "/test.qpy"
+
+        # Act/Assert
+        with pytest.raises(ValueError):
+            job.serialize(out_file)

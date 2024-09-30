@@ -8,6 +8,7 @@ def create_backend_type(
     default_number_of_shots: int = 1024,
     max_number_of_shots: int = 2048,
     name: str = "qi_backend",
+    id: int = 1,
 ) -> BackendType:
     """Helper for creating a backendtype with only the fields you care about."""
     return BackendType(
@@ -15,7 +16,7 @@ def create_backend_type(
         nqubits=nqubits,
         gateset=gateset,
         topology=topology,
-        id=1,
+        id=id,
         is_hardware=True,
         image_id="qi_backend",
         features=[],
