@@ -102,9 +102,9 @@ class QIJob(JobV1):  # type: ignore[misc]
 
         # call create algorithm
         async with ApiClient(configuration) as api_client:
-            language = await self._get_language(api_client, "cqasm")
+            language = await self._get_language(api_client, "cqasm", "3.0")
             if language is None:
-                raise RuntimeError("No cqasm language id returned by the platform")
+                raise RuntimeError("No cqasm v3.0 language id returned by the platform")
 
             team_member_id = settings.auths[settings.default_host].team_member_id
             assert isinstance(team_member_id, int)
@@ -192,12 +192,15 @@ class QIJob(JobV1):  # type: ignore[misc]
         api_instance = BatchJobsApi(api_client)
         return await api_instance.enqueue_batch_job_batch_jobs_id_enqueue_patch(batch_job_id)
 
-    async def _get_language(self, api_client: ApiClient, language_name: str) -> Union[Language, None]:
+    async def _get_language(
+        self, api_client: ApiClient, language_name: str, language_version: str
+    ) -> Union[Language, None]:
         language_api_instance = LanguagesApi(api_client)
         languages_page = await language_api_instance.read_languages_languages_get()
         for lan in languages_page.items:
-            if language_name.lower() in lan.name.lower():
-                return lan
+            if language_name.lower() == lan.name.lower():
+                if language_version == lan.version:
+                    return lan
 
         return None
 
