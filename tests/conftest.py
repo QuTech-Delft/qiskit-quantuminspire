@@ -50,7 +50,8 @@ def mock_language_api(mocker: MockerFixture) -> MagicMock:
     language_api_mock = AsyncMock()
     language_page_mock = MagicMock()
     language_mock = MagicMock()
-    language_mock.name = "cQasm v3"
+    language_mock.name = "cQasm"
+    language_mock.version = "3.0"
     language_mock.id = 1
     language_page_mock.items = [language_mock]
     language_api_mock.read_languages_languages_get.return_value = language_page_mock
