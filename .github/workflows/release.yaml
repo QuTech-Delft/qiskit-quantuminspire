@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Create commit identifier
-        run: echo "COMMIT_ID=${{ github.sha }} | head -c 5" >> $GITHUB_ENV
+        run: echo "COMMIT_ID=`echo ${{ github.sha }} | head -c 5`" >> $GITHUB_ENV
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
