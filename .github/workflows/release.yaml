@@ -13,6 +13,8 @@ jobs:
   publish:
     name: Publish to TestPyPI
     runs-on: "ubuntu-latest"
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@master
       - name: Create commit identifier
