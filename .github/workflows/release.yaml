@@ -31,6 +31,8 @@ jobs:
         if: github.ref == 'refs/heads/master'
         id: previous_tag
         uses: WyriHaximus/github-action-get-previous-tag@v1
+        with:
+          fallback: 0.1.0
       - name: Set Build version
         if: github.ref == 'refs/heads/master'
         run: |
