@@ -895,23 +895,19 @@ files = [
 
 [[package]]
 name = "opensquirrel"
-version = "0.0.5"
+version = "0.1.0"
 description = "A quantum circuit transformation and manipulation tool"
 optional = false
-python-versions = "^3.9"
-files = []
-develop = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "opensquirrel-0.1.0-py3-none-any.whl", hash = "sha256:901690f3f8eacaff9a67d971fb43b70f1b2dc7e3c684ccc59225db5230dabb11"},
+    {file = "opensquirrel-0.1.0.tar.gz", hash = "sha256:5ef746188922fc7d323d05ad2c96ae0240f60589feadbe0b2e83e93afdcf42b8"},
+]
 
 [package.dependencies]
 libqasm = "0.6.7"
-networkx = "^3.0.0"
+networkx = ">=3.0.0,<4.0.0"
 numpy = {version = ">=1.26", markers = "python_version >= \"3.9\" and python_version < \"4.0\""}
-
-[package.source]
-type = "git"
-url = "https://github.com/QuTech-Delft/OpenSquirrel.git"
-reference = "9fa5c8eae31cda79637aad39a299e5e6e77454f7"
-resolved_reference = "9fa5c8eae31cda79637aad39a299e5e6e77454f7"
 
 [[package]]
 name = "packaging"
@@ -1709,4 +1705,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "1bc8db2a6330a9a6f863b69610262da2b9ab555db2e6d796b64d6248834cffaa"
+content-hash = "10c9ca759d5005a56a53ad4d5ae23d92068b065460a4e561976d402eac9d5522"
