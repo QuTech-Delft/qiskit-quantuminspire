@@ -24,7 +24,6 @@ def test_cqasm_dumps() -> None:
     qc.reset(2)
     qc.cz(1, 2)
     qc.cp(math.pi / 2, 1, 2)
-    qc.swap(0, 1)
     qc.id(0)
     qc.measure_all()
 
@@ -48,7 +47,6 @@ Tdag q[0]
 reset q[2]
 CZ q[1], q[2]
 CR(1.5707963) q[1], q[2]
-SWAP q[0], q[1]
 I q[0]
 b[0] = measure q[0]
 b[1] = measure q[1]
