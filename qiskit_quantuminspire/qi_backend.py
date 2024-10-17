@@ -96,6 +96,11 @@ class QIBackend(Backend):  # type: ignore[misc]
             custom_name_mapping=_CQASM_QISKIT_GATE_MAPPING,
         )
 
+    def __repr__(self) -> str:
+        module_name = self.__class__.__module__
+        s = f"<{module_name}.{self.__class__.__name__} object at 0x{id(self):x} (name={self.name}, id={self.id})>"
+        return s
+
     @classmethod
     def _default_options(cls) -> Options:
         return Options(shots=1024, optimization_level=1)
