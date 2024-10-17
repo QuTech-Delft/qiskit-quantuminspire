@@ -91,22 +91,9 @@ def _run_e2e_tests(name: str) -> None:
     backend = provider.get_backend(name=name)
     print(f"Running on backend: {backend.name}")
     qi_job = backend.run(qc)
-    max_attempts = 10
-    sleep_interval = 5
-    n_attempts = 0
 
-    while n_attempts <= max_attempts:
-        if n_attempts == max_attempts:
-            raise RuntimeError(f"Could not retrieve results after {max_attempts} attempts.")
-
-        try:
-            time.sleep(sleep_interval)
-            result = qi_job.result()
-            assert result.success
-            break
-        except RuntimeError:
-            n_attempts += 1
-            print(f"Failed in {n_attempts} attempts. Retrying")
+    result = qi_job.result()
+    assert result.success
 
 
 def main(name: str) -> None:
