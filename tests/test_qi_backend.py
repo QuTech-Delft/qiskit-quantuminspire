@@ -87,6 +87,15 @@ def test_qi_backend_construction_max_shots() -> None:
     # Assert
     assert qi_backend.max_shots == 4096
 
+def test_qi_backend_repr() -> None:
+    # Arrange
+    backend_type = create_backend_type(max_number_of_shots=4096)
+
+    # Act
+    qi_backend = QIBackend(backend_type=backend_type)
+
+    # Assert
+    assert qi_backend.name in repr(qi_backend)
 
 def test_qi_backend_construction_toffoli_gate_unsupported(
     caplog: pytest.LogCaptureFixture,

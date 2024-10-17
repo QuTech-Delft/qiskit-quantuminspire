@@ -35,7 +35,7 @@ Once the provider has been instantiated, it may be used to access supported back
 print(provider.backends())
 
 # Get Quantum Inspire's simulator backend:
-simulator_backend = provider.get_backend("qx_emulator")
+simulator_backend = provider.get_backend("QX emulator")
 ```
 
 ### Submitting a Circuit
