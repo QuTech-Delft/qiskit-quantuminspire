@@ -9,6 +9,7 @@ from compute_api_client import Result as RawJobResult
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit, qpy
 from qiskit.providers import BackendV2
+from qiskit.providers.exceptions import JobTimeoutError
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
@@ -77,6 +78,7 @@ def test_result(mocker: MockerFixture) -> None:
     job = QIJob(run_input=qc, backend=None)
 
     mocker.patch.object(job, "done", return_value=True)
+    mocker.patch.object(job, "wait_for_final_state", return_value=None)
 
     mock_fetch_job_results = AsyncMock(return_value=MagicMock())
     mocker.patch.object(job, "_fetch_job_results", mock_fetch_job_results)
@@ -89,14 +91,6 @@ def test_result(mocker: MockerFixture) -> None:
 
     mock_process_results.assert_called_once()
     mock_fetch_job_results.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_result_raises_error_when_status_not_done(mocker: MockerFixture, mock_api_client: MagicMock) -> None:
-    job = QIJob(run_input="", backend=None)
-    mocker.patch.object(job, "done", return_value=False)
-    with pytest.raises(RuntimeError):
-        job.result()
 
 
 @pytest.mark.parametrize(

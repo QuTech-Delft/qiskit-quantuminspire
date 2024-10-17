@@ -224,8 +224,7 @@ class QIJob(JobV1):  # type: ignore[misc]
     @cache
     def result(self) -> Result:
         """Return the results of the job."""
-        if not self.done():
-            raise RuntimeError(f"(Batch)Job status is {self.status()}.")
+        self.wait_for_final_state(timeout=60)
         asyncio.run(self._fetch_job_results())
         return self._process_results()
 
