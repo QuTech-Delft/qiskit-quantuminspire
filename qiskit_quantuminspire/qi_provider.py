@@ -1,4 +1,3 @@
-import asyncio
 from typing import Any, List, Optional, Sequence
 
 from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBackendType
@@ -7,6 +6,7 @@ from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
 from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.qi_backend import QIBackend
+from qiskit_quantuminspire.utils import run_async
 
 
 class QIProvider(BaseProvider):
@@ -30,7 +30,7 @@ class QIProvider(BaseProvider):
 
     def _construct_backends(self) -> List[QIBackend]:
         """Construct QIBackend using fetched backendtypes and metadata."""
-        qi_backend_types = asyncio.run(self._fetch_qi_backend_types())
+        qi_backend_types = run_async(self._fetch_qi_backend_types())
         qi_backends = [QIBackend(provider=self, backend_type=backend_type) for backend_type in qi_backend_types]
         return qi_backends
 

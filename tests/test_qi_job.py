@@ -92,7 +92,9 @@ def test_result(mocker: MockerFixture) -> None:
 
 
 @pytest.mark.asyncio
-async def test_result_raises_error_when_status_not_done(mocker: MockerFixture, mock_api_client: MagicMock) -> None:
+def test_result_raises_error_when_status_not_done(
+    mocker: MockerFixture, mock_api_client: MagicMock, mock_batchjob_api: MagicMock
+) -> None:
     job = QIJob(run_input="", backend=None)
     mocker.patch.object(job, "done", return_value=False)
     with pytest.raises(RuntimeError):

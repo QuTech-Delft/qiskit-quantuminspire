@@ -49,6 +49,7 @@ from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.api.pagination import PageReader
 from qiskit_quantuminspire.api.settings import ApiSettings
 from qiskit_quantuminspire.base_provider import BaseProvider
+from qiskit_quantuminspire.utils import run_async
 
 
 @dataclass
@@ -89,7 +90,7 @@ class QIJob(JobV1):  # type: ignore[misc]
         self.batch_job_id: Union[int, None] = None
 
     def submit(self) -> None:
-        asyncio.run(self._submit_async())
+        run_async(self._submit_async())
 
     async def _submit_async(self) -> None:
         """Submit the (batch)job to the quantum inspire backend.
@@ -226,7 +227,7 @@ class QIJob(JobV1):  # type: ignore[misc]
         """Return the results of the job."""
         if not self.done():
             raise RuntimeError(f"(Batch)Job status is {self.status()}.")
-        asyncio.run(self._fetch_job_results())
+        run_async(self._fetch_job_results())
         return self._process_results()
 
     def status(self) -> JobStatus:
@@ -241,7 +242,7 @@ class QIJob(JobV1):  # type: ignore[misc]
             BatchJobStatus.FINISHED: JobStatus.DONE,
         }
 
-        batch_job = asyncio.run(self._fetch_batchjob_status())
+        batch_job = run_async(self._fetch_batchjob_status())
         return status_map[batch_job.status]
 
     async def _fetch_batchjob_status(self) -> BatchJob:
