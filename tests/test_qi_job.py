@@ -9,7 +9,6 @@ from compute_api_client import Result as RawJobResult
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit, qpy
 from qiskit.providers import BackendV2
-from qiskit.providers.exceptions import JobTimeoutError
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
