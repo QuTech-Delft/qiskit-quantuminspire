@@ -120,6 +120,7 @@ def mock_batchjob_api(mocker: MockerFixture) -> MagicMock:
     batchjob_page_mock.pages = 1
     batchjob_page_mock.items = [batchjob_mock]
     batchjobs_api_mock.create_batch_job_batch_jobs_post.return_value = batchjob_mock
+    batchjobs_api_mock._read_batch_jobs_batch_jobs_get_serialize = AsyncMock(return_value=())
     batchjobs_api_mock.read_batch_jobs_batch_jobs_get = AsyncMock(return_value=batchjob_page_mock)
     mocker.patch("qiskit_quantuminspire.qi_jobs.BatchJobsApi", return_value=batchjobs_api_mock)
     return batchjobs_api_mock
