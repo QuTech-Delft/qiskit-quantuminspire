@@ -1,5 +1,6 @@
 import logging
 import math
+from pprint import PrettyPrinter
 from typing import Any, List, Union
 
 from compute_api_client import BackendType
@@ -95,6 +96,12 @@ class QIBackend(Backend):  # type: ignore[misc]
             coupling_map=None if coupling_map_complete else coupling_map,
             custom_name_mapping=_CQASM_QISKIT_GATE_MAPPING,
         )
+
+    def __repr__(self):
+        return f"QIBackend(name={self.name}, id={self.id})"
+
+    def __repr_pretty__(self, p: PrettyPrinter):
+        return p.text(f"QIBackend(name={self.name}, id={self.id})")
 
     @classmethod
     def _default_options(cls) -> Options:
