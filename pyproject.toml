@@ -33,7 +33,7 @@ pytest = {extras = ["toml"], version = "^8.3.3"}
 pytest-asyncio = "^0.24.0"
 pytest-cov = "^5.0.0"
 pytest-mock = "^3.14.0"
-ruff = "^0.6.8"
+ruff = "^0.7.0"
 freezegun = "^1.5.1"
 responses = "^0.25.3"
 types-requests = "^2.25.0"
