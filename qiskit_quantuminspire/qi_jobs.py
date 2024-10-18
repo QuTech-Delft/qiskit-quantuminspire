@@ -222,9 +222,12 @@ class QIJob(JobV1):  # type: ignore[misc]
                 circuit_data.results = None if not result_item else result_item[0]
 
     @cache
-    def result(self) -> Result:
+    def result(self, wait_for_results: Optional[bool] = True) -> Result:
         """Return the results of the job."""
-        self.wait_for_final_state(timeout=60)
+        if wait_for_results:
+            self.wait_for_final_state(timeout=60)
+        elif not self.done():
+            raise RuntimeError(f"(Batch)Job status is {self.status()}.")
         asyncio.run(self._fetch_job_results())
         return self._process_results()
 
