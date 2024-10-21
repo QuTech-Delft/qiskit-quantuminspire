@@ -97,11 +97,11 @@ class QIBackend(Backend):  # type: ignore[misc]
             custom_name_mapping=_CQASM_QISKIT_GATE_MAPPING,
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"QIBackend(name={self.name}, id={self.id})"
 
-    def __repr_pretty__(self, p: PrettyPrinter):
-        return p.text(f"QIBackend(name={self.name}, id={self.id})")
+    def __repr_pretty__(self, p: PrettyPrinter) -> None:
+        p.pprint(f"QIBackend(name={self.name}, id={self.id})")
 
     @classmethod
     def _default_options(cls) -> Options:

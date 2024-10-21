@@ -223,7 +223,7 @@ class QIJob(JobV1):  # type: ignore[misc]
                 circuit_data.results = None if not result_item else result_item[0]
 
     @cache
-    def result(self, wait_for_results: Optional[bool] = True, timeout: float=60.0) -> Result:
+    def result(self, wait_for_results: Optional[bool] = True, timeout: float = 60.0) -> Result:
         """Return the results of the job."""
         if wait_for_results:
             self.wait_for_final_state(timeout=timeout)
