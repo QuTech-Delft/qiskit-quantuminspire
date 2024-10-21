@@ -18,13 +18,8 @@ def is_coupling_map_complete(coupling_map: CouplingMap) -> bool:
 
 def run_async(async_function: Coroutine[Any, Any, Any]) -> Any:
     try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:  # 'RuntimeError: There is no current event loop...'
-        loop = None
-
-    if loop and loop.is_running():
+        _ = asyncio.get_running_loop()
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            future = executor.submit(asyncio.run, async_function)
-            return future.result()
-    else:
+            return executor.submit(asyncio.run, async_function).result()
+    except RuntimeError:
         return asyncio.run(async_function)
