@@ -29,7 +29,7 @@ async def _fetch_team_member_id(host: str, access_token: str) -> int:
 
 
 def _get_auth_tokens() -> None:
-    IDP_URL_STAGING = "https://auth.qi2.quantum-inspire.com/realms/oidc_staging"
+    IDP_URL_STAGING = "https://quantum-inspire-staging.eu.auth0.com"
     QI2_DEFAULT_HOST = "https://staging.qi2.quantum-inspire.com"
 
     E2E_USERNAME = os.getenv("E2E_USERNAME")
@@ -37,15 +37,16 @@ def _get_auth_tokens() -> None:
 
     payload = {
         "grant_type": "password",
-        "client_id": "compute-job-manager-direct",
+        "client_id": "JOggYaBeGIkApEPIlQDZk8061Q8qHl4v",
         "username": E2E_USERNAME,
         "password": E2E_PASSWORD,
-        "scope": "openid api-access",
+        "scope": "api-access openid profile email offline_access",
+        "audience": "compute-job-manager",
     }
 
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-    url = f"{IDP_URL_STAGING}/protocol/openid-connect/token"
+    url = f"{IDP_URL_STAGING}/oauth/token"
 
     response = requests.post(url, data=payload, headers=headers)
     response.raise_for_status()
@@ -69,7 +70,6 @@ def _get_auth_tokens() -> None:
 
 
 def _run_e2e_tests(name: str) -> None:
-
     qc = QuantumCircuit(3)
     qc.h(0)
     qc.x(1)
@@ -96,7 +96,6 @@ def _run_e2e_tests(name: str) -> None:
     n_attempts = 0
 
     while n_attempts <= max_attempts:
-
         if n_attempts == max_attempts:
             raise RuntimeError(f"Could not retrieve results after {max_attempts} attempts.")
 
@@ -111,7 +110,6 @@ def _run_e2e_tests(name: str) -> None:
 
 
 def main(name: str) -> None:
-
     _get_auth_tokens()
     _run_e2e_tests(name=name)
 
