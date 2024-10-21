@@ -55,7 +55,7 @@ def _get_auth_tokens() -> None:
     host = QI2_DEFAULT_HOST
     member_id = asyncio.run(_fetch_team_member_id(host=host, access_token=token_info["access_token"]))
     auth_settings = AuthSettings(
-        client_id="compute-job-manager",
+        client_id="Yz7ni9PUAyT43eUASZfmc1yqI66QxLUJ",
         code_challenge_method="S256",
         code_verifyer_length=64,
         well_known_endpoint=f"{IDP_URL_STAGING}/.well-known/openid-configuration",
