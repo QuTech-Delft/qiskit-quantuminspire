@@ -100,6 +100,11 @@ class QIBackend(Backend):  # type: ignore[misc]
     def __repr_pretty__(self, p: PrettyPrinter) -> None:
         p.pprint(f"QIBackend(name={self.name}, id={self.id})")
 
+    def __repr__(self) -> str:
+        module_name = self.__class__.__module__
+        s = f"<{module_name}.{self.__class__.__name__} object at 0x{id(self):x} (name={self.name}, id={self.id})>"
+        return s
+
     @classmethod
     def _default_options(cls) -> Options:
         return Options(shots=1024, optimization_level=1)
