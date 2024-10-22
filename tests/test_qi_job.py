@@ -9,6 +9,7 @@ from compute_api_client import Result as RawJobResult
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit, qpy
 from qiskit.providers import BackendV2
+from qiskit.providers.exceptions import JobTimeoutError
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
@@ -18,7 +19,6 @@ from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.qi_backend import QIBackend
 from qiskit_quantuminspire.qi_jobs import QIJob
 from tests.helpers import create_backend_type
-from qiskit.providers.exceptions import JobTimeoutError
 
 
 class SingleBackendProvider(BaseProvider):
@@ -103,9 +103,7 @@ def test_result_blocking_timeout(mocker: MockerFixture) -> None:
 
 
 @pytest.mark.asyncio
-def test_result_non_blocking(
-    mocker: MockerFixture, mock_api_client: MagicMock, mock_batchjob_api: MagicMock
-) -> None:
+def test_result_non_blocking(mocker: MockerFixture, mock_api_client: MagicMock, mock_batchjob_api: MagicMock) -> None:
     job = QIJob(run_input="", backend=None)
     mocker.patch.object(job, "done", return_value=False)
     mock_wait_for_final_state = mocker.patch.object(job, "wait_for_final_state", return_value=None)
