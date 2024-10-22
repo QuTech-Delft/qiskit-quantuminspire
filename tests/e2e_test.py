@@ -29,7 +29,7 @@ async def _fetch_team_member_id(host: str, access_token: str) -> int:
 
 
 def _get_auth_tokens() -> None:
-    IDP_URL_STAGING = "https://auth.qi2.quantum-inspire.com/realms/oidc_staging"
+    IDP_URL_STAGING = "https://quantum-inspire-staging.eu.auth0.com"
     QI2_DEFAULT_HOST = "https://staging.qi2.quantum-inspire.com"
 
     E2E_USERNAME = os.getenv("E2E_USERNAME")
@@ -37,15 +37,16 @@ def _get_auth_tokens() -> None:
 
     payload = {
         "grant_type": "password",
-        "client_id": "compute-job-manager-direct",
+        "client_id": "JOggYaBeGIkApEPIlQDZk8061Q8qHl4v",
         "username": E2E_USERNAME,
         "password": E2E_PASSWORD,
-        "scope": "openid api-access",
+        "scope": "api-access openid profile email offline_access",
+        "audience": "compute-job-manager",
     }
 
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-    url = f"{IDP_URL_STAGING}/protocol/openid-connect/token"
+    url = f"{IDP_URL_STAGING}/oauth/token"
 
     response = requests.post(url, data=payload, headers=headers)
     response.raise_for_status()
@@ -54,7 +55,7 @@ def _get_auth_tokens() -> None:
     host = QI2_DEFAULT_HOST
     member_id = asyncio.run(_fetch_team_member_id(host=host, access_token=token_info["access_token"]))
     auth_settings = AuthSettings(
-        client_id="compute-job-manager",
+        client_id="Yz7ni9PUAyT43eUASZfmc1yqI66QxLUJ",
         code_challenge_method="S256",
         code_verifyer_length=64,
         well_known_endpoint=f"{IDP_URL_STAGING}/.well-known/openid-configuration",
@@ -69,7 +70,6 @@ def _get_auth_tokens() -> None:
 
 
 def _run_e2e_tests(name: str) -> None:
-
     qc = QuantumCircuit(3)
     qc.h(0)
     qc.x(1)
@@ -91,27 +91,12 @@ def _run_e2e_tests(name: str) -> None:
     backend = provider.get_backend(name=name)
     print(f"Running on backend: {backend.name}")
     qi_job = backend.run(qc)
-    max_attempts = 10
-    sleep_interval = 5
-    n_attempts = 0
 
-    while n_attempts <= max_attempts:
-
-        if n_attempts == max_attempts:
-            raise RuntimeError(f"Could not retrieve results after {max_attempts} attempts.")
-
-        try:
-            time.sleep(sleep_interval)
-            result = qi_job.result()
-            assert result.success
-            break
-        except RuntimeError:
-            n_attempts += 1
-            print(f"Failed in {n_attempts} attempts. Retrying")
+    result = qi_job.result()
+    assert result.success
 
 
 def main(name: str) -> None:
-
     _get_auth_tokens()
     _run_e2e_tests(name=name)
 

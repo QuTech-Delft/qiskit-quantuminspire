@@ -9,6 +9,7 @@ from compute_api_client import Result as RawJobResult
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit, qpy
 from qiskit.providers import BackendV2
+from qiskit.providers.exceptions import JobTimeoutError
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
@@ -71,32 +72,44 @@ def backend(mocker: MockerFixture) -> MagicMock:
     return backend_mock
 
 
-def test_result(mocker: MockerFixture) -> None:
+def test_result_blocking(mocker: MockerFixture) -> None:
     qc = QuantumCircuit(2, 2)
 
     job = QIJob(run_input=qc, backend=None)
 
-    mocker.patch.object(job, "done", return_value=True)
-
-    mock_fetch_job_results = AsyncMock(return_value=MagicMock())
-    mocker.patch.object(job, "_fetch_job_results", mock_fetch_job_results)
-
-    mock_process_results = MagicMock(return_value=MagicMock())
-    mocker.patch.object(job, "_process_results", mock_process_results)
+    mock_wait_for_final_state = mocker.patch.object(job, "wait_for_final_state", return_value=None)
+    mock_fetch_job_results = mocker.patch.object(
+        job, "_fetch_job_results", return_value=AsyncMock(return_value=MagicMock())
+    )
+    mock_process_results = mocker.patch.object(job, "_process_results", return_value=MagicMock())
 
     for _ in range(4):  # Check caching
-        job.result()
+        job.result(wait_for_results=True)
 
+    mock_wait_for_final_state.assert_called_once()
     mock_process_results.assert_called_once()
     mock_fetch_job_results.assert_called_once()
 
 
+def test_result_blocking_timeout(mocker: MockerFixture) -> None:
+    qc = QuantumCircuit(2, 2)
+
+    job = QIJob(run_input=qc, backend=None)
+
+    mocker.patch.object(job, "status", return_value="Random Status")
+
+    with pytest.raises(JobTimeoutError):
+        job.result(timeout=0.00001)
+
+
 @pytest.mark.asyncio
-async def test_result_raises_error_when_status_not_done(mocker: MockerFixture, mock_api_client: MagicMock) -> None:
+def test_result_non_blocking(mocker: MockerFixture, mock_api_client: MagicMock, mock_batchjob_api: MagicMock) -> None:
     job = QIJob(run_input="", backend=None)
     mocker.patch.object(job, "done", return_value=False)
+    mock_wait_for_final_state = mocker.patch.object(job, "wait_for_final_state", return_value=None)
     with pytest.raises(RuntimeError):
-        job.result()
+        job.result(wait_for_results=False)
+    mock_wait_for_final_state.assert_not_called()
 
 
 @pytest.mark.parametrize(
