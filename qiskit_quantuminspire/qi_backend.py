@@ -129,7 +129,9 @@ class QIBackend(Backend):  # type: ignore[misc]
     def default_shots(self) -> int:
         return self._default_shots
 
-    def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], shots: Union[int, None] = None, **options: Any) -> QIJob:
+    def run(
+        self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], shots: Union[int, None] = None, **options: Any
+    ) -> QIJob:
         """Create and run a (batch)job on an QuantumInspire Backend.
 
         Args:
