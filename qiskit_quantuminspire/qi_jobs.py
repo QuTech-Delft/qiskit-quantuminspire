@@ -126,7 +126,7 @@ class QIJob(JobV1):  # type: ignore[misc]
                     in_api_client,
                     file.id,
                     in_batch_job.id,
-                    number_of_shots=options.get("shots", self.backend().default_shots),
+                    number_of_shots=options.get("shots"),
                 )
                 circuit_data.job_id = job.id
 
