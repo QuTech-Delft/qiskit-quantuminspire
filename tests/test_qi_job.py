@@ -154,7 +154,8 @@ def test_fetch_job_result_handles_invalid_results(
 
 
 def test_process_results() -> None:
-    qi_backend = create_backend_type(name="qi_backend_1")
+    backend_type = create_backend_type(name="qi_backend_1")
+    qi_backend = QIBackend(backend_type=backend_type)
     qc = QuantumCircuit(2, 2)
 
     qi_job = QIJob(run_input=qc, backend=qi_backend)
