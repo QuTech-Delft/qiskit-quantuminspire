@@ -8,22 +8,26 @@ This project contains a provider that allows access to **[Quantum Inspire]** qua
 
 ## API Access
 
-...
+For access to the Quantum Inspire 2 API you can use the QI2 CLI. Once installed (see [repository](https://github.com/QuTech-Delft/quantuminspire2) for installation instructions), simply run the shell command below to log in to the production environment.
+
+```bash
+qi login "https://api.qi2.quantum-inspire.com"
+```
 
 ## Installation
 
-You can install the provider using pip:
+You can install the Qiskit-QI plugin using pip:
 
 ```bash
 pip install qiskit-quantuminspire
 ```
 
-## Provider Setup
+## Getting started
 
-To instantiate the provider, make sure you have an access token then create a provider:
+To instantiate the provider, make sure you are logged into QI2 as described above, then create a provider:
 
 ```python
-from qiskit_quantuminspire import QIProvider
+from qiskit_quantuminspire.qi_provider import QIProvider
 
 provider = QIProvider()
 ```
@@ -52,24 +56,36 @@ qc.h(0)
 qc.cx(0, 1)
 qc.measure([0, 1], [0, 1])
 
+# Show a representation of the quantum circuit:
+print(qc)
+
 # Run the circuit on Quantum Inspire's platform:
 job = simulator_backend.run(qc)
 
 # Print the results.
 print(job.result().get_counts())
-
-# Get results with a different aggregation method when debiasing
-# is applied as an error mitigation strategy
-print(job.result(sharpen=True).get_counts())
-
-# The simulator specifically provides the the ideal probabilities and creates
-# counts by sampling from these probabilities. The raw probabilities are also accessible:
-print(job.result().get_probabilities())
 ```
 
-## Contributing
+### Transpilation
 
-...
+Depending on the chosen backends, certain gates may not be supported. Qiskit is aware of the capabilities of each backend, and can transpile
+circuits to use only supported gates:
+
+```python
+# Show supported gates
+print(simulator_backend.target)
+
+# Create circuit with a gate the backend doesn't support:
+qc = QuantumCircuit(2, 2)
+qc.sx(0)
+qc.cx(0, 1)
+qc.measure([0, 1], [0, 1])
+
+
+# Transpile the circuit for the target backend:
+qc_compiled = transpile(qc, simulator_backend)
+print(qc_compiled)
+```
 
 ## Running Tests
 
