@@ -72,6 +72,8 @@ Depending on the chosen backends, certain gates may not be supported. Qiskit is 
 circuits to use only supported gates:
 
 ```python
+from qiskit import transpile
+
 # Show supported gates
 print(simulator_backend.target)
 
