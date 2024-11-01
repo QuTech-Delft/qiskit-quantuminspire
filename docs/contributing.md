@@ -1,13 +1,28 @@
 # Contributing
 
-## Running tests
+This project uses Poetry for package management and tox for managing testing/linting/documentation tools.
 
-This package uses the [pytest](https://docs.pytest.org/en/stable/) test runner, and other packages
-for mocking interfactions, reporting coverage, etc.
-These can be installed with `poetry install`.
+## Setting up a development environment
 
-To use pytest directly, just run:
+Ensure both Poetry and tox installed (using [pipx](https://github.com/pypa/pipx) is recommended):
 
 ```bash
-tox -e test
+pipx install poetry
+pipx install tox
+```
+
+Install dependencies in a virtual environment (run in root of repository):
+
+```bash
+poetry install
+```
+
+## Useful tox commands
+
+```bash
+tox -e test # Run pytest
+tox -e lint # Run linters
+tox -e type # Run mypy
+tox # Run all of above
+tox -e docs # Generate documentation
 ```
