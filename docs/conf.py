@@ -10,6 +10,7 @@
 import os
 import shutil
 import sys
+from typing import Any
 
 # -- Path setup --------------------------------------------------------------
 
@@ -103,7 +104,7 @@ copyright = "2024, QuTech"
 # If you don’t need the separation provided between version and release,
 # just set them both to the same value.
 try:
-    from qiskit_quantuminspire import __version__ as version
+    from qiskit_quantuminspire import __version__ as version  # type: ignore
 except ImportError:
     version = ""
 
@@ -235,7 +236,7 @@ htmlhelp_basename = "qiskit-quantuminspire-doc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
-latex_elements = {
+latex_elements: dict[str, Any] = {
     # The paper size ("letterpaper" or "a4paper").
     # "papersize": "letterpaper",
     # The font size ("10pt", "11pt" or "12pt").
