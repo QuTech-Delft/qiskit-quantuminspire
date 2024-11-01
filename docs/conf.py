@@ -11,6 +11,8 @@ import os
 import sys
 from typing import Any
 
+import tomli
+
 # -- Path setup --------------------------------------------------------------
 
 __location__ = os.path.dirname(__file__)
@@ -64,7 +66,8 @@ copyright = "2024, QuTech"
 # If you don’t need the separation provided between version and release,
 # just set them both to the same value.
 try:
-    from qiskit_quantuminspire import __version__ as version  # type: ignore
+    with open("../pyproject.toml", mode="rb") as pyproject:
+        version = tomli.load(pyproject)["tool"]["poetry"]["version"]
 except ImportError:
     version = ""
 
