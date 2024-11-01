@@ -37,6 +37,9 @@ ruff = "^0.7.0"
 freezegun = "^1.5.1"
 responses = "^0.25.3"
 types-requests = "^2.25.0"
+sphinx = "^3.2.1"
+myst-parser = "^4.0.0"
+furo = "^2024.8.6"
 
 # [tool.pytest.ini_options]
 # addopts = "-v --cov --cov-report term-missing:skip-covered --cov-report xml"
