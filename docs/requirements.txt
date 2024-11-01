@@ -3,4 +3,5 @@
 # under `install_requires` in `setup.cfg` is also listed here!
 sphinx>=3.2.1
 myst-parser>=4.0.0
+furo>=2024.8.6
 # sphinx_rtd_theme

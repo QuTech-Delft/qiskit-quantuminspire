@@ -1,8 +1,8 @@
 ======================
-Qiskit-Quantum-Inspire
+Qiskit-QuantumInspire
 ======================
 
-This is the documentation of **Qiskit-Quantum-Inspire**.
+This is the documentation of **Qiskit-QuantumInspire**.
 
 Contents
 ========

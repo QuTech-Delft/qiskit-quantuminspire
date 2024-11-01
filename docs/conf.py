@@ -158,12 +158,12 @@ todo_emit_warnings = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "alabaster"
+html_theme = "furo"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
+# html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -247,7 +247,7 @@ latex_elements: dict[str, Any] = {
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [("index", "user_guide.tex", "Qiskit-Quantum-Inspire Documentation", "QuTech", "manual")]
+latex_documents = [("index", "user_guide.tex", "Qiskit-QuantumInspire Documentation", "QuTech", "manual")]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
