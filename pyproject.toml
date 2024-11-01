@@ -37,8 +37,8 @@ ruff = "^0.7.0"
 freezegun = "^1.5.1"
 responses = "^0.25.3"
 types-requests = "^2.25.0"
-sphinx = "^3.2.1"
-myst-parser = "^4.0.0"
+sphinx = "^7.4.7"
+myst-parser = "^3.0.1"
 furo = "^2024.8.6"
 
 # [tool.pytest.ini_options]
