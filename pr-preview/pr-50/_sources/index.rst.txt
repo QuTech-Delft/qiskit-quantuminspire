@@ -4,22 +4,22 @@ Qiskit-QuantumInspire
 
 This is the documentation of **Qiskit-QuantumInspire**.
 
-Contents
-========
+
 
 .. toctree::
    :maxdepth: 2
 
-   Overview <README>
-   Module Reference <api/modules>
+   Getting Started <getting_started/index>
+   Contributing <contributing>
+   License <license>
 
+API reference
 
-Indices and tables
-==================
+.. toctree::
+   :maxdepth: 1
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   Modules <api/modules>
+
 
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
