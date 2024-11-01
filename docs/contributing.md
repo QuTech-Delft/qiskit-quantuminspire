@@ -1,4 +1,6 @@
-# Running Tests
+# Contributing
+
+## Running tests
 
 This package uses the [pytest](https://docs.pytest.org/en/stable/) test runner, and other packages
 for mocking interfactions, reporting coverage, etc.

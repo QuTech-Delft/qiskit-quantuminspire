@@ -10,6 +10,7 @@ This is the documentation of **Qiskit-QuantumInspire**.
    :maxdepth: 2
 
    Getting Started <getting_started/index>
+   Example notebooks <notebooks/index>
    Contributing <contributing>
    License <license>
 

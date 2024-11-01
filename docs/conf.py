@@ -33,17 +33,17 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
-    "myst_parser",
+    "myst_nb",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = {
-    ".rst": "restructuredtext",
-    ".md": "markdown",
-}
+# source_suffix = {
+#     ".rst": "restructuredtext",
+#     ".md": "markdown",
+# }
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
@@ -110,6 +110,8 @@ pygments_style = "sphinx"
 # If this is True, todo emits a warning for each TODO entries. The default is False.
 todo_emit_warnings = True
 
+# -- Options for notebooks ---------------------------------------------------
+nb_execution_mode = "off"
 
 # -- Options for HTML output -------------------------------------------------
 
