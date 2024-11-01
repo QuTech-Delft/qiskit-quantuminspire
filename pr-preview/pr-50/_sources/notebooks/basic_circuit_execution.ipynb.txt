@@ -7,7 +7,7 @@
             "source": [
                 "# Basic circuit execution\n",
                 "This notebooks illustrates how you can run your qiskit code on the Quantum Inspire 2 platform.\n",
-                "### This notebook makes the following assumptions:\n",
+                "## This notebook makes the following assumptions:\n",
                 "- quantuminspire2 sdk installed\n",
                 "- account exists in the QI2 platform\n",
                 "- qiskit plugin installed (pip install qiskit-quantuminspire) in the same environment as this notebook"
@@ -31,7 +31,7 @@
             "id": "0d8ba9f9-9b38-4a86-9252-0b9b9fcdc83f",
             "metadata": {},
             "source": [
-                "### The necessary imports"
+                "## The necessary imports"
             ]
         },
         {
@@ -51,7 +51,7 @@
             "id": "0b464f03-9573-4c3c-852c-3ea4477b59ec",
             "metadata": {},
             "source": [
-                "### What QI Backends are available?"
+                "## What QI Backends are available?"
             ]
         },
         {
@@ -72,7 +72,7 @@
             "id": "a9f9b123-9b11-4d62-a4ab-8af8f08f7153",
             "metadata": {},
             "source": [
-                "### Create your Qiskit Circuit\n",
+                "## Create your Qiskit Circuit\n",
                 "Let's create a bell state circuit."
             ]
         },
@@ -95,7 +95,7 @@
             "id": "a638262c-c785-4a4f-9ba2-32cc534225f3",
             "metadata": {},
             "source": [
-                "### Create the Job in the Quantum Inspire Platform\n",
+                "## Create the Job in the Quantum Inspire Platform\n",
                 "On the appropriate backend, you run your circuit. Be aware that if your circuit contains gates that are not supported by the target, compilation errors may arise."
             ]
         },
@@ -116,7 +116,7 @@
             "id": "9645611e-bd42-4814-9266-243676877e8d",
             "metadata": {},
             "source": [
-                "### Obtain the result \n",
+                "## Obtain the result \n",
                 "After a while the result should be available. Depending on the current load, the time for completion may vary."
             ]
         },
