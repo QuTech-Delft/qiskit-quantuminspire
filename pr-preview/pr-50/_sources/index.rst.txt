@@ -2,24 +2,18 @@
 Qiskit-QuantumInspire
 ======================
 
-This is the documentation of **Qiskit-QuantumInspire**.
-
-
+Welcome to the documentation of **Qiskit-QuantumInspire**, a Qiskit plugin for the Quantum Inspire platform.
 
 .. toctree::
-   :maxdepth: 2
+   :hidden:
 
+   Documentation Home <index>
    Getting Started <getting_started/index>
    Example Notebooks <notebooks/index>
    Contributing and Development <contributing>
    License <license>
-
-API reference
-
-.. toctree::
-   :maxdepth: 1
-
-   Modules <api/modules>
+   API Reference <api/modules>
+   GitHub <https://github.com/QuTech-Delft/qiskit-quantuminspire>
 
 
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html
