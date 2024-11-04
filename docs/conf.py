@@ -8,14 +8,35 @@
 # serve to show the default.
 
 import os
+import shutil
 import sys
 from typing import Any
 
+import sphinx
 import tomli
+from sphinx.ext import apidoc
 
 # -- Path setup --------------------------------------------------------------
 
 __location__ = os.path.dirname(__file__)
+
+# -- Run api docs ------------------------------------------------------------
+
+output_dir = os.path.join(__location__, "api")
+module_dir = os.path.join(__location__, "../qiskit_quantuminspire")
+try:
+    shutil.rmtree(output_dir)
+except FileNotFoundError:
+    pass
+
+cmd_line = f"sphinx-apidoc --implicit-namespaces -f -o {output_dir} {module_dir}"
+
+args = cmd_line.split(" ")
+if tuple(sphinx.__version__.split(".")) >= ("1", "7"):
+    # This is a rudimentary parse_version to avoid external dependencies
+    args = args[1:]
+
+apidoc.main(args)
 
 # -- General configuration ---------------------------------------------------
 
