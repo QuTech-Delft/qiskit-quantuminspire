@@ -2427,6 +2427,22 @@ qasm3-import = ["qiskit-qasm3-import (>=0.1.0)"]
 visualization = ["Pillow (>=4.2.1)", "matplotlib (>=3.3)", "pydot", "pylatexenc (>=1.4)", "seaborn (>=0.9.0)"]
 
 [[package]]
+name = "qiskit-sphinx-theme"
+version = "2.0.0"
+description = "A Sphinx theme for Qiskit and Qiskit Ecosystem projects"
+optional = false
+python-versions = "*"
+files = [
+    {file = "qiskit_sphinx_theme-2.0.0-py3-none-any.whl", hash = "sha256:30e564c7197fc12754132b37696d86d80221165b471c46bf74b3c0238dbb8956"},
+    {file = "qiskit_sphinx_theme-2.0.0.tar.gz", hash = "sha256:3bd305a27a96aff7bab533ec09a546ad3c5c6171f308db474c22c8fb1dd5b342"},
+]
+
+[package.dependencies]
+docutils = "*"
+furo = "2024.8.6"
+sphinx = ">=6.0,<9.0"
+
+[[package]]
 name = "referencing"
 version = "0.35.1"
 description = "JSON Referencing + Python"
@@ -3317,4 +3333,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "4631db2ecee047982d2a829768b99dfdd6d682f5c24a41b22f5fb4dd51abf6f9"
+content-hash = "34a74deec79e063e1cb564bf482c2057945cada31b2211c4826db8d79c33d49a"
