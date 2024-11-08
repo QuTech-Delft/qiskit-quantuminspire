@@ -2,7 +2,7 @@
 Qiskit-QuantumInspire
 ======================
 
-Welcome to the documentation of **Qiskit-QuantumInspire**, a Qiskit plugin for the Quantum Inspire platform.
+Welcome to the documentation of **Qiskit-QuantumInspire**, a Qiskit plugin for the Quantum Inspire platform. test
 
 .. toctree::
    :hidden:
