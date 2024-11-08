@@ -1,0 +1,3 @@
+# Apidocs generates some rst files in this directory
+api/*
+!api/modules.rst
