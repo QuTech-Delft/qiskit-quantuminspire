@@ -8,8 +8,10 @@ This project contains a provider that allows access to **[Quantum Inspire]** qua
 
 ## Getting started
 
-1. [Installation and login](https://github.com/QuTech-Delft/qiskit-quantuminspire/blob/master/docs/getting_started/installation.md)
-2. [Submitting your first circuit](https://github.com/QuTech-Delft/qiskit-quantuminspire/blob/master/docs/getting_started/submitting.md)
-3. [Example notebooks](https://github.com/QuTech-Delft/qiskit-quantuminspire/blob/master/docs/notebooks/)
+All information needed to get started using this plugin can be found in our [documentation](https://qutech-delft.github.io/qiskit-quantuminspire/). Some particularly useful links:
+
+1. [Installation and login](https://qutech-delft.github.io/qiskit-quantuminspire/getting_started/installation.html)
+2. [Submitting your first circuit](https://qutech-delft.github.io/qiskit-quantuminspire/getting_started/submitting.html)
+3. [Example notebooks](https://qutech-delft.github.io/qiskit-quantuminspire/notebooks/index.html)
 
 [quantum inspire]: https://www.quantum-inspire.com/
