@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Contributing" href="../contributing.html" /><link rel="prev" title="Basic circuit execution" href="basic_circuit_execution.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Basic circuit execution" href="basic_circuit_execution.html" /><link rel="prev" title="Quantum Inspire performance test" href="QI2%20Performance%20Test.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>Superdense Coding - Qiskit-QuantumInspire 0.1.0 documentation</title>
@@ -200,10 +200,12 @@
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Example Notebooks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="basic_circuit_execution.html">Basic circuit execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="QI2%20Performance%20Test.html">Quantum Inspire performance test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="QI2%20Performance%20Test.html#run-the-cirquit-on-the-quantum-inspire-platform">Run the cirquit on the Quantum Inspire Platform</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Superdense Coding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-the-circuit-in-quantum-inspire">Run the Circuit in Quantum Inspire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-the-circuit-in-quantum-inspire-platform">Run the Circuit in Quantum Inspire Platform</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plot-results">Plot results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_circuit_execution.html">Basic circuit execution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing and Development</a></li>
@@ -234,7 +236,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/notebooks/super_dense_coding.ipynb.txt" title="View this page">
+  <a class="muted-link" href="../_sources/notebooks/Super Dense Coding.ipynb.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -260,24 +262,11 @@
 <p>In this notebook, we use the Quantum Inspire to implement the superdense coding algorithm. With this quantum communication protocol, a sender (Bob) can transmit two classical bits of information to a receiver (Alice) using only one qubit. In addition, this method of communication is highly secure against eavesdropping since reading out the state during the communication will collapse the entangled state, indicating the presence of a third party listening.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">qiskit_quantuminspire.qi_provider</span> <span class="kn">import</span> <span class="n">QIProvider</span>
 <span class="kn">from</span> <span class="nn">qiskit_quantuminspire.cqasm</span> <span class="kn">import</span> <span class="n">dumps</span>
 <span class="kn">from</span> <span class="nn">qxelarator</span> <span class="kn">import</span> <span class="n">execute_string</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">21</span><span class="p">],</span> <span class="n">line</span> <span class="mi">4</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">qiskit_quantuminspire.qi_provider</span> <span class="kn">import</span> <span class="n">QIProvider</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">qiskit_quantuminspire.cqasm</span> <span class="kn">import</span> <span class="n">dumps</span>
-<span class="ne">----&gt; </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">qxelarator</span> <span class="kn">import</span> <span class="n">execute_string</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;qxelarator&#39;
 </pre></div>
 </div>
 </div>
@@ -315,10 +304,12 @@
 <p>The states after the different respective gate operations are listed in Table 1.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">superdense_encoding_circuit</span><span class="p">(</span><span class="n">qubit_a</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">qubit_b</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">superdense_encoding_circuit</span><span class="p">(</span><span class="n">bit_a</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bit_b</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
     <span class="n">circuit</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">circuit</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">qubit_a</span><span class="p">)</span>
-    <span class="n">circuit</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">qubit_b</span><span class="p">)</span>
+    <span class="n">qubit_a</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">qubit_b</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="c1">#circuit.reset(qubit_a)</span>
+    <span class="c1">#circuit.reset(qubit_b)</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">qubit_a</span><span class="p">,</span> <span class="n">qubit_a</span><span class="p">)</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">qubit_b</span><span class="p">,</span> <span class="n">qubit_b</span><span class="p">)</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">ry</span><span class="p">(</span><span class="mf">1.57079632679</span><span class="p">,</span> <span class="n">qubit_a</span><span class="p">)</span>
@@ -326,7 +317,7 @@
     <span class="n">circuit</span><span class="o">.</span><span class="n">cz</span><span class="p">(</span><span class="n">qubit_b</span><span class="p">,</span><span class="n">qubit_a</span><span class="p">)</span>
 
     <span class="c1">## apply variable gate</span>
-    <span class="n">encode_gate</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">qubit_a</span> <span class="o">+</span> <span class="mi">2</span><span class="o">**</span><span class="n">qubit_b</span>
+    <span class="n">encode_gate</span> <span class="o">=</span> <span class="n">bit_a</span> <span class="o">+</span> <span class="mi">2</span><span class="o">**</span><span class="n">bit_b</span>
     <span class="k">if</span> <span class="n">encode_gate</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># identity I</span>
         <span class="n">circuit</span><span class="o">.</span><span class="n">id</span><span class="p">(</span><span class="n">qubit_a</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">encode_gate</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># X</span>
@@ -352,20 +343,40 @@
 </div>
 </section>
 </section>
-<section id="run-the-circuit-in-quantum-inspire">
-<h1>Run the Circuit in Quantum Inspire<a class="headerlink" href="#run-the-circuit-in-quantum-inspire" title="Link to this heading">¶</a></h1>
-<p>We generate a circuit for each of the possibilities (00, 01, 10, 11) and then run the circuit in the Quantum Inspire. These are run in any of the backends of QI2. We then gather the results.</p>
+<section id="run-the-circuit-in-quantum-inspire-platform">
+<h1>Run the Circuit in Quantum Inspire Platform<a class="headerlink" href="#run-the-circuit-in-quantum-inspire-platform" title="Link to this heading">¶</a></h1>
+<p>We generate a circuit for each of the possibilities (00, 01, 10, 11) and then run the circuit in the Quantum Inspire. We connect and choose one of the available backends.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
-
-<span class="n">result_map</span> <span class="o">=</span> <span class="p">{}</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">provider</span> <span class="o">=</span> <span class="n">QIProvider</span><span class="p">()</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;QX emulator&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We run a job for a certain amount of shots for each combination of classical bits we wish to send. We wait for each result and collect all.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result_map</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">bit_a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">bit_b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
         <span class="n">circuit</span> <span class="o">=</span> <span class="n">superdense_encoding_circuit</span><span class="p">(</span><span class="n">bit_a</span><span class="p">,</span> <span class="n">bit_b</span><span class="p">)</span>
-        <span class="n">cqasm_string</span> <span class="o">=</span> <span class="n">dumps</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">execute_string</span><span class="p">(</span><span class="n">cqasm_string</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">results</span>
-        <span class="n">result_map</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bit_a</span><span class="si">}{</span><span class="n">bit_b</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results</span>
+        
+        <span class="c1"># if using qxelarator</span>
+        <span class="c1">#cqasm_string = dumps(circuit)</span>
+        <span class="c1">#results = execute_string(cqasm_string, iterations=100).results</span>
+        <span class="c1">#result_map[f&#39;{bit_a}{bit_b}&#39;] = results</span>
+
+        <span class="c1"># if using thq QI2 Platform</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">wait_for_results</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="s1">&#39;counts&#39;</span><span class="p">]</span>
+        <span class="n">result_counts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">:</span>
+            <span class="n">bin_str</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span><span class="s1">&#39;04b&#39;</span><span class="p">)</span>    
+            <span class="n">result_counts</span><span class="p">[</span><span class="n">bin_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        
+        <span class="n">result_map</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bit_a</span><span class="si">}{</span><span class="n">bit_b</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_counts</span>
 </pre></div>
 </div>
 </div>
@@ -373,35 +384,26 @@
 </section>
 <section id="plot-results">
 <h1>Plot results<a class="headerlink" href="#plot-results" title="Link to this heading">¶</a></h1>
-<p>We plot the results of each encoding using matplot lib</p>
+<p>We plot the results of each encoding using matplotlib</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result_map</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result_map</span><span class="p">):</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">result_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
     <span class="n">entries</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="n">occurrences</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-    <span class="n">axs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">occurrences</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;skyblue&#39;</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Supercoding </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Entries&#39;</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Occurrences&#39;</span><span class="p">)</span>
+    <span class="n">i0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">index</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">i1</span> <span class="o">=</span> <span class="n">index</span> <span class="o">%</span> <span class="mi">2</span>    
+    <span class="n">axs</span><span class="p">[</span><span class="n">i0</span><span class="p">][</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">occurrences</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;skyblue&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">i0</span><span class="p">][</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Supercoding </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">i0</span><span class="p">][</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Entries&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">i0</span><span class="p">][</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Occurrences&#39;</span><span class="p">)</span>
 
 <span class="c1"># Adjust layout to prevent overlap</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
 <span class="c1"># Display the plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">22</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result_map</span><span class="p">):</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span>     <span class="n">results</span> <span class="o">=</span> <span class="n">result_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span>     <span class="n">entries</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-
-<span class="ne">NameError</span>: name &#39;result_map&#39; is not defined
 </pre></div>
 </div>
 </div>
@@ -413,23 +415,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../contributing.html">
+          <a class="next-page" href="basic_circuit_execution.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Contributing</div>
+                <div class="title">Basic circuit execution</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="basic_circuit_execution.html">
+          <a class="prev-page" href="QI2%20Performance%20Test.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Basic circuit execution</div>
+                <div class="title">Quantum Inspire performance test</div>
                 
               </div>
             </a>
@@ -467,7 +469,7 @@
 <li><a class="reference internal" href="#generate-the-circuit">Generate the circuit</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#run-the-circuit-in-quantum-inspire">Run the Circuit in Quantum Inspire</a></li>
+<li><a class="reference internal" href="#run-the-circuit-in-quantum-inspire-platform">Run the Circuit in Quantum Inspire Platform</a></li>
 <li><a class="reference internal" href="#plot-results">Plot results</a></li>
 </ul>
 
