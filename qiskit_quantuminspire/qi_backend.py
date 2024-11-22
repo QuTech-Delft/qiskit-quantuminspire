@@ -109,8 +109,17 @@ class QIBackend(Backend):  # type: ignore[misc]
 
     @classmethod
     def _default_options(cls) -> Options:
-        """Only options defined here are supported by the backend."""
-        return Options(shots=1024)
+        """Only options defined here are supported by the backend.
+
+        shots: int: Number of shots for the job.
+        """
+        options = Options(shots=1024, seed_simulator=None)
+
+        # Seed_simulator is included in options to enable use of BackendEstimatorV2 in Qiskit,
+        # but is not actually supported by the backend so any other value than none raises an error.
+        options.set_validator("seed_simulator", [None])
+
+        return options
 
     @property
     def target(self) -> Target:
