@@ -72,8 +72,10 @@ class QIBackend(Backend):  # type: ignore[misc]
         super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
         self._id: int = backend_type.id
 
+        self._options = self._default_options()
+        self.set_options(shots=backend_type.default_number_of_shots)
+
         self._max_shots: int = backend_type.max_number_of_shots
-        self._default_shots: int = backend_type.default_number_of_shots
 
         native_gates = [gate.lower() for gate in backend_type.gateset]
         available_gates = [gate for gate in native_gates if gate in _ALL_SUPPORTED_GATES]
@@ -107,7 +109,8 @@ class QIBackend(Backend):  # type: ignore[misc]
 
     @classmethod
     def _default_options(cls) -> Options:
-        return Options(shots=1024, optimization_level=1)
+        """Only options defined here are supported by the backend."""
+        return Options(shots=1024)
 
     @property
     def target(self) -> Target:
@@ -125,13 +128,7 @@ class QIBackend(Backend):  # type: ignore[misc]
     def id(self) -> int:
         return self._id
 
-    @property
-    def default_shots(self) -> int:
-        return self._default_shots
-
-    def run(
-        self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], shots: Union[int, None] = None, **options: Any
-    ) -> QIJob:
+    def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIJob:
         """Create and run a (batch)job on an QuantumInspire Backend.
 
         Args:
@@ -140,7 +137,7 @@ class QIBackend(Backend):  # type: ignore[misc]
         Returns:
             QIJob: A reference to the batch job that was submitted.
         """
-        self.options.shots = shots or self.default_shots
+        self.set_options(**options)
         job = QIJob(run_input=run_input, backend=self)
         job.submit()
         return job

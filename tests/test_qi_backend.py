@@ -1,6 +1,9 @@
 import logging
+from unittest.mock import MagicMock
 
 import pytest
+from pytest_mock import MockerFixture
+from qiskit import QuantumCircuit
 
 from qiskit_quantuminspire.qi_backend import QIBackend
 from tests.helpers import create_backend_type
@@ -97,6 +100,49 @@ def test_qi_backend_repr() -> None:
 
     # Assert
     assert qi_backend.name in repr(qi_backend)
+
+
+def test_qi_backend_run(mocker: MockerFixture) -> None:
+    # Arrange
+    job = MagicMock()
+    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
+    backend_type = create_backend_type(max_number_of_shots=4096)
+    qi_backend = QIBackend(backend_type=backend_type)
+
+    # Act
+    qc = QuantumCircuit(2, 2)
+    qi_backend.run(qc)
+
+    # Assert
+    job.submit.assert_called_once()
+
+
+def test_qi_backend_run_updates_shots(mocker: MockerFixture) -> None:
+    # Arrange
+    job = MagicMock()
+    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
+    backend_type = create_backend_type(max_number_of_shots=4096)
+    qi_backend = QIBackend(backend_type=backend_type)
+
+    # Act
+    qc = QuantumCircuit(2, 2)
+    qi_backend.run(qc, shots=1500)
+
+    # Assert
+    assert qi_backend.options.get("shots") == 1500
+
+
+def test_qi_backend_run_unsupported_options(mocker: MockerFixture) -> None:
+    # Arrange
+    job = MagicMock()
+    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
+    backend_type = create_backend_type(max_number_of_shots=4096)
+    qi_backend = QIBackend(backend_type=backend_type)
+
+    # Act & Assert
+    qc = QuantumCircuit(2, 2)
+    with pytest.raises(AttributeError):
+        qi_backend.run(qc, memory=True)
 
 
 def test_qi_backend_construction_toffoli_gate_unsupported(
