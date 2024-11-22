@@ -145,6 +145,19 @@ def test_qi_backend_run_unsupported_options(mocker: MockerFixture) -> None:
         qi_backend.run(qc, memory=True)
 
 
+def test_qi_backend_run_option_bad_value(mocker: MockerFixture) -> None:
+    # Arrange
+    job = MagicMock()
+    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
+    backend_type = create_backend_type(max_number_of_shots=4096)
+    qi_backend = QIBackend(backend_type=backend_type)
+
+    # Act & Assert
+    qc = QuantumCircuit(2, 2)
+    with pytest.raises(ValueError):
+        qi_backend.run(qc, seed_simulator=1)
+
+
 def test_qi_backend_construction_toffoli_gate_unsupported(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
