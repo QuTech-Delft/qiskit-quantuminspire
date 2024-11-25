@@ -262,11 +262,10 @@
 <p>In this notebook, we use the Quantum Inspire to implement the superdense coding algorithm. With this quantum communication protocol, a sender (Bob) can transmit two classical bits of information to a receiver (Alice) using only one qubit. In addition, this method of communication is highly secure against eavesdropping since reading out the state during the communication will collapse the entangled state, indicating the presence of a third party listening.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+
 <span class="kn">from</span> <span class="nn">qiskit_quantuminspire.qi_provider</span> <span class="kn">import</span> <span class="n">QIProvider</span>
-<span class="kn">from</span> <span class="nn">qiskit_quantuminspire.cqasm</span> <span class="kn">import</span> <span class="n">dumps</span>
-<span class="kn">from</span> <span class="nn">qxelarator</span> <span class="kn">import</span> <span class="n">execute_string</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 </div>
 </div>
