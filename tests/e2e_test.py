@@ -32,7 +32,7 @@ def _get_auth_tokens() -> None:
     IDP_URL_STAGING = "https://quantum-inspire-staging.eu.auth0.com"
     QI2_DEFAULT_HOST = "https://staging.qi2.quantum-inspire.com"
 
-    CLIENT_ID = "JOggYaBeGIkApEPIlQDZk8061Q8qHl4v"
+    CLIENT_ID = "Yz7ni9PUAyT43eUASZfmc1yqI66QxLUJ"
     E2E_USERNAME = os.getenv("E2E_USERNAME")
     E2E_PASSWORD = os.getenv("E2E_PASSWORD")
 
