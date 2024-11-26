@@ -59,7 +59,7 @@ jobs:
         run: tox -e test
   e2e-test:
     name: End to End testing
-    needs: [lint, unit-test]
+    needs: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -102,7 +102,7 @@ jobs:
         run: exit 1
   auto-merge-dependabot:
     name: Auto merge dependabot PR
-    needs: [lint, unit-test, e2e-test]
+    needs: complete
     if: ${{ (github.event_name == 'pull_request') && (github.actor == 'dependabot[bot]') }}
     runs-on: ubuntu-latest
     permissions:
@@ -111,7 +111,6 @@ jobs:
     steps:
       - name: Squash and Merge PR from dependabot
         uses: fastify/github-action-merge-dependabot@v3.11.0
-        with: 
+        with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           merge-method: squash
-          
