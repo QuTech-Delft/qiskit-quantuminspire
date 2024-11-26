@@ -172,7 +172,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -201,10 +201,7 @@
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Example Notebooks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Quantum Inspire performance test</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-the-cirquit-on-the-quantum-inspire-platform">Run the cirquit on the Quantum Inspire Platform</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Super%20Dense%20Coding.html">Superdense Coding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Super%20Dense%20Coding.html#run-the-circuit-in-quantum-inspire-platform">Run the Circuit in Quantum Inspire Platform</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Super%20Dense%20Coding.html#plot-results">Plot results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="basic_circuit_execution.html">Basic circuit execution</a></li>
 </ul>
 </li>
@@ -250,7 +247,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -258,8 +255,7 @@
         <article role="main" id="furo-main-content">
           <section id="quantum-inspire-performance-test">
 <h1>Quantum Inspire performance test<a class="headerlink" href="#quantum-inspire-performance-test" title="Link to this heading">¶</a></h1>
-<p>We compare performance of the simulator with the circuit from</p>
-<p>“Overview and Comparison of Gate Level Quantum Software Platforms”, https://arxiv.org/abs/1807.02500</p>
+<p>We compare performance of the simulator with the circuit from “Overview and Comparison of Gate Level Quantum Software Platforms”, https://arxiv.org/abs/1807.02500</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -304,10 +300,9 @@
 <img alt="../_images/b06be5d1f54fca31917e33082dc3377582be8afd99b784493ce56692c7d7e255.png" src="../_images/b06be5d1f54fca31917e33082dc3377582be8afd99b784493ce56692c7d7e255.png" />
 </div>
 </div>
-</section>
 <section id="run-the-cirquit-on-the-quantum-inspire-platform">
-<h1>Run the cirquit on the Quantum Inspire Platform<a class="headerlink" href="#run-the-cirquit-on-the-quantum-inspire-platform" title="Link to this heading">¶</a></h1>
-<p>First we make a connection to the Quantum Inspire platform and chosing a backend.</p>
+<h2>Run the cirquit on the Quantum Inspire Platform<a class="headerlink" href="#run-the-cirquit-on-the-quantum-inspire-platform" title="Link to this heading">¶</a></h2>
+<p>First we make a connection to the Quantum Inspire platform and choose a backend.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">provider</span> <span class="o">=</span> <span class="n">QIProvider</span><span class="p">()</span>
@@ -342,6 +337,7 @@
 <img alt="../_images/44dcd3c862c0b82e7fd3ad531de26100f34fc95f130a71e6074703ba599dea50.png" src="../_images/44dcd3c862c0b82e7fd3ad531de26100f34fc95f130a71e6074703ba599dea50.png" />
 </div>
 </div>
+</section>
 </section>
 
         </article>
@@ -387,8 +383,27 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Quantum Inspire performance test</a><ul>
+<li><a class="reference internal" href="#run-the-cirquit-on-the-quantum-inspire-platform">Run the cirquit on the Quantum Inspire Platform</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

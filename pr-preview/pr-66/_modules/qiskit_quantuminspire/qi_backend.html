@@ -200,10 +200,7 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/QI2%20Performance%20Test.html">Quantum Inspire performance test</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/QI2%20Performance%20Test.html#run-the-cirquit-on-the-quantum-inspire-platform">Run the cirquit on the Quantum Inspire Platform</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/Super%20Dense%20Coding.html">Superdense Coding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/Super%20Dense%20Coding.html#run-the-circuit-in-quantum-inspire-platform">Run the Circuit in Quantum Inspire Platform</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/Super%20Dense%20Coding.html#plot-results">Plot results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/basic_circuit_execution.html">Basic circuit execution</a></li>
 </ul>
 </li>
@@ -326,8 +323,10 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">backend_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">backend_type</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">id</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_options</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">shots</span><span class="o">=</span><span class="n">backend_type</span><span class="o">.</span><span class="n">default_number_of_shots</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_shots</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">max_number_of_shots</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_default_shots</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">default_number_of_shots</span>
 
         <span class="n">native_gates</span> <span class="o">=</span> <span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">gateset</span><span class="p">]</span>
         <span class="n">available_gates</span> <span class="o">=</span> <span class="p">[</span><span class="n">gate</span> <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">native_gates</span> <span class="k">if</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">_ALL_SUPPORTED_GATES</span><span class="p">]</span>
@@ -361,7 +360,17 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_default_options</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Options</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Options</span><span class="p">(</span><span class="n">shots</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">optimization_level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Only options defined here are supported by the backend.</span>
+
+<span class="sd">        shots: int: Number of shots for the job.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">(</span><span class="n">shots</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">seed_simulator</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Seed_simulator is included in options to enable use of BackendEstimatorV2 in Qiskit,</span>
+        <span class="c1"># but is not actually supported by the backend so any other value than none raises an error.</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">set_validator</span><span class="p">(</span><span class="s2">&quot;seed_simulator&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">None</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">options</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Target</span><span class="p">:</span>
@@ -379,15 +388,9 @@
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">default_shots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_shots</span>
-
 <div class="viewcode-block" id="QIBackend.run">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_backend.QIBackend.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">run_input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]],</span> <span class="n">shots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QIJob</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]],</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QIJob</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and run a (batch)job on an QuantumInspire Backend.</span>
 
 <span class="sd">        Args:</span>
@@ -396,7 +399,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            QIJob: A reference to the batch job that was submitted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">shots</span> <span class="o">=</span> <span class="n">shots</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_shots</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
         <span class="n">job</span> <span class="o">=</span> <span class="n">QIJob</span><span class="p">(</span><span class="n">run_input</span><span class="o">=</span><span class="n">run_input</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">job</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">job</span></div>

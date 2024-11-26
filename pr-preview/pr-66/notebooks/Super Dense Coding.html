@@ -201,10 +201,7 @@
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Example Notebooks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="QI2%20Performance%20Test.html">Quantum Inspire performance test</a></li>
-<li class="toctree-l2"><a class="reference internal" href="QI2%20Performance%20Test.html#run-the-cirquit-on-the-quantum-inspire-platform">Run the cirquit on the Quantum Inspire Platform</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Superdense Coding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-the-circuit-in-quantum-inspire-platform">Run the Circuit in Quantum Inspire Platform</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#plot-results">Plot results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="basic_circuit_execution.html">Basic circuit execution</a></li>
 </ul>
 </li>
@@ -270,9 +267,11 @@
 </div>
 </div>
 </div>
+<p>We divide the superdense code into four main sections: initilization, encoding, decoding, measurement. Initially, Alice creates the entangled state and sends one qubit to Bob for the encoding step. After the encoding, Bob returns the qubit to Alice, who decodes the message and measures the two qubits.</p>
+<p><img alt="Superdense Coding" src="../_images/super_dense_coding.png" /></p>
 <section id="generate-the-circuit">
 <h2>Generate the circuit<a class="headerlink" href="#generate-the-circuit" title="Link to this heading">¶</a></h2>
-<p>The two qubits are initially prepared in the ground state 00. Before sending the qubit to Bob, Alice needs to prepare an entangled state. So, Alice applies a H-gate followed by a CNOT-gate to obtain the desired entangled state (1/sqrt(2)(00 + 11). Now the qubit is ready to be sent to Bob, who encodes the two classical bits of information.</p>
+<p>The two qubits are initially prepared in the ground state 00. Before sending the qubit to Bob, Alice needs to prepare an entangled state. So, Alice applies a H-gate followed by a CNOT-gate to obtain the desired entangled state (1/sqrt(2))(00 + 11). Now the qubit is ready to be sent to Bob, who encodes the two classical bits of information.</p>
 <p>Bob can choose between four gates to apply to the qubit. Each gate will encode a different message for Alice. The four different possibilities are listed in the table below.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
@@ -299,16 +298,16 @@
 </div>
 <p>A different Bell state will be encoded for each gate that Bob applies to the qubit. After decoding, each Bell state will result in a different 2-bit message. Remember that the Identity gate doesn’t alter the state, and the X and Z gates make the qubit do a pi-rotation over their respective axes.</p>
 <p>The different possible states after encoding will then be:</p>
-<p>After the encoding step, Bobs sends the qubit back to Alice. To decode the message, Alice applies a CNOT-gate followed by a H-gate, see Figure 1. The decoding of the ‘11’ message is: H CNOT (1/sqrt(2)(-10 + 01) = 11</p>
-<p>The states after the different respective gate operations are listed in Table 1.</p>
+<p><img alt="encoding states" src="../_images/encoding_states.png" /></p>
+<p>After the encoding step, Bobs sends the qubit back to Alice. To decode the message, Alice applies a CNOT-gate followed by a H-gate, as shown in the first figure. The decoding of the ‘11’ message is: H CNOT (1/sqrt(2))(-10 + 01) = 11</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">superdense_encoding_circuit</span><span class="p">(</span><span class="n">bit_a</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bit_b</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
     <span class="n">circuit</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">qubit_a</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">qubit_b</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="c1">#circuit.reset(qubit_a)</span>
-    <span class="c1">#circuit.reset(qubit_b)</span>
+    <span class="n">circuit</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">qubit_a</span><span class="p">)</span>
+    <span class="n">circuit</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">qubit_b</span><span class="p">)</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">qubit_a</span><span class="p">,</span> <span class="n">qubit_a</span><span class="p">)</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">qubit_b</span><span class="p">,</span> <span class="n">qubit_b</span><span class="p">)</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">ry</span><span class="p">(</span><span class="mf">1.57079632679</span><span class="p">,</span> <span class="n">qubit_a</span><span class="p">)</span>
@@ -331,6 +330,7 @@
     <span class="n">circuit</span><span class="o">.</span><span class="n">ry</span><span class="p">(</span><span class="mf">1.57079632679</span><span class="p">,</span> <span class="n">qubit_b</span><span class="p">)</span>
 
 
+    <span class="c1"># maximum-likelihood 3 readout (ML3 RO)</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">qubit_b</span><span class="p">,</span> <span class="n">qubit_a</span><span class="p">)</span>  <span class="c1"># in qiskit this measures in z basis</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">qubit_b</span><span class="p">,</span> <span class="n">qubit_a</span><span class="p">)</span>  <span class="c1"># in qiskit this measures in z basis</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">qubit_b</span><span class="p">,</span> <span class="n">qubit_a</span><span class="p">)</span>  <span class="c1"># in qiskit this measures in z basis</span>
@@ -341,9 +341,8 @@
 </div>
 </div>
 </section>
-</section>
 <section id="run-the-circuit-in-quantum-inspire-platform">
-<h1>Run the Circuit in Quantum Inspire Platform<a class="headerlink" href="#run-the-circuit-in-quantum-inspire-platform" title="Link to this heading">¶</a></h1>
+<h2>Run the Circuit in Quantum Inspire Platform<a class="headerlink" href="#run-the-circuit-in-quantum-inspire-platform" title="Link to this heading">¶</a></h2>
 <p>We generate a circuit for each of the possibilities (00, 01, 10, 11) and then run the circuit in the Quantum Inspire. We connect and choose one of the available backends.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -382,7 +381,7 @@
 </div>
 </section>
 <section id="plot-results">
-<h1>Plot results<a class="headerlink" href="#plot-results" title="Link to this heading">¶</a></h1>
+<h2>Plot results<a class="headerlink" href="#plot-results" title="Link to this heading">¶</a></h2>
 <p>We plot the results of each encoding using matplotlib</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -407,6 +406,7 @@
 </div>
 </div>
 </div>
+</section>
 </section>
 
         </article>
@@ -466,10 +466,10 @@
             <ul>
 <li><a class="reference internal" href="#">Superdense Coding</a><ul>
 <li><a class="reference internal" href="#generate-the-circuit">Generate the circuit</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#run-the-circuit-in-quantum-inspire-platform">Run the Circuit in Quantum Inspire Platform</a></li>
 <li><a class="reference internal" href="#plot-results">Plot results</a></li>
+</ul>
+</li>
 </ul>
 
           </div>
