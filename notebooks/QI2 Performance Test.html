@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Example notebooks" href="../notebooks/index.html" /><link rel="prev" title="Installation and login" href="installation.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Superdense Coding" href="Super%20Dense%20Coding.html" /><link rel="prev" title="Example notebooks" href="index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>How to: Submit a circuit - Qiskit-QuantumInspire 0.1.0.dev190 documentation</title>
+        <title>Quantum Inspire performance test - Qiskit-QuantumInspire 0.1.0.dev190 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
@@ -194,15 +194,15 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Getting Started</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Getting Started</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation and login</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Submitting a circuit</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Getting Started</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">Installation and login</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/submitting.html">Submitting a circuit</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/QI2%20Performance%20Test.html">Quantum Inspire performance test</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/Super%20Dense%20Coding.html">Superdense Coding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/basic_circuit_execution.html">Basic circuit execution</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Example Notebooks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Quantum Inspire performance test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Super%20Dense%20Coding.html">Superdense Coding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic_circuit_execution.html">Basic circuit execution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing and Development</a></li>
@@ -233,7 +233,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/getting_started/submitting.md.txt" title="View this page">
+  <a class="muted-link" href="../_sources/notebooks/QI2 Performance Test.ipynb.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -253,68 +253,89 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="how-to-submit-a-circuit">
-<h1>How to: Submit a circuit<a class="headerlink" href="#how-to-submit-a-circuit" title="Link to this heading">¶</a></h1>
-<section id="getting-a-backend">
-<h2>Getting a backend<a class="headerlink" href="#getting-a-backend" title="Link to this heading">¶</a></h2>
-<p>To instantiate the provider, make sure you are logged into QI2, then create a provider:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_quantuminspire.qi_provider</span> <span class="kn">import</span> <span class="n">QIProvider</span>
+          <section id="quantum-inspire-performance-test">
+<h1>Quantum Inspire performance test<a class="headerlink" href="#quantum-inspire-performance-test" title="Link to this heading">¶</a></h1>
+<p>We compare performance of the simulator with the circuit from “Overview and Comparison of Gate Level Quantum Software Platforms”, https://arxiv.org/abs/1807.02500</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">ClassicalRegister</span><span class="p">,</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">QuantumRegister</span>
+<span class="kn">from</span> <span class="nn">qiskit.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
 
-<span class="n">provider</span> <span class="o">=</span> <span class="n">QIProvider</span><span class="p">()</span>
+<span class="kn">from</span> <span class="nn">qiskit_quantuminspire.qi_provider</span> <span class="kn">import</span> <span class="n">QIProvider</span>
 </pre></div>
 </div>
-<p>Once the provider has been instantiated, it may be used to access supported backends:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show all current supported backends:</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">provider</span><span class="o">.</span><span class="n">backends</span><span class="p">())</span>
+</div>
+</div>
+<p>We define the circuit based on the number of qubits and the depth (e.g. the number of iterations of the unit building block).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pcircuit</span><span class="p">(</span><span class="n">nqubits</span><span class="p">,</span> <span class="n">depth</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Circuit to test performance of quantum computer &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">QuantumRegister</span><span class="p">(</span><span class="n">nqubits</span><span class="p">)</span>
+    <span class="n">ans</span> <span class="o">=</span> <span class="n">ClassicalRegister</span><span class="p">(</span><span class="n">nqubits</span><span class="p">)</span>
+    <span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">ans</span><span class="p">)</span>
 
-<span class="c1"># Get Quantum Inspire&#39;s simulator backend:</span>
-<span class="n">simulator_backend</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s2">&quot;QX emulator&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">qidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nqubits</span><span class="p">):</span>
+            <span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span> <span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">qidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nqubits</span><span class="p">):</span>
+            <span class="n">qc</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">])</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">qidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nqubits</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">qidx</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">qc</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">qidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nqubits</span><span class="p">):</span>
+        <span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">],</span> <span class="n">ans</span><span class="p">[</span><span class="n">qidx</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">,</span> <span class="n">qc</span>
+
+<span class="n">q</span><span class="p">,</span><span class="n">qc</span> <span class="o">=</span> <span class="n">pcircuit</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="submitting-a-circuit">
-<h2>Submitting a Circuit<a class="headerlink" href="#submitting-a-circuit" title="Link to this heading">¶</a></h2>
-<p>Once a backend has been specified, it may be used to submit circuits.
-For example, running a Bell State:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-
-<span class="c1"># Create a basic Bell State circuit:</span>
-<span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-
-<span class="c1"># Show a representation of the quantum circuit:</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">qc</span><span class="p">)</span>
-
-<span class="c1"># Run the circuit on Quantum Inspire&#39;s platform:</span>
-<span class="n">job</span> <span class="o">=</span> <span class="n">simulator_backend</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">)</span>
-
-<span class="c1"># Print the results.</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">get_counts</span><span class="p">())</span>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/b06be5d1f54fca31917e33082dc3377582be8afd99b784493ce56692c7d7e255.png" src="../_images/b06be5d1f54fca31917e33082dc3377582be8afd99b784493ce56692c7d7e255.png" />
+</div>
+</div>
+<section id="run-the-cirquit-on-the-quantum-inspire-platform">
+<h2>Run the cirquit on the Quantum Inspire Platform<a class="headerlink" href="#run-the-cirquit-on-the-quantum-inspire-platform" title="Link to this heading">¶</a></h2>
+<p>First we make a connection to the Quantum Inspire platform and choose a backend.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">provider</span> <span class="o">=</span> <span class="n">QIProvider</span><span class="p">()</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;QX emulator&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="transpilation">
-<h2>Transpilation<a class="headerlink" href="#transpilation" title="Link to this heading">¶</a></h2>
-<p>Depending on the chosen backends, certain gates may not be supported. Qiskit is aware of the capabilities of each backend, and can transpile
-circuits to use only supported gates:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">transpile</span>
-
-<span class="c1"># Show supported gates</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">simulator_backend</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
-
-<span class="c1"># Create circuit with a gate the backend doesn&#39;t support:</span>
-<span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">sx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-
-
-<span class="c1"># Transpile the circuit for the target backend:</span>
-<span class="n">qc_compiled</span> <span class="o">=</span> <span class="n">transpile</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">simulator_backend</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">qc_compiled</span><span class="p">)</span>
+</div>
+</div>
+<p>We run the job for a certain amount of shots in the chosen backend and wait for the results.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">job</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">wait_for_results</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+</div>
+<p>We visualize the histogram with matplotlib.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="s1">&#39;counts&#39;</span><span class="p">]</span>
+<span class="n">result_map</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">:</span>
+    <span class="n">bin_str</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span><span class="s1">&#39;04b&#39;</span><span class="p">)</span>    
+    <span class="n">result_map</span><span class="p">[</span><span class="n">bin_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+<span class="n">plot_histogram</span><span class="p">(</span><span class="n">result_map</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/44dcd3c862c0b82e7fd3ad531de26100f34fc95f130a71e6074703ba599dea50.png" src="../_images/44dcd3c862c0b82e7fd3ad531de26100f34fc95f130a71e6074703ba599dea50.png" />
+</div>
 </div>
 </section>
 </section>
@@ -324,23 +345,23 @@ circuits to use only supported gates:</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../notebooks/index.html">
+          <a class="next-page" href="Super%20Dense%20Coding.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Example notebooks</div>
+                <div class="title">Superdense Coding</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="installation.html">
+          <a class="prev-page" href="index.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Installation and login</div>
+                <div class="title">Example notebooks</div>
                 
               </div>
             </a>
@@ -374,10 +395,8 @@ circuits to use only supported gates:</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">How to: Submit a circuit</a><ul>
-<li><a class="reference internal" href="#getting-a-backend">Getting a backend</a></li>
-<li><a class="reference internal" href="#submitting-a-circuit">Submitting a Circuit</a></li>
-<li><a class="reference internal" href="#transpilation">Transpilation</a></li>
+<li><a class="reference internal" href="#">Quantum Inspire performance test</a><ul>
+<li><a class="reference internal" href="#run-the-cirquit-on-the-quantum-inspire-platform">Run the cirquit on the Quantum Inspire Platform</a></li>
 </ul>
 </li>
 </ul>
