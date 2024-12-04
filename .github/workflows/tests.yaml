@@ -92,7 +92,7 @@ jobs:
           mkdir -p ~/.quantuminspire
           python $CI_ROOT/scripts/get_oauth_tokens.py > ~/.quantuminspire/config.json
           deactivate
-        working-directory: /scripts
+        working-directory: ./ci-scripts
       - name: Install packages
         run: poetry install
       - name: Run e2e test
