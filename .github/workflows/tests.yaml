@@ -92,7 +92,7 @@ jobs:
           pip install git+https://github.com/QuTech-Delft/quantuminspire2.git
           curl https://raw.githubusercontent.com/QuTech-Delft/GitHub-Actions/refs/heads/feature/QI2-1222/include-auth-script/scripts/get_oauth_tokens.py > get_oauth_tokens.py
           mkdir -p ~/.quantuminspire
-          python $CI_ROOT/scripts/get_oauth_tokens.py > ~/.quantuminspire/config.json
+          python get_oauth_tokens.py > ~/.quantuminspire/config.json
           deactivate
         working-directory: ./ci-scripts
       - name: Install packages
