@@ -1,4 +1,4 @@
-# .github/workflows/preview.yml
+# .github/workflows/docs-preview.yaml
 name: PR docs preview
 
 on:
@@ -11,34 +11,7 @@ on:
     paths:
       - 'docs/**'
 
-concurrency: preview-${{ github.ref }}
-
 jobs:
   deploy-preview:
-    runs-on: "ubuntu-latest"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v3
-        with:
-          poetry-version: "1.8.3"
-
-      - name: Install tox
-        run: pip install tox
-
-      - name: Install and Build
-        if: github.event.action != 'closed' # You might want to skip the build if the PR has been closed
-        run: |
-          tox -e docs
-
-      - name: Deploy preview
-        uses: rossjrw/pr-preview-action@v1
-        with:
-          source-dir: ./docs/_build/html/
+    uses: qutech-delft/github-actions/.github/workflows/sphinx-docs-preview.yaml@fix/QI2-1219/fix-failing-action-import
+    secrets: inherit
