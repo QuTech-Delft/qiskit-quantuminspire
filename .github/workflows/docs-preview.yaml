@@ -13,5 +13,5 @@ on:
 
 jobs:
   deploy-preview:
-    uses: qutech-delft/github-actions/.github/workflows/sphinx-docs-preview.yaml@fix/QI2-1219/fix-failing-action-import
+    uses: qutech-delft/github-actions/.github/workflows/sphinx-docs-preview.yaml@master
     secrets: inherit

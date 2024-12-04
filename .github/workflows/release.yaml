@@ -11,5 +11,5 @@ on:
 
 jobs:
   publish:
-    uses: qutech-delft/github-actions/.github/workflows/poetry-release.yaml@fix/QI2-1219/fix-failing-action-import
+    uses: qutech-delft/github-actions/.github/workflows/poetry-release.yaml@master
 
