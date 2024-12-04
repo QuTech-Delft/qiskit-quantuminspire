@@ -98,7 +98,7 @@ def _run_e2e_tests(name: str) -> None:
 
 
 def main(name: str) -> None:
-    _get_auth_tokens()
+    # _get_auth_tokens()
     _run_e2e_tests(name=name)
 
 

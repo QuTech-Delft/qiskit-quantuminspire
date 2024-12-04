@@ -69,6 +69,10 @@ jobs:
     env:
       E2E_USERNAME:  ${{ secrets.E2E_USERNAME }}
       E2E_PASSWORD:  ${{ secrets.E2E_PASSWORD }}
+      IDP_URL: https://quantum-inspire-staging.eu.auth0.com
+      IDP_CLIENT_ID_E2E_TEST: Yz7ni9PUAyT43eUASZfmc1yqI66QxLUJ
+      COMPUTE_JOB_MANAGER_API_AUDIENCE: compute-job-manager
+      QI2_default_host: https://staging.qi2.quantum-inspire.com
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -79,6 +83,16 @@ jobs:
         uses: abatilo/actions-poetry@v3
         with:
           poetry-version: "1.3.2"
+      - name: Get authentication token
+        run: |
+          python -m venv env
+          . ./env/bin/activate
+          pip install git+https://github.com/QuTech-Delft/quantuminspire2.git
+          curl https://raw.githubusercontent.com/QuTech-Delft/GitHub-Actions/refs/heads/feature/QI2-1222/include-auth-script/scripts/get_oauth_tokens.py > get_oauth_tokens.py
+          mkdir -p ~/.quantuminspire
+          python $CI_ROOT/scripts/get_oauth_tokens.py > ~/.quantuminspire/config.json
+          deactivate
+        working-directory: /scripts
       - name: Install packages
         run: poetry install
       - name: Run e2e test
