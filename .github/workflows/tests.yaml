@@ -98,7 +98,7 @@ jobs:
           python get_oauth_tokens.py > ~/.quantuminspire/config.json
           cat ~/.quantuminspire/config.json
           deactivate
-        working-directory: ./GitHub-Actions/scripts/oauth-token
+        working-directory: GitHub-Actions/scripts/oauth_tokens
       - name: Install packages
         run: poetry install
       - name: Run e2e test
