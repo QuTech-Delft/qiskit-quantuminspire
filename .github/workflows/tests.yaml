@@ -88,6 +88,7 @@ jobs:
           git clone https://github.com/QuTech-Delft/GitHub-Actions.git
           cd GitHub-Actions
           git switch feature/QI2-1222/include-auth-script
+          pwd
       - name: Get authentication token
         run: |
           python -m venv env
