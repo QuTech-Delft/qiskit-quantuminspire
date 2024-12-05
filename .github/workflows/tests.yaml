@@ -99,7 +99,9 @@ jobs:
       - name: Install packages
         run: poetry install
       - name: Run e2e test
-        run: poetry run python tests/e2e_test.py "${{ matrix.backend-name }}"
+        run: |
+          cat ~/.quantuminspire/config.json
+          poetry run python tests/e2e_test.py "${{ matrix.backend-name }}"
   complete:
     # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
     name: Report status
