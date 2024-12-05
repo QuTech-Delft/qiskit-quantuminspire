@@ -10,7 +10,7 @@ jobs:
   testing:
     uses: qutech-delft/github-actions/.github/workflows/poetry-tests.yaml@master
     with:
-      e2e_path: 'tests/e2e_tests.py'
+      e2e_path: 'tests/e2e_test.py'
     secrets:
       e2e_username:  ${{ secrets.E2E_USERNAME }}
       e2e_password:  ${{ secrets.E2E_PASSWORD }}
