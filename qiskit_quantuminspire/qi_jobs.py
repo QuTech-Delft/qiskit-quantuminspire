@@ -126,6 +126,7 @@ class QIJob(JobV1):  # type: ignore[misc]
                     in_api_client,
                     file.id,
                     in_batch_job.id,
+                    shot_memory_enabled=cast(bool, options.get("memory")),
                     number_of_shots=options.get("shots"),
                 )
                 circuit_data.job_id = job.id
@@ -183,10 +184,20 @@ class QIJob(JobV1):  # type: ignore[misc]
         return await api_instance.create_batch_job_batch_jobs_post(obj)
 
     async def _create_job(
-        self, api_client: ApiClient, file_id: int, batch_job_id: int, number_of_shots: Optional[int] = None
+        self,
+        api_client: ApiClient,
+        file_id: int,
+        batch_job_id: int,
+        shot_memory_enabled: bool,
+        number_of_shots: Optional[int] = None,
     ) -> Job:
         api_instance = JobsApi(api_client)
-        obj = JobIn(file_id=file_id, batch_job_id=batch_job_id, number_of_shots=number_of_shots)
+        obj = JobIn(
+            file_id=file_id,
+            batch_job_id=batch_job_id,
+            number_of_shots=number_of_shots,
+            shot_memory_enabled=shot_memory_enabled,
+        )
         return await api_instance.create_job_jobs_post(obj)
 
     async def _enqueue_batch_job(self, api_client: ApiClient, batch_job_id: int) -> BatchJob:
