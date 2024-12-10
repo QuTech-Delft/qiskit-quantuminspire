@@ -176,6 +176,7 @@ def test_process_results() -> None:
             "0000000010": 256,
             "0000000011": 256,
         },
+        raw_data=None,
         job_id=10,
     )
     processed_results = qi_job._process_results()
