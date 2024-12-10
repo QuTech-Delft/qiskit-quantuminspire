@@ -2,7 +2,7 @@ import asyncio
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, List, Optional, Union, cast
 
 from compute_api_client import (
     Algorithm,
@@ -322,15 +322,13 @@ class QIJob(JobV1):  # type: ignore[misc]
             circuit_name = circuit_data.circuit.name
 
             if qi_result is None:
-                experiment_result = self._get_experiment_result(circuit_name=circuit_name)
+                experiment_result = self._create_empty_experiment_result(circuit_name=circuit_name)
                 results.append(experiment_result)
                 continue
 
-            experiment_result = self._get_experiment_result(
+            experiment_result = self._create_experiment_result(
                 circuit_name=circuit_name,
-                shots=qi_result.shots_done,
-                counts={hex(int(key, 2)): value for key, value in qi_result.results.items()},
-                experiment_success=qi_result.shots_done > 0,
+                result=qi_result,
             )
             results.append(experiment_result)
             batch_job_success[idx] = qi_result.shots_done > 0
@@ -346,19 +344,31 @@ class QIJob(JobV1):  # type: ignore[misc]
         return result
 
     @staticmethod
-    def _get_experiment_result(
+    def _create_experiment_result(
         circuit_name: str,
-        shots: int = 0,
-        counts: Optional[Dict[str, int]] = None,
-        experiment_success: bool = False,
+        result: RawJobResult,
     ) -> ExperimentResult:
         """Create an ExperimentResult instance based on RawJobResult parameters."""
+        counts = {hex(int(key, 2)): value for key, value in result.results.items()}
+        memory = [hex(int(measurement, 2)) for measurement in result.raw_data] if result.raw_data else None
+
         experiment_data = ExperimentResultData(
             counts={} if counts is None else counts,
+            memory=memory,
         )
         return ExperimentResult(
-            shots=shots,
-            success=experiment_success,
+            shots=result.shots_done,
+            success=result.shots_done > 0,
             data=experiment_data,
+            header=QobjExperimentHeader(name=circuit_name),
+        )
+
+    @staticmethod
+    def _create_empty_experiment_result(circuit_name: str) -> ExperimentResult:
+        """Create an empty ExperimentResult instance."""
+        return ExperimentResult(
+            shots=0,
+            success=False,
+            data=ExperimentResultData(counts={}),
             header=QobjExperimentHeader(name=circuit_name),
         )
