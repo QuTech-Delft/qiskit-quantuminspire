@@ -27,4 +27,5 @@ def create_backend_type(
         infrastructure="QCI",
         description="A Quantum Inspire backend",
         native_gateset="",
+        supports_shot_memory=False,
     )

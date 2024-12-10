@@ -72,11 +72,16 @@ class QIBackend(Backend):  # type: ignore[misc]
         super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
         self._id: int = backend_type.id
 
+        self._max_shots: int = backend_type.max_number_of_shots
+
+        # Construct options
         self._options = self._default_options()
         self.set_options(shots=backend_type.default_number_of_shots)
 
-        self._max_shots: int = backend_type.max_number_of_shots
+        if not backend_type.supports_shot_memory:
+            self._options.set_validator("memory", [False])
 
+        # Construct coupling map
         native_gates = [gate.lower() for gate in backend_type.gateset]
         available_gates = [gate for gate in native_gates if gate in _ALL_SUPPORTED_GATES]
         unknown_gates = set(native_gates) - set(_ALL_SUPPORTED_GATES) - set(_IGNORED_GATES)
@@ -113,11 +118,14 @@ class QIBackend(Backend):  # type: ignore[misc]
 
         shots: int: Number of shots for the job.
         """
-        options = Options(shots=1024, seed_simulator=None)
+        options = Options(shots=1024, seed_simulator=None, memory=False)
 
         # Seed_simulator is included in options to enable use of BackendEstimatorV2 in Qiskit,
         # but is not actually supported by the backend so any other value than none raises an error.
         options.set_validator("seed_simulator", [None])
+
+        options.set_validator("shots", int)
+        options.set_validator("memory", bool)
 
         return options
 
