@@ -44,6 +44,12 @@ job = simulator_backend.run(qc)
 print(job.result().get_counts())
 ```
 
+On backends that support the `raw data` feature, you can set the `memory` option to get the measurement result of each individual shot:
+
+```python
+job = simulator_backend.run(qc, memory=True)
+```
+
 ## Transpilation
 
 Depending on the chosen backends, certain gates may not be supported. Qiskit is aware of the capabilities of each backend, and can transpile
