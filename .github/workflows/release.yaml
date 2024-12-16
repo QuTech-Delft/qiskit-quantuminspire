@@ -11,5 +11,68 @@ on:
 
 jobs:
   publish:
-    uses: qutech-delft/github-actions/.github/workflows/poetry-release.yaml@master
+    name: Publish assets
+    runs-on: "ubuntu-latest"
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@master
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: "1.8.3"
+
+      - name: Install tox
+        run: pip install tox
+
+      # Setting the proper version
+      - name: Get previous Tag
+        if: github.ref == 'refs/heads/master'
+        id: previous_tag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        with:
+          fallback: 0.1.0
+
+      - name: Set Build version
+        if: github.ref == 'refs/heads/master'
+        run: poetry version "${{ steps.previous_tag.outputs.tag }}.dev${{ github.run_number }}"
+        
+      - name: Set Release version
+        if: github.event_name == 'release' && github.event.action == 'created'
+        run: poetry version ${{ github.ref_name }}
+
+      # Build and deploy docs
+      - name: Build docs
+        if: github.ref == 'refs/heads/master'
+        run: |
+          tox -e docs
+
+      - name: Deploy docs
+        if: github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html/
+
+      # Build package
+      - name: Build poetry package
+        run: poetry build
+
+      # Publishing the package
+      - name: Publish distribution 📦 to Test PyPI
+        if: github.ref == 'refs/heads/master'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
+
+      - name: Publish distribution 📦 to PyPI
+        if: github.event_name == 'release' && github.event.action == 'created'
+        uses: pypa/gh-action-pypi-publish@release/v1
