@@ -163,7 +163,7 @@ def test_qi_backend_run_supports_shot_memory(mocker: MockerFixture) -> None:
     job = MagicMock()
     mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
     backend_type = create_backend_type(max_number_of_shots=4096)
-    backend_type.supports_shot_memory = True
+    backend_type.supports_raw_data = True
     qi_backend = QIBackend(backend_type=backend_type)
 
     # Act

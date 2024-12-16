@@ -78,7 +78,7 @@ class QIBackend(Backend):  # type: ignore[misc]
         self._options = self._default_options()
         self.set_options(shots=backend_type.default_number_of_shots)
 
-        if not backend_type.supports_shot_memory:
+        if not backend_type.supports_raw_data:
             self._options.set_validator("memory", [False])
 
         # Construct coupling map
