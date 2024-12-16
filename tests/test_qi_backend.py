@@ -142,7 +142,36 @@ def test_qi_backend_run_unsupported_options(mocker: MockerFixture) -> None:
     # Act & Assert
     qc = QuantumCircuit(2, 2)
     with pytest.raises(AttributeError):
+        qi_backend.run(qc, unsupported_option=True)
+
+
+def test_qi_backend_run_no_shot_memory_support(mocker: MockerFixture) -> None:
+    # Arrange
+    job = MagicMock()
+    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
+    backend_type = create_backend_type(max_number_of_shots=4096)
+    qi_backend = QIBackend(backend_type=backend_type)
+
+    # Act & Assert
+    qc = QuantumCircuit(2, 2)
+    with pytest.raises(ValueError):
         qi_backend.run(qc, memory=True)
+
+
+def test_qi_backend_run_supports_shot_memory(mocker: MockerFixture) -> None:
+    # Arrange
+    job = MagicMock()
+    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
+    backend_type = create_backend_type(max_number_of_shots=4096)
+    backend_type.supports_raw_data = True
+    qi_backend = QIBackend(backend_type=backend_type)
+
+    # Act
+    qc = QuantumCircuit(2, 2)
+    qi_backend.run(qc, memory=True)
+
+    # Assert
+    job.submit.assert_called_once()
 
 
 def test_qi_backend_run_option_bad_value(mocker: MockerFixture) -> None:

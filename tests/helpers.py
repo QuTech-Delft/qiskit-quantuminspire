@@ -1,4 +1,7 @@
-from compute_api_client import BackendStatus, BackendType
+from datetime import datetime, timezone
+from typing import Optional
+
+from compute_api_client import BackendStatus, BackendType, Result as RawJobResult
 
 
 def create_backend_type(
@@ -27,4 +30,27 @@ def create_backend_type(
         infrastructure="QCI",
         description="A Quantum Inspire backend",
         native_gateset="",
+        supports_raw_data=False,
+    )
+
+
+def create_raw_job_result(
+    results: dict[str, int] = {
+        "0000000000": 256,
+        "0000000001": 256,
+        "0000000010": 256,
+        "0000000011": 256,
+    },
+    raw_data: Optional[list[str]] = None,
+) -> RawJobResult:
+    return RawJobResult(
+        id=1,
+        metadata_id=1,
+        created_on=datetime(2022, 10, 25, 15, 37, 54, 269823, tzinfo=timezone.utc),
+        execution_time_in_seconds=1.23,
+        shots_requested=100,
+        shots_done=100,
+        results=results,
+        raw_data=raw_data,
+        job_id=10,
     )

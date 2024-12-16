@@ -1,11 +1,9 @@
 import asyncio
 import tempfile
-from datetime import datetime, timezone
 from typing import Any, List, Optional, Union
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from compute_api_client import Result as RawJobResult
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit, qpy
 from qiskit.providers import BackendV2
@@ -18,7 +16,7 @@ from qiskit.result.result import Result
 from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.qi_backend import QIBackend
 from qiskit_quantuminspire.qi_jobs import QIJob
-from tests.helpers import create_backend_type
+from tests.helpers import create_backend_type, create_raw_job_result
 
 
 class SingleBackendProvider(BaseProvider):
@@ -159,25 +157,10 @@ def test_process_results() -> None:
     qc = QuantumCircuit(2, 2)
 
     qi_job = QIJob(run_input=qc, backend=qi_backend)
-    batch_job_id = 100
-    qi_job.batch_job_id = batch_job_id
-    individual_job_id = 1
-    qi_job.circuits_run_data[0].job_id = 1  #  Individual job_id
-    qi_job.circuits_run_data[0].results = RawJobResult(
-        id=individual_job_id,
-        metadata_id=1,
-        created_on=datetime(2022, 10, 25, 15, 37, 54, 269823, tzinfo=timezone.utc),
-        execution_time_in_seconds=1.23,
-        shots_requested=100,
-        shots_done=100,
-        results={
-            "0000000000": 256,
-            "0000000001": 256,
-            "0000000010": 256,
-            "0000000011": 256,
-        },
-        job_id=10,
-    )
+    qi_job.batch_job_id = 100
+    qi_job.circuits_run_data[0].job_id = 1
+    qi_job.circuits_run_data[0].results = create_raw_job_result()
+
     processed_results = qi_job._process_results()
     experiment_data = ExperimentResultData(counts={"0x0": 256, "0x1": 256, "0x2": 256, "0x3": 256})
     experiment_result = ExperimentResult(
@@ -199,6 +182,32 @@ def test_process_results() -> None:
         header=None,
     )
     assert processed_results.to_dict() == expected_results.to_dict()
+    assert processed_results.data(qc) == experiment_data.to_dict()
+
+
+def test_process_results_raw_data() -> None:
+    backend_type = create_backend_type(name="qi_backend_1")
+    qi_backend = QIBackend(backend_type=backend_type)
+    qc = QuantumCircuit(2, 2)
+
+    qi_job = QIJob(run_input=qc, backend=qi_backend)
+    qi_job.batch_job_id = 100
+    qi_job.circuits_run_data[0].job_id = 1
+    qi_job.circuits_run_data[0].results = create_raw_job_result(
+        results={
+            "000": 2,
+            "001": 1,
+            "010": 2,
+            "011": 3,
+        },
+        raw_data=["000", "001", "010", "011", "000", "010", "011", "011"],
+    )
+
+    processed_results = qi_job._process_results()
+    experiment_data = ExperimentResultData(
+        counts={"0x0": 2, "0x1": 1, "0x2": 2, "0x3": 3}, memory=["0x0", "0x1", "0x2", "0x3", "0x0", "0x2", "0x3", "0x3"]
+    )
+
     assert processed_results.data(qc) == experiment_data.to_dict()
 
 
