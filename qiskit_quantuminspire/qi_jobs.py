@@ -45,9 +45,9 @@ from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
 from qiskit_quantuminspire import cqasm
-from qiskit_quantuminspire.api.client import config
-from qiskit_quantuminspire.api.pagination import PageReader
-from qiskit_quantuminspire.api.settings import ApiSettings
+from compute_api_client.shared.client import config
+from compute_api_client.shared.pagination import PageReader
+from compute_api_client.shared.settings import ApiSettings
 from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.utils import run_async
 
