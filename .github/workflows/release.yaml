@@ -18,6 +18,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-release@feature/QI2-1241/rework-to-composite-actions
+      - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-release@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

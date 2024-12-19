@@ -18,5 +18,5 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v4
-      - uses: QuTech-Delft/GitHub-Actions/actions/docs/sphinx-docs-preview@feature/QI2-1241/rework-to-composite-actions
+      - uses: QuTech-Delft/GitHub-Actions/actions/docs/sphinx-docs-preview@master
 
