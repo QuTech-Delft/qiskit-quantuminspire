@@ -17,28 +17,6 @@ jobs:
   deploy-preview:
     runs-on: "ubuntu-latest"
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: QuTech-Delft/GitHub-Actions/actions/docs/sphinx-docs-preview@feature/QI2-1241/rework-to-composite-actions
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v3
-        with:
-          poetry-version: "1.8.3"
-
-      - name: Install tox
-        run: pip install tox
-
-      - name: Install and Build
-        if: github.event.action != 'closed' # You might want to skip the build if the PR has been closed
-        run: |
-          tox -e docs
-
-      - name: Deploy preview
-        uses: rossjrw/pr-preview-action@v1
-        with:
-          source-dir: ./docs/_build/html/
