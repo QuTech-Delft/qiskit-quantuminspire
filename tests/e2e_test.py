@@ -10,8 +10,8 @@ import requests
 from compute_api_client import ApiClient, Configuration, Member, MembersApi, PageMember
 from qiskit import QuantumCircuit
 
-from qiskit_quantuminspire.api.pagination import PageReader
-from qiskit_quantuminspire.api.settings import ApiSettings, AuthSettings, TokenInfo
+from qi2_shared.pagination import PageReader
+from qi2_shared.settings import ApiSettings, AuthSettings, TokenInfo
 from qiskit_quantuminspire.qi_provider import QIProvider
 
 
