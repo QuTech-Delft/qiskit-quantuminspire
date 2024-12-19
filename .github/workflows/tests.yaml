@@ -8,7 +8,7 @@ on:
 
 jobs:
   testing:
-    uses: qutech-delft/github-actions/workflows/poetry-tests.yaml@feature/QI2-1241/rework-to-composite-actions
+    uses: qutech-delft/github-actions/.github/workflows/poetry-tests.yaml@feature/QI2-1241/rework-to-composite-actions
     with:
       e2e_path: 'tests/e2e_test.py'
       idp_url: 'https://quantum-inspire-staging.eu.auth0.com'
