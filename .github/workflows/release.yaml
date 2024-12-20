@@ -18,6 +18,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: QuTech-Delft/github-actions/actions/python/poetry-release@master
+      - uses: qutech-delft/github-actions/actions/python/poetry-release@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
