@@ -1,7 +1,6 @@
 name: Releases
 
 on:
-  pull_request:
   push:
     branches:
       - master
@@ -10,14 +9,41 @@ on:
       - created
 
 jobs:
-  publish:
-    name: Publish assets
+  docs-deploy:
+    name: Deploy docs
     runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: qutech-delft/github-actions/actions/docs/sphinx-docs-deploy@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+  python-build:
+    name: Build Python package
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: qutech-delft/github-actions/actions/python/poetry-build@master
+  python-deploy:
+    name: Deploy Python package
+    runs-on: "ubuntu-latest"
+    needs: python-build
     permissions:
       id-token: write
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: qutech-delft/github-actions/actions/python/poetry-release@master
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: dist
+          path: dist
+      # Publishing the package
+      - name: Publish distribution 📦 to Test PyPI
+        if: github.ref == 'refs/heads/master'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
+      - name: Publish distribution 📦 to PyPI
+        if: github.event_name == 'release' && github.event.action == 'created'
+        uses: pypa/gh-action-pypi-publish@release/v1
