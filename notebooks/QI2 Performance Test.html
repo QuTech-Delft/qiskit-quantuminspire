@@ -270,29 +270,30 @@
 <p>We define the circuit based on the number of qubits and the depth (e.g. the number of iterations of the unit building block).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pcircuit</span><span class="p">(</span><span class="n">nqubits</span><span class="p">,</span> <span class="n">depth</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Circuit to test performance of quantum computer &quot;&quot;&quot;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pcircuit</span><span class="p">(</span><span class="n">nqubits</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Circuit to test performance of quantum computer&quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">QuantumRegister</span><span class="p">(</span><span class="n">nqubits</span><span class="p">)</span>
     <span class="n">ans</span> <span class="o">=</span> <span class="n">ClassicalRegister</span><span class="p">(</span><span class="n">nqubits</span><span class="p">)</span>
     <span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">ans</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">qidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nqubits</span><span class="p">):</span>
-            <span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span> <span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">]</span> <span class="p">)</span>
+            <span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">])</span>
         <span class="n">qc</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">qidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nqubits</span><span class="p">):</span>
-            <span class="n">qc</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">])</span>
+            <span class="n">qc</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">])</span>
         <span class="n">qc</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">qidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nqubits</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">qidx</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">qidx</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">qc</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">qidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nqubits</span><span class="p">):</span>
         <span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="n">qidx</span><span class="p">],</span> <span class="n">ans</span><span class="p">[</span><span class="n">qidx</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">q</span><span class="p">,</span> <span class="n">qc</span>
 
-<span class="n">q</span><span class="p">,</span><span class="n">qc</span> <span class="o">=</span> <span class="n">pcircuit</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
+
+<span class="n">q</span><span class="p">,</span> <span class="n">qc</span> <span class="o">=</span> <span class="n">pcircuit</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -323,10 +324,10 @@
 <p>We visualize the histogram with matplotlib.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="s1">&#39;counts&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span>
 <span class="n">result_map</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">:</span>
-    <span class="n">bin_str</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span><span class="s1">&#39;04b&#39;</span><span class="p">)</span>    
+    <span class="n">bin_str</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="s2">&quot;04b&quot;</span><span class="p">)</span>
     <span class="n">result_map</span><span class="p">[</span><span class="n">bin_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
 <span class="n">plot_histogram</span><span class="p">(</span><span class="n">result_map</span><span class="p">)</span>
