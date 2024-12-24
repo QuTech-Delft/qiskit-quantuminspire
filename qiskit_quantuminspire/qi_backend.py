@@ -3,7 +3,7 @@ import math
 from pprint import PrettyPrinter
 from typing import Any, List, Union
 
-from compute_api_client import BackendType
+from compute_api_client import ApiClient, BackendStatus, BackendType, BackendTypesApi
 from qiskit.circuit import Instruction, Measure, QuantumCircuit
 from qiskit.circuit.library import (
     CCXGate,
@@ -21,8 +21,9 @@ from qiskit.providers import BackendV2 as Backend
 from qiskit.providers.options import Options
 from qiskit.transpiler import CouplingMap, Target
 
+from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.qi_jobs import QIJob
-from qiskit_quantuminspire.utils import is_coupling_map_complete
+from qiskit_quantuminspire.utils import is_coupling_map_complete, run_async
 
 # Used for parameterizing Qiskit gates in the gate mapping
 _THETA = Parameter("ϴ")
@@ -145,6 +146,20 @@ class QIBackend(Backend):  # type: ignore[misc]
     def id(self) -> int:
         return self._id
 
+    @property
+    def status(self) -> BackendStatus:
+        backend_type: BackendType = run_async(self._get_backend_type())
+        return backend_type.status
+
+    async def _get_backend_type(self) -> BackendType:
+        async with ApiClient(config()) as client:
+            backend_types_api = BackendTypesApi(client)
+            return await backend_types_api.read_backend_type_backend_types_id_get(self._id)
+
+    @property
+    def available(self) -> bool:
+        return bool(self.status != BackendStatus.OFFLINE)
+
     def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIJob:
         """Create and run a (batch)job on an QuantumInspire Backend.
 
@@ -154,6 +169,8 @@ class QIBackend(Backend):  # type: ignore[misc]
         Returns:
             QIJob: A reference to the batch job that was submitted.
         """
+        if not self.available:
+            raise RuntimeError(f"{self.name} is {self.status}, jobs can't be submitted")
         self.set_options(**options)
         job = QIJob(run_input=run_input, backend=self)
         job.submit()
