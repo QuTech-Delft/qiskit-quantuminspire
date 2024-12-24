@@ -100,7 +100,6 @@ def test_result_blocking_timeout(mocker: MockerFixture) -> None:
         job.result(timeout=0.00001)
 
 
-@pytest.mark.asyncio
 def test_result_non_blocking(mocker: MockerFixture, mock_api_client: MagicMock, mock_batchjob_api: MagicMock) -> None:
     job = QIJob(run_input="", backend=None)
     mocker.patch.object(job, "done", return_value=False)

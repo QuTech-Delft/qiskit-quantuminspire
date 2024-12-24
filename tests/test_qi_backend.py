@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, Generator, Optional, Type
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
+from compute_api_client import BackendStatus
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit
 
@@ -26,11 +27,10 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
         params = params or {}
         backend_type = params.pop("backend_type", create_backend_type(max_number_of_shots=4096))
         is_online = params.pop("backend_online", True)
+        status = BackendStatus.IDLE if is_online else BackendStatus.OFFLINE
 
         qi_backend = QIBackend(backend_type=backend_type)
-        mocker.patch.object(
-            type(qi_backend), "available", PropertyMock(return_value=is_online)  # The class of the instance
-        )
+        mocker.patch.object(type(qi_backend), "status", PropertyMock(return_value=status))  # The class of the instance
 
         return qi_backend
 
