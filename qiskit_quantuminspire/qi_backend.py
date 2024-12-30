@@ -4,6 +4,7 @@ from pprint import PrettyPrinter
 from typing import Any, List, Union
 
 from compute_api_client import ApiClient, BackendStatus, BackendType, BackendTypesApi
+from qi2_shared.client import config
 from qiskit.circuit import Instruction, Measure, QuantumCircuit
 from qiskit.circuit.library import (
     CCXGate,
@@ -21,7 +22,6 @@ from qiskit.providers import BackendV2 as Backend
 from qiskit.providers.options import Options
 from qiskit.transpiler import CouplingMap, Target
 
-from qiskit_quantuminspire.api.client import config
 from qiskit_quantuminspire.qi_jobs import QIJob
 from qiskit_quantuminspire.utils import is_coupling_map_complete, run_async
 

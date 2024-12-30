@@ -1,9 +1,9 @@
 from typing import Any, List, Optional, Sequence
 
 from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBackendType
+from qi2_shared.client import config
+from qi2_shared.pagination import PageReader
 
-from qiskit_quantuminspire.api.client import config
-from qiskit_quantuminspire.api.pagination import PageReader
 from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.qi_backend import QIBackend
 from qiskit_quantuminspire.utils import run_async

@@ -2,6 +2,7 @@ from typing import Any
 from unittest.mock import AsyncMock
 
 import pytest
+from pytest_mock import MockerFixture
 
 from qiskit_quantuminspire.qi_backend import QIBackend
 from qiskit_quantuminspire.qi_provider import QIProvider
@@ -9,7 +10,9 @@ from tests.helpers import create_backend_type
 
 
 @pytest.fixture
-def backend_repository(mock_job_api: Any, page_reader_mock: AsyncMock) -> None:
+def backend_repository(mocker: MockerFixture, mock_job_api: Any, page_reader_mock: AsyncMock) -> None:
+    mocker.patch("qiskit_quantuminspire.qi_provider.config")
+    mocker.patch("qiskit_quantuminspire.qi_provider.ApiClient")
     page_reader_mock.get_all.return_value = [
         create_backend_type(name="qi_backend_1", id=10),
         create_backend_type(name="spin", id=20),

@@ -3,8 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from compute_api_client import BatchJobStatus
 from pytest_mock import MockerFixture
-
-from qiskit_quantuminspire.api.pagination import PageReader
+from qi2_shared.pagination import PageReader
 
 
 @pytest.fixture

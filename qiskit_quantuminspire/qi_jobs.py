@@ -35,6 +35,9 @@ from compute_api_client import (
     ResultsApi,
     ShareType,
 )
+from qi2_shared.client import config
+from qi2_shared.pagination import PageReader
+from qi2_shared.settings import ApiSettings
 from qiskit import qpy
 from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1
@@ -45,9 +48,6 @@ from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
 from qiskit_quantuminspire import cqasm
-from qiskit_quantuminspire.api.client import config
-from qiskit_quantuminspire.api.pagination import PageReader
-from qiskit_quantuminspire.api.settings import ApiSettings
 from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.utils import run_async
 
