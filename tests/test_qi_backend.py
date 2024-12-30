@@ -1,12 +1,40 @@
 import logging
-from unittest.mock import MagicMock
+from typing import Any, Callable, Dict, Generator, Optional, Type
+from unittest.mock import MagicMock, PropertyMock
 
 import pytest
+from compute_api_client import BackendStatus
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit
 
 from qiskit_quantuminspire.qi_backend import QIBackend
 from tests.helpers import create_backend_type
+
+
+@pytest.fixture()
+def qi_job_mock(mocker: MockerFixture) -> Generator[MagicMock, None, None]:
+    job = MagicMock()
+    job.submit = MagicMock()
+    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
+    yield job
+    job.submit.reset_mock()
+
+
+@pytest.fixture
+def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
+
+    def _generate_qi_backend(params: Optional[Dict[Any, Any]] = None) -> QIBackend:
+        params = params or {}
+        backend_type = params.pop("backend_type", create_backend_type(max_number_of_shots=4096))
+        is_online = params.pop("backend_online", True)
+        status = BackendStatus.IDLE if is_online else BackendStatus.OFFLINE
+
+        qi_backend = QIBackend(backend_type=backend_type)
+        mocker.patch.object(type(qi_backend), "status", PropertyMock(return_value=status))  # The class of the instance
+
+        return qi_backend
+
+    return _generate_qi_backend
 
 
 @pytest.mark.parametrize(
@@ -102,27 +130,26 @@ def test_qi_backend_repr() -> None:
     assert qi_backend.name in repr(qi_backend)
 
 
-def test_qi_backend_run(mocker: MockerFixture) -> None:
+@pytest.mark.parametrize("backend_online", [True, False])  # Test cases for backend being available and offline
+def test_qi_backend_run_backend_status(
+    qi_job_mock: MagicMock, qi_backend_factory: Callable[..., QIBackend], backend_online: bool
+) -> None:
     # Arrange
-    job = MagicMock()
-    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
-    backend_type = create_backend_type(max_number_of_shots=4096)
-    qi_backend = QIBackend(backend_type=backend_type)
-
-    # Act
+    qi_backend = qi_backend_factory(params={"backend_online": backend_online})
     qc = QuantumCircuit(2, 2)
-    qi_backend.run(qc)
 
-    # Assert
-    job.submit.assert_called_once()
+    # Act & Assert
+    if backend_online:
+        qi_backend.run(qc)
+        qi_job_mock.submit.assert_called_once()
+    else:
+        with pytest.raises(RuntimeError):
+            qi_backend.run(qc)
 
 
-def test_qi_backend_run_updates_shots(mocker: MockerFixture) -> None:
+def test_qi_backend_run_updates_shots(qi_job_mock: MagicMock, qi_backend_factory: Callable[..., QIBackend]) -> None:
     # Arrange
-    job = MagicMock()
-    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
-    backend_type = create_backend_type(max_number_of_shots=4096)
-    qi_backend = QIBackend(backend_type=backend_type)
+    qi_backend = qi_backend_factory()
 
     # Act
     qc = QuantumCircuit(2, 2)
@@ -132,59 +159,44 @@ def test_qi_backend_run_updates_shots(mocker: MockerFixture) -> None:
     assert qi_backend.options.get("shots") == 1500
 
 
-def test_qi_backend_run_unsupported_options(mocker: MockerFixture) -> None:
+@pytest.mark.parametrize(
+    "option, value, expected_exception",
+    [
+        ("unsupported_option", True, AttributeError),
+        ("memory", True, ValueError),
+        ("seed_simulator", 1, ValueError),
+    ],
+)
+def test_qi_backend_run_with_unsupported_options(
+    qi_job_mock: MagicMock,
+    qi_backend_factory: Callable[..., QIBackend],
+    option: str,
+    value: Any,
+    expected_exception: Type[Exception],
+) -> None:
     # Arrange
-    job = MagicMock()
-    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
-    backend_type = create_backend_type(max_number_of_shots=4096)
-    qi_backend = QIBackend(backend_type=backend_type)
+    qi_backend = qi_backend_factory()
 
     # Act & Assert
     qc = QuantumCircuit(2, 2)
-    with pytest.raises(AttributeError):
-        qi_backend.run(qc, unsupported_option=True)
+    with pytest.raises(expected_exception):
+        qi_backend.run(qc, **{option: value})
 
 
-def test_qi_backend_run_no_shot_memory_support(mocker: MockerFixture) -> None:
+def test_qi_backend_run_supports_shot_memory(
+    qi_job_mock: MagicMock, qi_backend_factory: Callable[..., QIBackend]
+) -> None:
     # Arrange
-    job = MagicMock()
-    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
-    backend_type = create_backend_type(max_number_of_shots=4096)
-    qi_backend = QIBackend(backend_type=backend_type)
-
-    # Act & Assert
-    qc = QuantumCircuit(2, 2)
-    with pytest.raises(ValueError):
-        qi_backend.run(qc, memory=True)
-
-
-def test_qi_backend_run_supports_shot_memory(mocker: MockerFixture) -> None:
-    # Arrange
-    job = MagicMock()
-    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
     backend_type = create_backend_type(max_number_of_shots=4096)
     backend_type.supports_raw_data = True
-    qi_backend = QIBackend(backend_type=backend_type)
+    qi_backend = qi_backend_factory(params={"backend_type": backend_type})
 
     # Act
     qc = QuantumCircuit(2, 2)
     qi_backend.run(qc, memory=True)
 
     # Assert
-    job.submit.assert_called_once()
-
-
-def test_qi_backend_run_option_bad_value(mocker: MockerFixture) -> None:
-    # Arrange
-    job = MagicMock()
-    mocker.patch("qiskit_quantuminspire.qi_backend.QIJob", return_value=job)
-    backend_type = create_backend_type(max_number_of_shots=4096)
-    qi_backend = QIBackend(backend_type=backend_type)
-
-    # Act & Assert
-    qc = QuantumCircuit(2, 2)
-    with pytest.raises(ValueError):
-        qi_backend.run(qc, seed_simulator=1)
+    qi_job_mock.submit.assert_called_once()
 
 
 def test_qi_backend_construction_toffoli_gate_unsupported(
