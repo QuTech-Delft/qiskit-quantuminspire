@@ -9,6 +9,10 @@ from qiskit_quantuminspire.qi_backend import QIBaseBackend
 
 
 class QIInternalBackend(QIBaseBackend):
+    """Used as a Qiskit backend for hybrid algorithms that are fully executed on the Quantum Inspire platform.
+
+    Quantum hardware specifications are inferred from the backend type selected on submission."""
+
     def __init__(self, qi: QuantumInterface, **kwargs: Any):
         super().__init__(qi.backend_type, **kwargs)
         self._quantum_interface = qi
