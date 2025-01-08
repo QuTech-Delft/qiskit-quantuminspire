@@ -1,10 +1,10 @@
 from typing import Any, List, Union
 
-from qi2_shared.hybrid.quantum_interface import QuantumInterface
 from qiskit import QuantumCircuit
 from qiskit.providers.models.backendstatus import BackendStatus
 
 from qiskit_quantuminspire.hybrid.hybrid_job import QIHybridJob
+from qiskit_quantuminspire.hybrid.quantum_interface import QuantumInterface
 from qiskit_quantuminspire.qi_backend import QIBaseBackend
 
 
