@@ -4,11 +4,11 @@ from qi2_shared.hybrid.quantum_interface import QuantumInterface
 from qiskit import QuantumCircuit
 from qiskit.providers.models.backendstatus import BackendStatus
 
-from qiskit_quantuminspire.hybrid.internal_job import QIInternalJob
+from qiskit_quantuminspire.hybrid.hybrid_job import QIHybridJob
 from qiskit_quantuminspire.qi_backend import QIBaseBackend
 
 
-class QIInternalBackend(QIBaseBackend):
+class QIHybridBackend(QIBaseBackend):
     """Used as a Qiskit backend for hybrid algorithms that are fully executed on the Quantum Inspire platform.
 
     Quantum hardware specifications are inferred from the backend type selected on submission."""
@@ -32,5 +32,5 @@ class QIInternalBackend(QIBaseBackend):
             status_msg="online",
         )
 
-    def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIInternalJob:
+    def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIHybridJob:
         raise NotImplementedError()
