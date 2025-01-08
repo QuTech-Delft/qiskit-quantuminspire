@@ -1,6 +1,5 @@
 import logging
 import math
-from abc import ABC
 from pprint import PrettyPrinter
 from typing import Any, List, Union
 
@@ -65,7 +64,7 @@ _ALL_SUPPORTED_GATES: list[str] = list(get_standard_gate_name_mapping().keys()) 
 
 # Ignore type checking for QIBackend due to missing Qiskit type stubs,
 # which causes the base class 'Backend' to be treated as 'Any'.
-class QIBaseBackend(Backend, ABC):  # type: ignore[misc]
+class QIBaseBackend(Backend):  # type: ignore[misc]
     _max_shots: int
 
     def __init__(self, backend_type: BackendType, **kwargs: Any):

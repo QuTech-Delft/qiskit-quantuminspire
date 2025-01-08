@@ -1,5 +1,4 @@
 import asyncio
-from abc import ABC
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
@@ -64,7 +63,7 @@ class CircuitExecutionData:
 
 # Ignore type checking for QIBaseJob due to missing Qiskit type stubs,
 # which causes the base class 'Job' to be treated as 'Any'.
-class QIBaseJob(JobV1, ABC):  # type: ignore[misc]
+class QIBaseJob(JobV1):  # type: ignore[misc]
     circuits_run_data: List[CircuitExecutionData]
 
     def __init__(
@@ -82,13 +81,15 @@ class QIBaseJob(JobV1, ABC):  # type: ignore[misc]
             **kwargs: Additional keyword arguments passed to the parent `Job` class.
         """
         super().__init__(backend, "", **kwargs)
-        self.circuits_run_data = (
-            [CircuitExecutionData(circuit=run_input)]
-            if isinstance(run_input, QuantumCircuit)
-            else [CircuitExecutionData(circuit=circuit) for circuit in run_input]
-        )
+        self.circuits_run_data = []
+        self._add_circuits(run_input)
         self.program_name = "Program created by SDK"
         self.batch_job_id: Union[int, None] = None
+
+    def _add_circuits(self, circuits: Union[QuantumCircuit, List[QuantumCircuit]]) -> None:
+        """Add circuits to the list of circuits to be run."""
+        circuits = [circuits] if isinstance(circuits, QuantumCircuit) else circuits
+        self.circuits_run_data.extend([CircuitExecutionData(circuit=circuit) for circuit in circuits])
 
     def _process_results(self) -> Result:
         """Process the raw job results obtained from QuantumInspire."""

@@ -33,4 +33,5 @@ class QIHybridBackend(QIBaseBackend):
         )
 
     def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIHybridJob:
-        raise NotImplementedError()
+        job = QIHybridJob(run_input=run_input, backend=self, quantum_interface=self._quantum_interface, **options)
+        job.submit()
