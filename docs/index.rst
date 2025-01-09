@@ -9,6 +9,7 @@ Welcome to the documentation of **Qiskit-QuantumInspire**, a Qiskit plugin for t
 
    Documentation Home <index>
    Getting Started <getting_started/index>
+   Hybrid Computing <hybrid/index>
    Example Notebooks <notebooks/index>
    Contributing and Development <contributing>
    License <license>
