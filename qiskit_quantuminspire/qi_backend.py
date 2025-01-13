@@ -170,7 +170,7 @@ class QIBackend(Backend):  # type: ignore[misc]
             QIJob: A reference to the batch job that was submitted.
         """
         if not self.available:
-            raise RuntimeError(f"{self.name} is {self.status}, jobs can't be submitted")
+            raise RuntimeError(f"{self.name} is {self.status.value}, jobs can't be submitted")
         self.set_options(**options)
         job = QIJob(run_input=run_input, backend=self)
         job.submit()
