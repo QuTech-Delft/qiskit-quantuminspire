@@ -267,7 +267,8 @@
 <span class="k">class</span> <span class="nc">QIHybridBackend</span><span class="p">(</span><span class="n">QIBaseBackend</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Used as a Qiskit backend for hybrid algorithms that are fully executed on the Quantum Inspire platform.</span>
 
-<span class="sd">    Quantum hardware specifications are inferred from the backend type selected on submission.&quot;&quot;&quot;</span>
+<span class="sd">    Quantum hardware specifications are inferred from the backend type selected on submission.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qi</span><span class="p">:</span> <span class="n">QuantumInterface</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">qi</span><span class="o">.</span><span class="n">backend_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
