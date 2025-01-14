@@ -16,7 +16,8 @@ from qiskit_quantuminspire.qi_jobs import QIBaseJob
 class QIHybridJob(QIBaseJob):
     """Used internally as a Qiskit job for hybrid algorithms that are fully executed on the Quantum Inspire platform.
 
-    Not to be used in user code."""
+    Not to be used in user code.
+    """
 
     def __init__(
         self,
@@ -29,7 +30,7 @@ class QIHybridJob(QIBaseJob):
         super().__init__(run_input, backend, **kwargs)
 
     def status(self) -> JobStatus:
-        """Quantum jobs in a hybrid environment are executed synchronously"""
+        """Quantum jobs in a hybrid environment are executed synchronously."""
         return JobStatus.DONE
 
     def submit(self) -> None:
