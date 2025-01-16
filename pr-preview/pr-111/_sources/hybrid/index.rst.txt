@@ -1,5 +1,5 @@
 ======================
-Hybrid Computing
+Hybrid Algorithms
 ======================
 
 Unlock the power of hybrid quantum-classical computing with Qiskit-QuantumInspire.
