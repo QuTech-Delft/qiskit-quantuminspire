@@ -198,7 +198,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../getting_started/submitting.html">Submitting a circuit</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../hybrid/index.html">Hybrid Algorithms</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Hybrid Algorithms</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../hybrid/basics.html">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hybrid/leveraging_qiskit.html">Leveraging Qiskit</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/QI2%20Performance%20Test.html">Quantum Inspire performance test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/Super%20Dense%20Coding.html">Superdense Coding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/basic_circuit_execution.html">Basic circuit execution</a></li>
@@ -206,8 +211,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing and Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api/qiskit_quantuminspire.html">qiskit_quantuminspire package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/qiskit_quantuminspire.html">qiskit_quantuminspire package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of qiskit_quantuminspire package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/qiskit_quantuminspire.hybrid.html">qiskit_quantuminspire.hybrid package</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/QuTech-Delft/qiskit-quantuminspire">GitHub</a></li>
@@ -310,12 +318,12 @@
 
 
 
-<span class="c1"># Ignore type checking for QIJob due to missing Qiskit type stubs,</span>
+<span class="c1"># Ignore type checking for QIBaseJob due to missing Qiskit type stubs,</span>
 <span class="c1"># which causes the base class &#39;Job&#39; to be treated as &#39;Any&#39;.</span>
-<div class="viewcode-block" id="QIJob">
-<a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob">[docs]</a>
-<span class="k">class</span> <span class="nc">QIJob</span><span class="p">(</span><span class="n">JobV1</span><span class="p">):</span>  <span class="c1"># type: ignore[misc]</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper class for QuantumInspire batch jobs to integrate with Qiskit&#39;s Job interface.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="QIBaseJob">
+<a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIBaseJob">[docs]</a>
+<span class="k">class</span> <span class="nc">QIBaseJob</span><span class="p">(</span><span class="n">JobV1</span><span class="p">):</span>  <span class="c1"># type: ignore[misc]</span>
+    <span class="n">circuits_run_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CircuitExecutionData</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -332,13 +340,84 @@
 <span class="sd">            **kwargs: Additional keyword arguments passed to the parent `Job` class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CircuitExecutionData</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">[</span><span class="n">CircuitExecutionData</span><span class="p">(</span><span class="n">circuit</span><span class="o">=</span><span class="n">run_input</span><span class="p">)]</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">run_input</span><span class="p">,</span> <span class="n">QuantumCircuit</span><span class="p">)</span>
-            <span class="k">else</span> <span class="p">[</span><span class="n">CircuitExecutionData</span><span class="p">(</span><span class="n">circuit</span><span class="o">=</span><span class="n">circuit</span><span class="p">)</span> <span class="k">for</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="n">run_input</span><span class="p">]</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_circuits</span><span class="p">(</span><span class="n">run_input</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">program_name</span> <span class="o">=</span> <span class="s2">&quot;Program created by SDK&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_job_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_add_circuits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add circuits to the list of circuits to be run.&quot;&quot;&quot;</span>
+        <span class="n">circuits</span> <span class="o">=</span> <span class="p">[</span><span class="n">circuits</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">QuantumCircuit</span><span class="p">)</span> <span class="k">else</span> <span class="n">circuits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">CircuitExecutionData</span><span class="p">(</span><span class="n">circuit</span><span class="o">=</span><span class="n">circuit</span><span class="p">)</span> <span class="k">for</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="n">circuits</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_process_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the raw job results obtained from QuantumInspire.&quot;&quot;&quot;</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">batch_job_success</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">circuit_data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="p">):</span>
+            <span class="n">qi_result</span> <span class="o">=</span> <span class="n">circuit_data</span><span class="o">.</span><span class="n">results</span>
+            <span class="n">circuit_name</span> <span class="o">=</span> <span class="n">circuit_data</span><span class="o">.</span><span class="n">circuit</span><span class="o">.</span><span class="n">name</span>
+
+            <span class="k">if</span> <span class="n">qi_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">experiment_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_empty_experiment_result</span><span class="p">(</span><span class="n">circuit_name</span><span class="o">=</span><span class="n">circuit_name</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">experiment_result</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">experiment_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_experiment_result</span><span class="p">(</span>
+                <span class="n">circuit_name</span><span class="o">=</span><span class="n">circuit_name</span><span class="p">,</span>
+                <span class="n">result</span><span class="o">=</span><span class="n">qi_result</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">experiment_result</span><span class="p">)</span>
+            <span class="n">batch_job_success</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">qi_result</span><span class="o">.</span><span class="n">shots_done</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span>
+            <span class="n">backend_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">backend_version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+            <span class="n">qobj_id</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">job_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_job_id</span><span class="p">),</span>
+            <span class="n">success</span><span class="o">=</span><span class="nb">all</span><span class="p">(</span><span class="n">batch_job_success</span><span class="p">),</span>
+            <span class="n">results</span><span class="o">=</span><span class="n">results</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_create_experiment_result</span><span class="p">(</span>
+        <span class="n">circuit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">RawJobResult</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an ExperimentResult instance based on RawJobResult parameters.&quot;&quot;&quot;</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="p">{</span><span class="nb">hex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">memory</span> <span class="o">=</span> <span class="p">[</span><span class="nb">hex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">measurement</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">for</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">raw_data</span><span class="p">]</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">raw_data</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">experiment_data</span> <span class="o">=</span> <span class="n">ExperimentResultData</span><span class="p">(</span>
+            <span class="n">counts</span><span class="o">=</span><span class="p">{}</span> <span class="k">if</span> <span class="n">counts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">counts</span><span class="p">,</span>
+            <span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExperimentResult</span><span class="p">(</span>
+            <span class="n">shots</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">shots_done</span><span class="p">,</span>
+            <span class="n">success</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">shots_done</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">experiment_data</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="n">QobjExperimentHeader</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">circuit_name</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_create_empty_experiment_result</span><span class="p">(</span><span class="n">circuit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an empty ExperimentResult instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ExperimentResult</span><span class="p">(</span>
+            <span class="n">shots</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">ExperimentResultData</span><span class="p">(</span><span class="n">counts</span><span class="o">=</span><span class="p">{}),</span>
+            <span class="n">header</span><span class="o">=</span><span class="n">QobjExperimentHeader</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">circuit_name</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="QIJob">
+<a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob">[docs]</a>
+<span class="k">class</span> <span class="nc">QIJob</span><span class="p">(</span><span class="n">QIBaseJob</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper class for QuantumInspire batch jobs to integrate with Qiskit&#39;s Job interface.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="QIJob.submit">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob.submit">[docs]</a>
@@ -487,19 +566,6 @@
             <span class="k">for</span> <span class="n">circuit_data</span><span class="p">,</span> <span class="n">result_item</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="p">,</span> <span class="n">result_items</span><span class="p">):</span>
                 <span class="n">circuit_data</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">result_item</span> <span class="k">else</span> <span class="n">result_item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<div class="viewcode-block" id="QIJob.result">
-<a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob.result">[docs]</a>
-    <span class="nd">@cache</span>
-    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_for_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">60.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the results of the job.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">wait_for_results</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_final_state</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(Batch)Job status is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="n">run_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fetch_job_results</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_results</span><span class="p">()</span></div>
-
-
 <div class="viewcode-block" id="QIJob.status">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob.status">[docs]</a>
     <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobStatus</span><span class="p">:</span>
@@ -588,67 +654,18 @@
             <span class="k">return</span> <span class="n">job</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_process_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the raw job results obtained from QuantumInspire.&quot;&quot;&quot;</span>
-
-        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">batch_job_success</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">circuit_data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="p">):</span>
-            <span class="n">qi_result</span> <span class="o">=</span> <span class="n">circuit_data</span><span class="o">.</span><span class="n">results</span>
-            <span class="n">circuit_name</span> <span class="o">=</span> <span class="n">circuit_data</span><span class="o">.</span><span class="n">circuit</span><span class="o">.</span><span class="n">name</span>
-
-            <span class="k">if</span> <span class="n">qi_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">experiment_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_empty_experiment_result</span><span class="p">(</span><span class="n">circuit_name</span><span class="o">=</span><span class="n">circuit_name</span><span class="p">)</span>
-                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">experiment_result</span><span class="p">)</span>
-                <span class="k">continue</span>
-
-            <span class="n">experiment_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_experiment_result</span><span class="p">(</span>
-                <span class="n">circuit_name</span><span class="o">=</span><span class="n">circuit_name</span><span class="p">,</span>
-                <span class="n">result</span><span class="o">=</span><span class="n">qi_result</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">experiment_result</span><span class="p">)</span>
-            <span class="n">batch_job_success</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">qi_result</span><span class="o">.</span><span class="n">shots_done</span> <span class="o">&gt;</span> <span class="mi">0</span>
-
-        <span class="n">result</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span>
-            <span class="n">backend_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">backend_version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-            <span class="n">qobj_id</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">job_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_job_id</span><span class="p">),</span>
-            <span class="n">success</span><span class="o">=</span><span class="nb">all</span><span class="p">(</span><span class="n">batch_job_success</span><span class="p">),</span>
-            <span class="n">results</span><span class="o">=</span><span class="n">results</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_create_experiment_result</span><span class="p">(</span>
-        <span class="n">circuit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">result</span><span class="p">:</span> <span class="n">RawJobResult</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentResult</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an ExperimentResult instance based on RawJobResult parameters.&quot;&quot;&quot;</span>
-        <span class="n">counts</span> <span class="o">=</span> <span class="p">{</span><span class="nb">hex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="n">memory</span> <span class="o">=</span> <span class="p">[</span><span class="nb">hex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">measurement</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">for</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">raw_data</span><span class="p">]</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">raw_data</span> <span class="k">else</span> <span class="kc">None</span>
-
-        <span class="n">experiment_data</span> <span class="o">=</span> <span class="n">ExperimentResultData</span><span class="p">(</span>
-            <span class="n">counts</span><span class="o">=</span><span class="p">{}</span> <span class="k">if</span> <span class="n">counts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">counts</span><span class="p">,</span>
-            <span class="n">memory</span><span class="o">=</span><span class="n">memory</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">ExperimentResult</span><span class="p">(</span>
-            <span class="n">shots</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">shots_done</span><span class="p">,</span>
-            <span class="n">success</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">shots_done</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">data</span><span class="o">=</span><span class="n">experiment_data</span><span class="p">,</span>
-            <span class="n">header</span><span class="o">=</span><span class="n">QobjExperimentHeader</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">circuit_name</span><span class="p">),</span>
-        <span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_create_empty_experiment_result</span><span class="p">(</span><span class="n">circuit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentResult</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an empty ExperimentResult instance.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ExperimentResult</span><span class="p">(</span>
-            <span class="n">shots</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">data</span><span class="o">=</span><span class="n">ExperimentResultData</span><span class="p">(</span><span class="n">counts</span><span class="o">=</span><span class="p">{}),</span>
-            <span class="n">header</span><span class="o">=</span><span class="n">QobjExperimentHeader</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">circuit_name</span><span class="p">),</span>
-        <span class="p">)</span></div>
+<div class="viewcode-block" id="QIJob.result">
+<a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob.result">[docs]</a>
+    <span class="nd">@cache</span>
+    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_for_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">60.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the results of the job.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">wait_for_results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_final_state</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(Batch)Job status is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">run_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fetch_job_results</span><span class="p">())</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_results</span><span class="p">()</span></div>
+</div>
 
 </pre></div>
         </article>

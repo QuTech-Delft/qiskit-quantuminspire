@@ -198,7 +198,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../getting_started/submitting.html">Submitting a circuit</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../hybrid/index.html">Hybrid Algorithms</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Hybrid Algorithms</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../hybrid/basics.html">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hybrid/leveraging_qiskit.html">Leveraging Qiskit</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/QI2%20Performance%20Test.html">Quantum Inspire performance test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/Super%20Dense%20Coding.html">Superdense Coding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../notebooks/basic_circuit_execution.html">Basic circuit execution</a></li>
@@ -206,8 +211,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing and Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api/qiskit_quantuminspire.html">qiskit_quantuminspire package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/qiskit_quantuminspire.html">qiskit_quantuminspire package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of qiskit_quantuminspire package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/qiskit_quantuminspire.hybrid.html">qiskit_quantuminspire.hybrid package</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/QuTech-Delft/qiskit-quantuminspire">GitHub</a></li>
@@ -310,11 +318,9 @@
 
 <span class="c1"># Ignore type checking for QIBackend due to missing Qiskit type stubs,</span>
 <span class="c1"># which causes the base class &#39;Backend&#39; to be treated as &#39;Any&#39;.</span>
-<div class="viewcode-block" id="QIBackend">
-<a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_backend.QIBackend">[docs]</a>
-<span class="k">class</span> <span class="nc">QIBackend</span><span class="p">(</span><span class="n">Backend</span><span class="p">):</span>  <span class="c1"># type: ignore[misc]</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper class for QuantumInspire backendtypes to integrate with Qiskit&#39;s Backend interface.&quot;&quot;&quot;</span>
-
+<div class="viewcode-block" id="QIBaseBackend">
+<a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_backend.QIBaseBackend">[docs]</a>
+<span class="k">class</span> <span class="nc">QIBaseBackend</span><span class="p">(</span><span class="n">Backend</span><span class="p">):</span>  <span class="c1"># type: ignore[misc]</span>
     <span class="n">_max_shots</span><span class="p">:</span> <span class="nb">int</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_type</span><span class="p">:</span> <span class="n">BackendType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
@@ -392,7 +398,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span></div>
+
+
+
+<div class="viewcode-block" id="QIBackend">
+<a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_backend.QIBackend">[docs]</a>
+<span class="k">class</span> <span class="nc">QIBackend</span><span class="p">(</span><span class="n">QIBaseBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper class for QuantumInspire backendtypes to integrate with Qiskit&#39;s Backend interface.&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BackendStatus</span><span class="p">:</span>

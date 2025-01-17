@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="How to: Submit a circuit" href="submitting.html" /><link rel="prev" title="Getting Started" href="index.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Basics" href="basics.html" /><link rel="prev" title="How to: Submit a circuit" href="../getting_started/submitting.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Installation and login - Qiskit-QuantumInspire 0.3.0 documentation</title>
+        <title>Hybrid Algorithms - Qiskit-QuantumInspire 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
@@ -194,14 +194,14 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Getting Started</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Getting Started</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Installation and login</a></li>
-<li class="toctree-l2"><a class="reference internal" href="submitting.html">Submitting a circuit</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Getting Started</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">Installation and login</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/submitting.html">Submitting a circuit</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../hybrid/index.html">Hybrid Algorithms</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Hybrid Algorithms</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../hybrid/basics.html">Basics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../hybrid/leveraging_qiskit.html">Leveraging Qiskit</a></li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Hybrid Algorithms</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Hybrid Algorithms</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="basics.html">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leveraging_qiskit.html">Leveraging Qiskit</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -238,7 +238,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/getting_started/installation.md.txt" title="View this page">
+  <a class="muted-link" href="../_sources/hybrid/index.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -258,15 +258,18 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="installation-and-login">
-<h1>Installation and login<a class="headerlink" href="#installation-and-login" title="Link to this heading">¶</a></h1>
-<p>You can install the Qiskit-QI plugin using pip:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qiskit-quantuminspire
-</pre></div>
-</div>
-<p>For access to the Quantum Inspire 2 API you can use the QI2 CLI. Once installed (see <a class="reference external" href="https://github.com/QuTech-Delft/quantuminspire2">repository</a> for installation instructions), simply run the shell command below to log in to the production environment.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qi<span class="w"> </span>login<span class="w"> </span><span class="s2">&quot;https://api.qi2.quantum-inspire.com&quot;</span>
-</pre></div>
+          <section id="hybrid-algorithms">
+<h1>Hybrid Algorithms<a class="headerlink" href="#hybrid-algorithms" title="Link to this heading">¶</a></h1>
+<p>Unlock the power of hybrid quantum-classical computing with Qiskit-QuantumInspire.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">Basics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basics.html#script-format">Script format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basics.html#execution">Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="leveraging_qiskit.html">Leveraging Qiskit</a></li>
+</ul>
 </div>
 </section>
 
@@ -275,23 +278,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="submitting.html">
+          <a class="next-page" href="basics.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">How to: Submit a circuit</div>
+                <div class="title">Basics</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="index.html">
+          <a class="prev-page" href="../getting_started/submitting.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Getting Started</div>
+                <div class="title">How to: Submit a circuit</div>
                 
               </div>
             </a>

@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="How to: Submit a circuit" href="submitting.html" /><link rel="prev" title="Getting Started" href="index.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Leveraging Qiskit" href="leveraging_qiskit.html" /><link rel="prev" title="Hybrid Algorithms" href="index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Installation and login - Qiskit-QuantumInspire 0.3.0 documentation</title>
+        <title>Basics - Qiskit-QuantumInspire 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
@@ -172,7 +172,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -194,14 +194,14 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Getting Started</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Getting Started</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Installation and login</a></li>
-<li class="toctree-l2"><a class="reference internal" href="submitting.html">Submitting a circuit</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Getting Started</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">Installation and login</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/submitting.html">Submitting a circuit</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../hybrid/index.html">Hybrid Algorithms</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Hybrid Algorithms</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../hybrid/basics.html">Basics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../hybrid/leveraging_qiskit.html">Leveraging Qiskit</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Hybrid Algorithms</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Hybrid Algorithms</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leveraging_qiskit.html">Leveraging Qiskit</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -238,7 +238,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/getting_started/installation.md.txt" title="View this page">
+  <a class="muted-link" href="../_sources/hybrid/basics.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -252,22 +252,74 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="installation-and-login">
-<h1>Installation and login<a class="headerlink" href="#installation-and-login" title="Link to this heading">¶</a></h1>
-<p>You can install the Qiskit-QI plugin using pip:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qiskit-quantuminspire
+          <section id="basics">
+<h1>Basics<a class="headerlink" href="#basics" title="Link to this heading">¶</a></h1>
+<p>Quantum Inspire 2 supports hybrid classical-quantum algorithms, and allows execution of both the quantum and the classical part fully on the QI2 servers.</p>
+<section id="script-format">
+<h2>Script format<a class="headerlink" href="#script-format" title="Link to this heading">¶</a></h2>
+<p>Any script that will be executed on the QI2 platform is required to have at least the <code class="docutils literal notranslate"><span class="pre">execute()</span></code> and <code class="docutils literal notranslate"><span class="pre">finalize()</span></code> functions.</p>
+<section id="execute">
+<h3>Execute<a class="headerlink" href="#execute" title="Link to this heading">¶</a></h3>
+<p>The execute function is the function that gets called by QI2 first. As an argument it gets a <code class="docutils literal notranslate"><span class="pre">QuantumInterface</span></code>, which is what allows you to actually execute your circuit. A simple example, where a function <code class="docutils literal notranslate"><span class="pre">generate_circuit()</span></code> is called that returns cQASM as a string, is shown below. In this example, the same circuit is executed 5 times in a row as a simple illustration of the interchanging control between the hybrid and classical domains. Normally, you might want to change your <code class="docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> between each execution based on your results.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">qi</span><span class="p">:</span> <span class="n">QuantumInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the classical part of the Hybrid Quantum/Classical Algorithm.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        qi: A QuantumInterface instance that can be used to execute quantum circuits</span>
+
+<span class="sd">    The qi object has a single method called execute_circuit, its interface is described below:</span>
+
+<span class="sd">    qi.execute_circuit args:</span>
+<span class="sd">        circuit: a string representation of a quantum circuit</span>
+<span class="sd">        number_of_shots: how often to execute the circuit</span>
+
+<span class="sd">    qi.execute_circuit return value:</span>
+<span class="sd">        The results of executing the quantum circuit, this is an object with the following attributes</span>
+<span class="sd">            results: The results from iteration n-1.</span>
+<span class="sd">            shots_requested: The number of shots requested by the user for the previous iteration.</span>
+<span class="sd">            shots_done: The number of shots actually run.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">generate_circuit</span><span class="p">()</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">qi</span><span class="o">.</span><span class="n">execute_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For access to the Quantum Inspire 2 API you can use the QI2 CLI. Once installed (see <a class="reference external" href="https://github.com/QuTech-Delft/quantuminspire2">repository</a> for installation instructions), simply run the shell command below to log in to the production environment.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qi<span class="w"> </span>login<span class="w"> </span><span class="s2">&quot;https://api.qi2.quantum-inspire.com&quot;</span>
+</section>
+<section id="finalize">
+<h3>Finalize<a class="headerlink" href="#finalize" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">finalize()</span></code> function allows you to aggregate your results. It should return a dictionary which will be stored as the final result. By default it takes a list of all measurements as an argument, but through the use of globals you could also export other data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="n">list_of_measurements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aggregate the results from all iterations into one final result.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        list_of_measurements: List of all results from the previous iterations.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A free-form result, with a `property`: `value` structure. Value can</span>
+<span class="sd">        be everything serializable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="n">list_of_measurements</span><span class="p">}</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="execution">
+<h2>Execution<a class="headerlink" href="#execution" title="Link to this heading">¶</a></h2>
+<p>A complete script with both example functions can be found <a class="reference download internal" download="" href="../_downloads/f352eaa87d593c9ac34a3fd1740be9c1/hqca_circuit.py"><span class="xref download myst">here</span></a>. This can be uploaded to QI2 as follows (using the CLI), where <code class="docutils literal notranslate"><span class="pre">&lt;backend_id&gt;</span></code> is the id number of the selected quantum backend, which can be retrieved using the Qiskit-QuantumInspire QIProvider.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qi<span class="w"> </span>files<span class="w"> </span>upload<span class="w"> </span>./hqca_circuit.py<span class="w"> </span>&lt;backend_id&gt;
+</pre></div>
+</div>
+<p>The final results can be retrieved as follows, where <code class="docutils literal notranslate"><span class="pre">&lt;job_id&gt;</span></code> is the job id returned by the previous command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qi<span class="w"> </span>final_results<span class="w"> </span>get<span class="w"> </span>&lt;job_id&gt;
+</pre></div>
+</div>
+</section>
 </section>
 
         </article>
@@ -275,12 +327,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="submitting.html">
+          <a class="next-page" href="leveraging_qiskit.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">How to: Submit a circuit</div>
+                <div class="title">Leveraging Qiskit</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -291,7 +343,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Getting Started</div>
+                <div class="title">Hybrid Algorithms</div>
                 
               </div>
             </a>
@@ -313,8 +365,32 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Basics</a><ul>
+<li><a class="reference internal" href="#script-format">Script format</a><ul>
+<li><a class="reference internal" href="#execute">Execute</a></li>
+<li><a class="reference internal" href="#finalize">Finalize</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#execution">Execution</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

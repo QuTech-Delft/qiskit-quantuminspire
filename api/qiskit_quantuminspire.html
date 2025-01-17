@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="qiskit_quantuminspire" href="modules.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="qiskit_quantuminspire.hybrid package" href="qiskit_quantuminspire.hybrid.html" /><link rel="prev" title="qiskit_quantuminspire" href="modules.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>qiskit_quantuminspire package - Qiskit-QuantumInspire 0.3.0 documentation</title>
@@ -199,7 +199,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/submitting.html">Submitting a circuit</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../hybrid/index.html">Hybrid Algorithms</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Hybrid Algorithms</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../hybrid/basics.html">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hybrid/leveraging_qiskit.html">Leveraging Qiskit</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../notebooks/index.html">Example Notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Example Notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/QI2%20Performance%20Test.html">Quantum Inspire performance test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/Super%20Dense%20Coding.html">Superdense Coding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/basic_circuit_execution.html">Basic circuit execution</a></li>
@@ -207,8 +212,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing and Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">qiskit_quantuminspire package</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">qiskit_quantuminspire package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of qiskit_quantuminspire package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html">qiskit_quantuminspire.hybrid package</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/QuTech-Delft/qiskit-quantuminspire">GitHub</a></li>
@@ -252,6 +260,51 @@
         <article role="main" id="furo-main-content">
           <section id="qiskit-quantuminspire-package">
 <h1>qiskit_quantuminspire package<a class="headerlink" href="#qiskit-quantuminspire-package" title="Link to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html">qiskit_quantuminspire.hybrid package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#module-qiskit_quantuminspire.hybrid.hybrid_backend">qiskit_quantuminspire.hybrid.hybrid_backend module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.hybrid_backend.QIHybridBackend"><code class="docutils literal notranslate"><span class="pre">QIHybridBackend</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.hybrid_backend.QIHybridBackend.run"><code class="docutils literal notranslate"><span class="pre">QIHybridBackend.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.hybrid_backend.QIHybridBackend.status"><code class="docutils literal notranslate"><span class="pre">QIHybridBackend.status</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#module-qiskit_quantuminspire.hybrid.hybrid_job">qiskit_quantuminspire.hybrid.hybrid_job module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.hybrid_job.QIHybridJob"><code class="docutils literal notranslate"><span class="pre">QIHybridJob</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.hybrid_job.QIHybridJob.result"><code class="docutils literal notranslate"><span class="pre">QIHybridJob.result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.hybrid_job.QIHybridJob.status"><code class="docutils literal notranslate"><span class="pre">QIHybridJob.status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.hybrid_job.QIHybridJob.submit"><code class="docutils literal notranslate"><span class="pre">QIHybridJob.submit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#module-qiskit_quantuminspire.hybrid.quantum_interface">qiskit_quantuminspire.hybrid.quantum_interface module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.quantum_interface.ExecuteCircuitResult"><code class="docutils literal notranslate"><span class="pre">ExecuteCircuitResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.quantum_interface.ExecuteCircuitResult.model_config"><code class="docutils literal notranslate"><span class="pre">ExecuteCircuitResult.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.quantum_interface.ExecuteCircuitResult.results"><code class="docutils literal notranslate"><span class="pre">ExecuteCircuitResult.results</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.quantum_interface.ExecuteCircuitResult.shots_done"><code class="docutils literal notranslate"><span class="pre">ExecuteCircuitResult.shots_done</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.quantum_interface.ExecuteCircuitResult.shots_requested"><code class="docutils literal notranslate"><span class="pre">ExecuteCircuitResult.shots_requested</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.quantum_interface.QuantumInterface"><code class="docutils literal notranslate"><span class="pre">QuantumInterface</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.quantum_interface.QuantumInterface.backend_type"><code class="docutils literal notranslate"><span class="pre">QuantumInterface.backend_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.quantum_interface.QuantumInterface.execute_circuit"><code class="docutils literal notranslate"><span class="pre">QuantumInterface.execute_circuit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#qiskit_quantuminspire.hybrid.quantum_interface.QuantumInterface.results"><code class="docutils literal notranslate"><span class="pre">QuantumInterface.results</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qiskit_quantuminspire.hybrid.html#module-qiskit_quantuminspire.hybrid">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
@@ -291,29 +344,11 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBackend">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qiskit_quantuminspire.qi_backend.</span></span><span class="sig-name descname"><span class="pre">QIBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BackendType</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_quantuminspire/qi_backend.html#QIBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBackend" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BackendV2</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend" title="qiskit_quantuminspire.qi_backend.QIBaseBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">QIBaseBackend</span></code></a></p>
 <p>A wrapper class for QuantumInspire backendtypes to integrate with Qiskit’s Backend interface.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBackend.available">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">available</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBackend.available" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBackend.id">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBackend.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBackend.max_circuits">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_circuits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBackend.max_circuits" title="Link to this definition">¶</a></dt>
-<dd><p>The maximum number of circuits (or Pulse schedules) that can be
-run in a single job.</p>
-<p>If there is no limit this will return None</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBackend.max_shots">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_shots</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBackend.max_shots" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -338,9 +373,33 @@ run in a single job.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">BackendStatus</span></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBackend.status" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBaseBackend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qiskit_quantuminspire.qi_backend.</span></span><span class="sig-name descname"><span class="pre">QIBaseBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BackendType</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_quantuminspire/qi_backend.html#QIBaseBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BackendV2</span></code></p>
 <dl class="py property">
-<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBackend.target">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Target</span></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBackend.target" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBaseBackend.id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBaseBackend.max_circuits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_circuits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend.max_circuits" title="Link to this definition">¶</a></dt>
+<dd><p>The maximum number of circuits (or Pulse schedules) that can be
+run in a single job.</p>
+<p>If there is no limit this will return None</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBaseBackend.max_shots">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_shots</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend.max_shots" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_backend.QIBaseBackend.target">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Target</span></em><a class="headerlink" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend.target" title="Link to this definition">¶</a></dt>
 <dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.transpiler.Target</span></code> object for the backend.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -377,9 +436,20 @@ run in a single job.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_jobs.QIBaseJob">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qiskit_quantuminspire.qi_jobs.</span></span><span class="sig-name descname"><span class="pre">QIBaseJob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QuantumCircuit</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QuantumCircuit</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BackendV2</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_quantuminspire/qi_jobs.html#QIBaseJob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_quantuminspire.qi_jobs.QIBaseJob" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JobV1</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qiskit_quantuminspire.qi_jobs.QIBaseJob.circuits_run_data">
+<span class="sig-name descname"><span class="pre">circuits_run_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#qiskit_quantuminspire.qi_jobs.CircuitExecutionData" title="qiskit_quantuminspire.qi_jobs.CircuitExecutionData"><span class="pre">CircuitExecutionData</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#qiskit_quantuminspire.qi_jobs.QIBaseJob.circuits_run_data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="qiskit_quantuminspire.qi_jobs.QIJob">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qiskit_quantuminspire.qi_jobs.</span></span><span class="sig-name descname"><span class="pre">QIJob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QuantumCircuit</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">QuantumCircuit</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BackendV2</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_quantuminspire/qi_jobs.html#QIJob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_quantuminspire.qi_jobs.QIJob" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JobV1</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#qiskit_quantuminspire.qi_jobs.QIBaseJob" title="qiskit_quantuminspire.qi_jobs.QIBaseJob"><code class="xref py py-class docutils literal notranslate"><span class="pre">QIBaseJob</span></code></a></p>
 <p>A wrapper class for QuantumInspire batch jobs to integrate with Qiskit’s Job interface.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_quantuminspire.qi_jobs.QIJob.deserialize">
@@ -476,7 +546,15 @@ the associated data later.</p>
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="qiskit_quantuminspire.hybrid.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">qiskit_quantuminspire.hybrid package</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="modules.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -519,6 +597,7 @@ the associated data later.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">qiskit_quantuminspire package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-qiskit_quantuminspire.base_provider">qiskit_quantuminspire.base_provider module</a><ul>
 <li><a class="reference internal" href="#qiskit_quantuminspire.base_provider.BaseProvider"><code class="docutils literal notranslate"><span class="pre">BaseProvider</span></code></a><ul>
@@ -535,12 +614,15 @@ the associated data later.</p>
 <li><a class="reference internal" href="#module-qiskit_quantuminspire.qi_backend">qiskit_quantuminspire.qi_backend module</a><ul>
 <li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBackend"><code class="docutils literal notranslate"><span class="pre">QIBackend</span></code></a><ul>
 <li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBackend.available"><code class="docutils literal notranslate"><span class="pre">QIBackend.available</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBackend.id"><code class="docutils literal notranslate"><span class="pre">QIBackend.id</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBackend.max_circuits"><code class="docutils literal notranslate"><span class="pre">QIBackend.max_circuits</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBackend.max_shots"><code class="docutils literal notranslate"><span class="pre">QIBackend.max_shots</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBackend.run"><code class="docutils literal notranslate"><span class="pre">QIBackend.run()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBackend.status"><code class="docutils literal notranslate"><span class="pre">QIBackend.status</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBackend.target"><code class="docutils literal notranslate"><span class="pre">QIBackend.target</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend"><code class="docutils literal notranslate"><span class="pre">QIBaseBackend</span></code></a><ul>
+<li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend.id"><code class="docutils literal notranslate"><span class="pre">QIBaseBackend.id</span></code></a></li>
+<li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend.max_circuits"><code class="docutils literal notranslate"><span class="pre">QIBaseBackend.max_circuits</span></code></a></li>
+<li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend.max_shots"><code class="docutils literal notranslate"><span class="pre">QIBaseBackend.max_shots</span></code></a></li>
+<li><a class="reference internal" href="#qiskit_quantuminspire.qi_backend.QIBaseBackend.target"><code class="docutils literal notranslate"><span class="pre">QIBaseBackend.target</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -550,6 +632,10 @@ the associated data later.</p>
 <li><a class="reference internal" href="#qiskit_quantuminspire.qi_jobs.CircuitExecutionData.circuit"><code class="docutils literal notranslate"><span class="pre">CircuitExecutionData.circuit</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_quantuminspire.qi_jobs.CircuitExecutionData.job_id"><code class="docutils literal notranslate"><span class="pre">CircuitExecutionData.job_id</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_quantuminspire.qi_jobs.CircuitExecutionData.results"><code class="docutils literal notranslate"><span class="pre">CircuitExecutionData.results</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qiskit_quantuminspire.qi_jobs.QIBaseJob"><code class="docutils literal notranslate"><span class="pre">QIBaseJob</span></code></a><ul>
+<li><a class="reference internal" href="#qiskit_quantuminspire.qi_jobs.QIBaseJob.circuits_run_data"><code class="docutils literal notranslate"><span class="pre">QIBaseJob.circuits_run_data</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#qiskit_quantuminspire.qi_jobs.QIJob"><code class="docutils literal notranslate"><span class="pre">QIJob</span></code></a><ul>

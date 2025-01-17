@@ -1,6 +1,14 @@
 qiskit\_quantuminspire package
 ==============================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   qiskit_quantuminspire.hybrid
+
 Submodules
 ----------
 
