@@ -64,9 +64,7 @@ _ALL_SUPPORTED_GATES: list[str] = list(get_standard_gate_name_mapping().keys()) 
 
 # Ignore type checking for QIBackend due to missing Qiskit type stubs,
 # which causes the base class 'Backend' to be treated as 'Any'.
-class QIBackend(Backend):  # type: ignore[misc]
-    """A wrapper class for QuantumInspire backendtypes to integrate with Qiskit's Backend interface."""
-
+class QIBaseBackend(Backend):  # type: ignore[misc]
     _max_shots: int
 
     def __init__(self, backend_type: BackendType, **kwargs: Any):
@@ -145,6 +143,10 @@ class QIBackend(Backend):  # type: ignore[misc]
     @property
     def id(self) -> int:
         return self._id
+
+
+class QIBackend(QIBaseBackend):
+    """A wrapper class for QuantumInspire backendtypes to integrate with Qiskit's Backend interface."""
 
     @property
     def status(self) -> BackendStatus:

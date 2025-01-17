@@ -61,10 +61,10 @@ class CircuitExecutionData:
     results: Optional[RawJobResult] = None
 
 
-# Ignore type checking for QIJob due to missing Qiskit type stubs,
+# Ignore type checking for QIBaseJob due to missing Qiskit type stubs,
 # which causes the base class 'Job' to be treated as 'Any'.
-class QIJob(JobV1):  # type: ignore[misc]
-    """A wrapper class for QuantumInspire batch jobs to integrate with Qiskit's Job interface."""
+class QIBaseJob(JobV1):  # type: ignore[misc]
+    circuits_run_data: List[CircuitExecutionData]
 
     def __init__(
         self,
@@ -81,13 +81,81 @@ class QIJob(JobV1):  # type: ignore[misc]
             **kwargs: Additional keyword arguments passed to the parent `Job` class.
         """
         super().__init__(backend, "", **kwargs)
-        self.circuits_run_data: List[CircuitExecutionData] = (
-            [CircuitExecutionData(circuit=run_input)]
-            if isinstance(run_input, QuantumCircuit)
-            else [CircuitExecutionData(circuit=circuit) for circuit in run_input]
-        )
+        self.circuits_run_data = []
+        self._add_circuits(run_input)
         self.program_name = "Program created by SDK"
         self.batch_job_id: Union[int, None] = None
+
+    def _add_circuits(self, circuits: Union[QuantumCircuit, List[QuantumCircuit]]) -> None:
+        """Add circuits to the list of circuits to be run."""
+        circuits = [circuits] if isinstance(circuits, QuantumCircuit) else circuits
+        self.circuits_run_data.extend([CircuitExecutionData(circuit=circuit) for circuit in circuits])
+
+    def _process_results(self) -> Result:
+        """Process the raw job results obtained from QuantumInspire."""
+
+        results = []
+        batch_job_success = [False] * len(self.circuits_run_data)
+
+        for idx, circuit_data in enumerate(self.circuits_run_data):
+            qi_result = circuit_data.results
+            circuit_name = circuit_data.circuit.name
+
+            if qi_result is None:
+                experiment_result = self._create_empty_experiment_result(circuit_name=circuit_name)
+                results.append(experiment_result)
+                continue
+
+            experiment_result = self._create_experiment_result(
+                circuit_name=circuit_name,
+                result=qi_result,
+            )
+            results.append(experiment_result)
+            batch_job_success[idx] = qi_result.shots_done > 0
+
+        result = Result(
+            backend_name=self.backend().name,
+            backend_version="1.0.0",
+            qobj_id="",
+            job_id=str(self.batch_job_id),
+            success=all(batch_job_success),
+            results=results,
+        )
+        return result
+
+    @staticmethod
+    def _create_experiment_result(
+        circuit_name: str,
+        result: RawJobResult,
+    ) -> ExperimentResult:
+        """Create an ExperimentResult instance based on RawJobResult parameters."""
+        counts = {hex(int(key, 2)): value for key, value in result.results.items()}
+        memory = [hex(int(measurement, 2)) for measurement in result.raw_data] if result.raw_data else None
+
+        experiment_data = ExperimentResultData(
+            counts={} if counts is None else counts,
+            memory=memory,
+        )
+        return ExperimentResult(
+            shots=result.shots_done,
+            success=result.shots_done > 0,
+            data=experiment_data,
+            header=QobjExperimentHeader(name=circuit_name),
+        )
+
+    @staticmethod
+    def _create_empty_experiment_result(circuit_name: str) -> ExperimentResult:
+        """Create an empty ExperimentResult instance."""
+        return ExperimentResult(
+            shots=0,
+            success=False,
+            data=ExperimentResultData(counts={}),
+            header=QobjExperimentHeader(name=circuit_name),
+        )
+
+
+class QIJob(QIBaseJob):
+    """A wrapper class for QuantumInspire batch jobs to integrate with Qiskit's Job interface."""
 
     def submit(self) -> None:
         run_async(self._submit_async())
@@ -233,16 +301,6 @@ class QIJob(JobV1):  # type: ignore[misc]
             for circuit_data, result_item in zip(self.circuits_run_data, result_items):
                 circuit_data.results = None if not result_item else result_item[0]
 
-    @cache
-    def result(self, wait_for_results: Optional[bool] = True, timeout: float = 60.0) -> Result:
-        """Return the results of the job."""
-        if wait_for_results:
-            self.wait_for_final_state(timeout=timeout)
-        elif not self.done():
-            raise RuntimeError(f"(Batch)Job status is {self.status()}.")
-        run_async(self._fetch_job_results())
-        return self._process_results()
-
     def status(self) -> JobStatus:
         """Return the status of the (batch)job, among the values of ``JobStatus``."""
 
@@ -322,64 +380,12 @@ class QIJob(JobV1):  # type: ignore[misc]
 
             return job
 
-    def _process_results(self) -> Result:
-        """Process the raw job results obtained from QuantumInspire."""
-
-        results = []
-        batch_job_success = [False] * len(self.circuits_run_data)
-
-        for idx, circuit_data in enumerate(self.circuits_run_data):
-            qi_result = circuit_data.results
-            circuit_name = circuit_data.circuit.name
-
-            if qi_result is None:
-                experiment_result = self._create_empty_experiment_result(circuit_name=circuit_name)
-                results.append(experiment_result)
-                continue
-
-            experiment_result = self._create_experiment_result(
-                circuit_name=circuit_name,
-                result=qi_result,
-            )
-            results.append(experiment_result)
-            batch_job_success[idx] = qi_result.shots_done > 0
-
-        result = Result(
-            backend_name=self.backend().name,
-            backend_version="1.0.0",
-            qobj_id="",
-            job_id=str(self.batch_job_id),
-            success=all(batch_job_success),
-            results=results,
-        )
-        return result
-
-    @staticmethod
-    def _create_experiment_result(
-        circuit_name: str,
-        result: RawJobResult,
-    ) -> ExperimentResult:
-        """Create an ExperimentResult instance based on RawJobResult parameters."""
-        counts = {hex(int(key, 2)): value for key, value in result.results.items()}
-        memory = [hex(int(measurement, 2)) for measurement in result.raw_data] if result.raw_data else None
-
-        experiment_data = ExperimentResultData(
-            counts={} if counts is None else counts,
-            memory=memory,
-        )
-        return ExperimentResult(
-            shots=result.shots_done,
-            success=result.shots_done > 0,
-            data=experiment_data,
-            header=QobjExperimentHeader(name=circuit_name),
-        )
-
-    @staticmethod
-    def _create_empty_experiment_result(circuit_name: str) -> ExperimentResult:
-        """Create an empty ExperimentResult instance."""
-        return ExperimentResult(
-            shots=0,
-            success=False,
-            data=ExperimentResultData(counts={}),
-            header=QobjExperimentHeader(name=circuit_name),
-        )
+    @cache
+    def result(self, wait_for_results: Optional[bool] = True, timeout: float = 60.0) -> Result:
+        """Return the results of the job."""
+        if wait_for_results:
+            self.wait_for_final_state(timeout=timeout)
+        elif not self.done():
+            raise RuntimeError(f"(Batch)Job status is {self.status()}.")
+        run_async(self._fetch_job_results())
+        return self._process_results()
