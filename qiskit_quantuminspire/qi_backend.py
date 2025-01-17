@@ -22,6 +22,7 @@ from qiskit.providers import BackendV2 as Backend
 from qiskit.providers.options import Options
 from qiskit.transpiler import CouplingMap, Target
 
+from qiskit_quantuminspire.models.backend_metadata import BackendMetadata
 from qiskit_quantuminspire.qi_jobs import QIJob
 from qiskit_quantuminspire.utils import is_coupling_map_complete, run_async
 
@@ -67,7 +68,7 @@ _ALL_SUPPORTED_GATES: list[str] = list(get_standard_gate_name_mapping().keys()) 
 class QIBaseBackend(Backend):  # type: ignore[misc]
     _max_shots: int
 
-    def __init__(self, backend_type: BackendType, **kwargs: Any):
+    def __init__(self, backend_type: BackendMetadata, **kwargs: Any):
         super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
         self._id: int = backend_type.id
 
