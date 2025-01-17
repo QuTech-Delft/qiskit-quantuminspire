@@ -20,7 +20,7 @@ def qi_hybrid_job_mock(mocker: MockerFixture) -> Generator[MagicMock, None, None
 def test_status(quantum_interface: MagicMock) -> None:
     backend = QIHybridBackend(quantum_interface)
     # Exact BackendStatus is not important
-    assert type(backend.status) == BackendStatus
+    assert type(backend.status) is BackendStatus
 
 
 def test_submit(quantum_interface: MagicMock, qi_hybrid_job_mock: MagicMock) -> None:
