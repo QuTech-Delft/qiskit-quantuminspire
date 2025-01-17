@@ -85,6 +85,7 @@ no_implicit_reexport = true
 strict_equality = true
 ignore_missing_imports = true
 show_error_codes = true
+exclude = ["docs"]
 
 [tool.ruff]
 lint.select = ["E", "F", "I"]
