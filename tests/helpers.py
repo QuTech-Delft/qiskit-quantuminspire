@@ -6,8 +6,8 @@ from compute_api_client import BackendStatus, BackendType, Result as RawJobResul
 
 def create_backend_type(
     gateset: list[str] = [],
-    topology: list[list[int]] = [],
-    nqubits: int = 0,
+    topology: list[list[int]] = [[0, 1], [1, 0]],
+    nqubits: int = 2,
     default_number_of_shots: int = 1024,
     max_number_of_shots: int = 2048,
     name: str = "qi_backend",

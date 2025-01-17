@@ -5,6 +5,9 @@ from compute_api_client import BatchJobStatus
 from pytest_mock import MockerFixture
 from qi2_shared.pagination import PageReader
 
+from qiskit_quantuminspire.hybrid.quantum_interface import QuantumInterface
+from tests.helpers import create_backend_type
+
 
 @pytest.fixture
 def page_reader_mock(mocker: MockerFixture) -> AsyncMock:
@@ -45,7 +48,6 @@ def mock_api_client(mocker: MockerFixture) -> MagicMock:
 
 @pytest.fixture
 def mock_language_api(mocker: MockerFixture) -> MagicMock:
-
     language_api_mock = AsyncMock()
     language_page_mock = MagicMock()
     language_mock = MagicMock()
@@ -60,7 +62,6 @@ def mock_language_api(mocker: MockerFixture) -> MagicMock:
 
 @pytest.fixture
 def mock_project_api(mocker: MockerFixture, mock_api_client: MagicMock) -> MagicMock:
-
     project_api_mock = AsyncMock()
     project_mock = MagicMock()
     project_mock.id = 1
@@ -122,3 +123,10 @@ def mock_batchjob_api(mocker: MockerFixture) -> MagicMock:
     batchjobs_api_mock.read_batch_jobs_batch_jobs_get = AsyncMock(return_value=batchjob_page_mock)
     mocker.patch("qiskit_quantuminspire.qi_jobs.BatchJobsApi", return_value=batchjobs_api_mock)
     return batchjobs_api_mock
+
+
+@pytest.fixture
+def quantum_interface() -> MagicMock:
+    qi = MagicMock(spec=QuantumInterface)
+    qi.backend_type = create_backend_type().model_dump()
+    return qi
