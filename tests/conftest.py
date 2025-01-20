@@ -3,9 +3,9 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from compute_api_client import BatchJobStatus
 from pytest_mock import MockerFixture
+from qi2_shared.hybrid.quantum_interface import QuantumInterface
 from qi2_shared.pagination import PageReader
 
-from qiskit_quantuminspire.hybrid.quantum_interface import QuantumInterface
 from tests.helpers import create_backend_type
 
 
