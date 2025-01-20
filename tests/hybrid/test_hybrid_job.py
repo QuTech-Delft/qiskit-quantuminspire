@@ -1,11 +1,11 @@
 from unittest.mock import MagicMock
 
+from qi2_shared.hybrid.quantum_interface import ExecuteCircuitResult
 from qiskit import QuantumCircuit
 from qiskit.result.models import ExperimentResultData
 
 from qiskit_quantuminspire.hybrid.hybrid_backend import QIHybridBackend
 from qiskit_quantuminspire.hybrid.hybrid_job import QIHybridJob
-from qiskit_quantuminspire.hybrid.quantum_interface import ExecuteCircuitResult
 
 
 def test_submit(quantum_interface: MagicMock) -> None:
