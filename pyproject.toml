@@ -22,7 +22,7 @@ qiskit = "^1.2.0"
 qi-compute-api-client = "^0.43.0"
 pydantic = "^2.10.5"
 requests = "^2.32.3"
-opensquirrel = ">=0.1.0"
+opensquirrel = { git = "https://github.com/QuTech-Delft/OpenSquirrel.git", rev= "0b311586a61b4547b7da195512f26c3c37b9ac3b" }
 
 [tool.poetry.group.dev.dependencies]
 black = {extras = ["jupyter"], version = "^24.10.0"}

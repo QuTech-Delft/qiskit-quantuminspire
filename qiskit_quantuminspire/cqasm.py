@@ -1,5 +1,5 @@
 from opensquirrel import CircuitBuilder
-from opensquirrel.ir import Bit, Float, Qubit
+from opensquirrel.ir import Bit, Qubit
 from opensquirrel.writer import writer
 from qiskit import QuantumCircuit
 
@@ -22,6 +22,8 @@ _QISKIT_TO_OPENSQUIRREL_MAPPING: dict[str, str] = {
     "swap": "SWAP",
     "measure": "measure",
     "reset": "reset",
+    "barrier": "barrier",
+    "delay": "wait",
 }
 
 
@@ -31,13 +33,12 @@ def dumps(circuit: QuantumCircuit) -> str:
     for circuit_instruction in circuit.data:
         operation = circuit_instruction.operation
         name = operation.name
-        params = [Float(param) for param in operation.params]
+        params = [param for param in operation.params]
         qubit_operands = [Qubit(qubit._index) for qubit in circuit_instruction.qubits]
         clbit_operands = [Bit(clbit._index) for clbit in circuit_instruction.clbits]
 
-        # Only used as circuit compilation directive
-        if name == "barrier":
-            continue
+        # TODO: Handler barrier per qubit?
+        # TODO: Block delays for absolute time?
 
         try:
             # Get the gate's method in the CircuitBuilder class, call with operands
