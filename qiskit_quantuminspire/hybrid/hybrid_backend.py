@@ -1,5 +1,6 @@
 from typing import Any, List, Union
 
+from compute_api_client import BackendType
 from qiskit import QuantumCircuit
 from qiskit.providers.models.backendstatus import BackendStatus
 
@@ -15,7 +16,7 @@ class QIHybridBackend(QIBaseBackend):
     """
 
     def __init__(self, qi: QuantumInterface, **kwargs: Any):
-        super().__init__(qi.backend_type, **kwargs)
+        super().__init__(BackendType.model_validate(qi.backend_type), **kwargs)
         self._quantum_interface = qi
 
     @property
@@ -26,7 +27,7 @@ class QIHybridBackend(QIBaseBackend):
             BackendStatus: the status of the backend. Pending jobs is always 0.
         """
         return BackendStatus(
-            backend_name=self._quantum_interface.backend_type.name,
+            backend_name=self._quantum_interface.backend_type.get("name", "Name unknown"),
             backend_version="2.0",
             operational=True,
             pending_jobs=0,
