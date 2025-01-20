@@ -20,14 +20,6 @@ qiskit\_quantuminspire.hybrid.hybrid\_job module
    :undoc-members:
    :show-inheritance:
 
-qiskit\_quantuminspire.hybrid.quantum\_interface module
--------------------------------------------------------
-
-.. automodule:: qiskit_quantuminspire.hybrid.quantum_interface
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
