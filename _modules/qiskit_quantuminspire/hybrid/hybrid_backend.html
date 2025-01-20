@@ -254,6 +254,7 @@
           <h1>Source code for qiskit_quantuminspire.hybrid.hybrid_backend</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">from</span> <span class="nn">compute_api_client</span> <span class="kn">import</span> <span class="n">BackendType</span>
 <span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">qiskit.providers.models.backendstatus</span> <span class="kn">import</span> <span class="n">BackendStatus</span>
 
@@ -271,7 +272,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qi</span><span class="p">:</span> <span class="n">QuantumInterface</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">qi</span><span class="o">.</span><span class="n">backend_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">BackendType</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">qi</span><span class="o">.</span><span class="n">backend_type</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_interface</span> <span class="o">=</span> <span class="n">qi</span>
 
     <span class="nd">@property</span>
@@ -282,7 +283,7 @@
 <span class="sd">            BackendStatus: the status of the backend. Pending jobs is always 0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">BackendStatus</span><span class="p">(</span>
-            <span class="n">backend_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_interface</span><span class="o">.</span><span class="n">backend_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">backend_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_interface</span><span class="o">.</span><span class="n">backend_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;Name unknown&quot;</span><span class="p">),</span>
             <span class="n">backend_version</span><span class="o">=</span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
             <span class="n">operational</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">pending_jobs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
