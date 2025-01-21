@@ -31,6 +31,7 @@ def dumps(circuit: QuantumCircuit) -> str:
     """Return the cQASM representation of the circuit."""
     builder = CircuitBuilder(circuit.num_qubits, circuit.num_clbits)
     for circuit_instruction in circuit.data:
+        print(circuit_instruction)
         operation = circuit_instruction.operation
         name = operation.name
         params = [param for param in operation.params]
@@ -38,7 +39,12 @@ def dumps(circuit: QuantumCircuit) -> str:
         clbit_operands = [Bit(clbit._index) for clbit in circuit_instruction.clbits]
 
         # TODO: Handler barrier per qubit?
-        # TODO: Block delays for absolute time?
+
+        if name == "delay":
+            if circuit_instruction.unit != "dt":
+                raise ValueError(
+                    f"Unsupported delay unit {circuit_instruction.unit} in: {circuit_instruction}. Only 'dt' is supported."
+                )
 
         try:
             # Get the gate's method in the CircuitBuilder class, call with operands
