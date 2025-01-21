@@ -3,13 +3,13 @@ from functools import cache
 from typing import Any, List, Union, cast
 
 from compute_api_client import Result as RawJobResult
+from qi2_shared.hybrid.quantum_interface import QuantumInterface
 from qiskit import QuantumCircuit, transpile
 from qiskit.providers.backend import BackendV2
 from qiskit.providers.jobstatus import JobStatus
 from qiskit.result.result import Result
 
 from qiskit_quantuminspire import cqasm
-from qiskit_quantuminspire.hybrid.quantum_interface import QuantumInterface
 from qiskit_quantuminspire.qi_jobs import QIBaseJob
 
 
