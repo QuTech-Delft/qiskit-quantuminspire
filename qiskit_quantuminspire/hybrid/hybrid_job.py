@@ -52,7 +52,7 @@ class QIHybridJob(QIBaseJob):
                 shots_requested=result.shots_requested,
                 shots_done=result.shots_done,
                 results=result.results,
-                raw_data=None,
+                raw_data=result.raw_data,
             )
 
     @cache
