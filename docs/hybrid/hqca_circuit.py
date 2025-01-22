@@ -28,16 +28,21 @@ def execute(qi: QuantumInterface) -> None:
     qi.execute_circuit args:
         circuit: a string representation of a quantum circuit
         number_of_shots: how often to execute the circuit
+        raw_data_enabled (default: False): report measurement per shot (if supported by backend type)
 
     qi.execute_circuit return value:
         The results of executing the quantum circuit, this is an object with the following attributes
             results: The results from iteration n-1.
+            raw_data: Measurement per shot as a list of strings (or None if disabled).
             shots_requested: The number of shots requested by the user for the previous iteration.
             shots_done: The number of shots actually run.
     """
     for i in range(1, 5):
         circuit = generate_circuit()
         _ = qi.execute_circuit(circuit, 1024)
+        # To include measurement results per shot (raw_data):
+        # result = qi.execute_circuit(circuit, 1024, raw_data_enabled=True)
+        # raw_data = result.raw_data
 
 
 def finalize(list_of_measurements: List[Dict[str, Any]]) -> Dict[str, Any]:
