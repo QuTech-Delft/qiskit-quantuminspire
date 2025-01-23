@@ -59,7 +59,8 @@ def dumps(circuit: QuantumCircuit) -> str:
         if name == "delay":
             if circuit_instruction.unit != "dt":
                 raise NotImplementedError(
-                    f"Unsupported delay unit {circuit_instruction.unit} in: {circuit_instruction}. Only 'dt' is supported."
+                    f"Unsupported delay unit {circuit_instruction.unit} in: {circuit_instruction}. Only 'dt'"
+                    + " is supported."
                 )
 
         if name == "barrier":
