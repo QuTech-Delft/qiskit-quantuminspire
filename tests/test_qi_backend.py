@@ -22,7 +22,6 @@ def qi_job_mock(mocker: MockerFixture) -> Generator[MagicMock, None, None]:
 
 @pytest.fixture
 def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
-
     def _generate_qi_backend(params: Optional[Dict[Any, Any]] = None) -> QIBackend:
         params = params or {}
         backend_type = params.pop("backend_type", create_backend_type(max_number_of_shots=4096))
@@ -41,7 +40,7 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
     "gateset, topology, nqubits, expected_instructions",
     [
         (
-            ["x", "sdag", "prep_y", "measure_z"],
+            ["x", "sdag", "prep_y", "measure"],
             [[0, 1], [1, 2], [2, 0]],
             3,
             [
@@ -75,7 +74,7 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
         ),
         (
             # CouplingMap is complete
-            ["toffoli", "X90"],
+            ["toffoli", "rx"],
             [[1, 0], [0, 1], [1, 2], [2, 1], [2, 0], [0, 2]],
             3,
             [
