@@ -67,9 +67,8 @@ def dumps(circuit: QuantumCircuit) -> str:
             # Opensquirrel does not support multi-qubit barriers.
             for qubit in circuit_instruction.qubits:
                 _add_instruction(builder, CircuitInstruction(operation=operation, qubits=[qubit]))
-            continue
-
-        _add_instruction(builder, circuit_instruction)
+        else:
+            _add_instruction(builder, circuit_instruction)
 
     cqasm: str = writer.circuit_to_string(builder.to_circuit())
 
