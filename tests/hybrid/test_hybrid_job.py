@@ -28,3 +28,6 @@ def test_submit(quantum_interface: MagicMock) -> None:
     expected_result_data = ExperimentResultData(counts={"0x0": 256, "0x1": 256, "0x2": 256, "0x3": 256})
 
     assert actual_result.data(circuit) == expected_result_data.to_dict()
+
+
+# TODO: test raw data

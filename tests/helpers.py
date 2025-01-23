@@ -30,7 +30,7 @@ def create_backend_type(
         infrastructure="QCI",
         description="A Quantum Inspire backend",
         native_gateset="",
-        supports_raw_data=False,
+        supports_raw_data=True,
     )
 
 

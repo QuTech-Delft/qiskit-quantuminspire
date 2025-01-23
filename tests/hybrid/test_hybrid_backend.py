@@ -27,3 +27,6 @@ def test_submit(quantum_interface: MagicMock, qi_hybrid_job_mock: MagicMock) -> 
     backend = QIHybridBackend(quantum_interface)
     backend.run([])
     qi_hybrid_job_mock.submit.assert_called_once()
+
+
+# TODO: test options (memory)
