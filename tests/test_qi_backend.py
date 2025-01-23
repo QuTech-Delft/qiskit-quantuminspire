@@ -44,6 +44,15 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
             [[0, 1], [1, 2], [2, 0]],
             3,
             [
+                ("rx", (0,)),
+                ("rx", (1,)),
+                ("rx", (2,)),
+                ("ry", (0,)),
+                ("ry", (1,)),
+                ("ry", (2,)),
+                ("rz", (0,)),
+                ("rz", (1,)),
+                ("rz", (2,)),
                 ("x", (0,)),
                 ("sdg", (0,)),
                 ("measure", (0,)),
@@ -61,6 +70,18 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
             [[0, 1], [1, 2], [2, 0], [1, 0], [1, 3]],
             4,
             [
+                ("rx", (0,)),
+                ("rx", (1,)),
+                ("rx", (2,)),
+                ("rx", (3,)),
+                ("ry", (0,)),
+                ("ry", (1,)),
+                ("ry", (2,)),
+                ("ry", (3,)),
+                ("rz", (0,)),
+                ("rz", (1,)),
+                ("rz", (2,)),
+                ("rz", (3,)),
                 ("x", (0,)),
                 ("x", (1,)),
                 ("x", (2,)),
@@ -74,11 +95,13 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
         ),
         (
             # CouplingMap is complete
-            ["toffoli", "rx"],
+            ["toffoli"],
             [[1, 0], [0, 1], [1, 2], [2, 1], [2, 0], [0, 2]],
             3,
             [
                 ("rx", None),
+                ("ry", None),
+                ("rz", None),
                 ("ccx", None),
             ],
         ),
@@ -219,7 +242,24 @@ def test_qi_backend_construction_toffoli_gate_unsupported(
         for record in caplog.records
     )
     # Target still gets created but without Toffoli gate
-    assert actual_instructions == [("x", (0,)), ("x", (1,)), ("x", (2,)), ("x", (3,))]
+    assert actual_instructions == [
+        ("x", (0,)),
+        ("x", (1,)),
+        ("x", (2,)),
+        ("x", (3,)),
+        ("rx", (0,)),
+        ("rx", (1,)),
+        ("rx", (2,)),
+        ("rx", (3,)),
+        ("ry", (0,)),
+        ("ry", (1,)),
+        ("ry", (2,)),
+        ("ry", (3,)),
+        ("rz", (0,)),
+        ("rz", (1,)),
+        ("rz", (2,)),
+        ("rz", (3,)),
+    ]
 
 
 def test_qi_backend_construction_unknown_gate_ignored(
@@ -242,4 +282,17 @@ def test_qi_backend_construction_unknown_gate_ignored(
         "Ignoring unknown native gate(s) {'unknown'} for backend spin" in record.message for record in caplog.records
     )
     # Target still gets created but without the unknown gate
-    assert actual_instructions == [("x", (0,)), ("x", (1,)), ("x", (2,))]
+    assert actual_instructions == [
+        ("x", (0,)),
+        ("x", (1,)),
+        ("x", (2,)),
+        ("rx", (0,)),
+        ("rx", (1,)),
+        ("rx", (2,)),
+        ("ry", (0,)),
+        ("ry", (1,)),
+        ("ry", (2,)),
+        ("rz", (0,)),
+        ("rz", (1,)),
+        ("rz", (2,)),
+    ]

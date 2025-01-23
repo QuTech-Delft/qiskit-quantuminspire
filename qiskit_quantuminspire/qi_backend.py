@@ -35,6 +35,11 @@ _IGNORED_GATES: list[str] = [
 ]
 
 
+# Some backends do not natively support rx/ry/rz, in which case additional decomposition
+# is required. This decomposition will be done server side.
+_DEFAULT_GATES = ["rx", "ry", "rz"]
+
+
 # Ignore type checking for QIBackend due to missing Qiskit type stubs,
 # which causes the base class 'Backend' to be treated as 'Any'.
 class QIBaseBackend(Backend):  # type: ignore[misc]
@@ -56,7 +61,7 @@ class QIBaseBackend(Backend):  # type: ignore[misc]
         # Determine supported gates
         native_gates = [gate.lower() for gate in backend_type.gateset]
         opensquirrel_gates = [inst.lower() for inst in supported_opensquirrel_instructions()]
-        available_gates = [gate for gate in native_gates if gate in opensquirrel_gates]
+        available_gates = [gate for gate in native_gates if gate in opensquirrel_gates] + _DEFAULT_GATES
         unknown_gates = set(native_gates) - set(opensquirrel_gates) - set(_IGNORED_GATES)
 
         # Construct coupling map
