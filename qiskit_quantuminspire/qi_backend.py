@@ -1,4 +1,3 @@
-import logging
 from pprint import PrettyPrinter
 from typing import Any, List, Union
 
@@ -13,7 +12,7 @@ from qiskit_quantuminspire.mapping.instructions import opensquirrel_to_qiskit, s
 from qiskit_quantuminspire.qi_jobs import QIJob
 from qiskit_quantuminspire.utils import is_coupling_map_complete, run_async
 
-_IGNORED_GATES: list[str] = [
+_IGNORED_GATES: set[str] = {
     # Prep not viewed as separate gates in Qiskit
     "prep_x",
     "prep_y",
@@ -32,12 +31,9 @@ _IGNORED_GATES: list[str] = [
     "mx90",
     "y90",
     "my90",
-]
-
-
-# Some backends do not natively support rx/ry/rz, in which case additional decomposition
-# is required. This decomposition will be done server side.
-_DEFAULT_GATES = ["rx", "ry", "rz"]
+    # Qiskit assumes barrier support and does not include it in its standard gate mapping
+    "barrier",
+}
 
 
 # Ignore type checking for QIBackend due to missing Qiskit type stubs,
@@ -59,32 +55,19 @@ class QIBaseBackend(Backend):  # type: ignore[misc]
             self._options.set_validator("memory", [False])
 
         # Determine supported gates
-        native_gates = [gate.lower() for gate in backend_type.gateset]
-        opensquirrel_gates = [inst.lower() for inst in supported_opensquirrel_instructions()]
-        available_gates = [gate for gate in native_gates if gate in opensquirrel_gates] + _DEFAULT_GATES
-        unknown_gates = set(native_gates) - set(opensquirrel_gates) - set(_IGNORED_GATES)
+        opensquirrel_gates = {inst.lower() for inst in supported_opensquirrel_instructions()}
+        available_gates = opensquirrel_gates - _IGNORED_GATES
 
         # Construct coupling map
         coupling_map = CouplingMap(backend_type.topology)
         coupling_map_complete = is_coupling_map_complete(coupling_map)
 
-        if len(unknown_gates) > 0:
-            logging.warning(f"Ignoring unknown native gate(s) {unknown_gates} for backend {backend_type.name}")
-
         if "toffoli" in available_gates and not coupling_map_complete:
+            # "Toffoli gate not supported for non-complete topology
             available_gates.remove("toffoli")
-            logging.warning(
-                f"Native toffoli gate in backend {backend_type.name} not supported for non-complete topology"
-            )
-
-        # Construct target
-        basis_gates = available_gates.copy()
-        if "barrier" in basis_gates:
-            # Qiskit assumes barrier support and does not include it in its standard gate mapping
-            basis_gates.remove("barrier")
 
         self._target = Target().from_configuration(
-            basis_gates=[opensquirrel_to_qiskit(gate) for gate in basis_gates],
+            basis_gates=[opensquirrel_to_qiskit(gate) for gate in available_gates],
             num_qubits=backend_type.nqubits,
             coupling_map=None if coupling_map_complete else coupling_map,
         )

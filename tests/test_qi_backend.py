@@ -1,4 +1,3 @@
-import logging
 from typing import Any, Callable, Dict, Generator, Optional, Type
 from unittest.mock import MagicMock, PropertyMock
 
@@ -7,6 +6,7 @@ from compute_api_client import BackendStatus
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit
 
+from qiskit_quantuminspire.mapping.instructions import supported_opensquirrel_instructions
 from qiskit_quantuminspire.qi_backend import QIBackend
 from tests.helpers import create_backend_type
 
@@ -36,98 +36,8 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
     return _generate_qi_backend
 
 
-@pytest.mark.parametrize(
-    "gateset, topology, nqubits, expected_instructions",
-    [
-        (
-            ["x", "sdag", "prep_y", "measure"],
-            [[0, 1], [1, 2], [2, 0]],
-            3,
-            [
-                ("rx", (0,)),
-                ("rx", (1,)),
-                ("rx", (2,)),
-                ("ry", (0,)),
-                ("ry", (1,)),
-                ("ry", (2,)),
-                ("rz", (0,)),
-                ("rz", (1,)),
-                ("rz", (2,)),
-                ("x", (0,)),
-                ("sdg", (0,)),
-                ("measure", (0,)),
-                ("x", (1,)),
-                ("sdg", (1,)),
-                ("measure", (1,)),
-                ("x", (2,)),
-                ("sdg", (2,)),
-                ("measure", (2,)),
-            ],
-        ),
-        (
-            # Gates in upper case
-            ["CZ", "X"],
-            [[0, 1], [1, 2], [2, 0], [1, 0], [1, 3]],
-            4,
-            [
-                ("rx", (0,)),
-                ("rx", (1,)),
-                ("rx", (2,)),
-                ("rx", (3,)),
-                ("ry", (0,)),
-                ("ry", (1,)),
-                ("ry", (2,)),
-                ("ry", (3,)),
-                ("rz", (0,)),
-                ("rz", (1,)),
-                ("rz", (2,)),
-                ("rz", (3,)),
-                ("x", (0,)),
-                ("x", (1,)),
-                ("x", (2,)),
-                ("x", (3,)),
-                ("cz", (0, 1)),
-                ("cz", (1, 0)),
-                ("cz", (1, 3)),
-                ("cz", (1, 2)),
-                ("cz", (2, 0)),
-            ],
-        ),
-        (
-            # CouplingMap is complete
-            ["toffoli"],
-            [[1, 0], [0, 1], [1, 2], [2, 1], [2, 0], [0, 2]],
-            3,
-            [
-                ("rx", None),
-                ("ry", None),
-                ("rz", None),
-                ("ccx", None),
-            ],
-        ),
-    ],
-)
-def test_qi_backend_construction_target(
-    gateset: list[str],
-    topology: list[list[int]],
-    nqubits: int,
-    expected_instructions: list[tuple[str, tuple[int, ...]]],
-) -> None:
-    # Arrange
-    backend_type = create_backend_type(gateset=gateset, topology=topology, nqubits=nqubits)
-
-    # Act
-    qi_backend = QIBackend(backend_type=backend_type)
-
-    # Assert
-    target = qi_backend.target
-    actual_instructions = [(instruction.name, qubits) for instruction, qubits in target.instructions]
-
-    assert target.num_qubits == nqubits
-    for instruction in expected_instructions:
-        assert instruction in actual_instructions
-    for instruction in actual_instructions:
-        assert instruction in expected_instructions
+# Exclude the "barrier" instruction as it is not part of the target
+NUM_SUPPORTED_INSTRUCTIONS = len(supported_opensquirrel_instructions()) - 1
 
 
 def test_qi_backend_construction_max_shots() -> None:
@@ -226,40 +136,21 @@ def test_qi_backend_construction_toffoli_gate_unsupported(
 ) -> None:
     # Arrange
     # Create backend type with a Toffoli gate and a non-complete topology
+    nqubits = 4
     backend_type = create_backend_type(
-        name="spin", gateset=["toffoli", "x"], topology=[[0, 1], [1, 2], [2, 0], [1, 0], [1, 3]], nqubits=4
+        name="spin", gateset=["toffoli", "x"], topology=[[0, 1], [1, 2], [2, 0], [1, 0], [1, 3]], nqubits=nqubits
     )
+
     # Act
-    with caplog.at_level(logging.WARNING):
-        qi_backend = QIBackend(backend_type=backend_type)
+    qi_backend = QIBackend(backend_type=backend_type)
 
     target = qi_backend.target
-    actual_instructions = [(instruction.name, qubits) for instruction, qubits in target.instructions]
+    instructions: list[str] = [instruction.name for instruction, _ in target.instructions]
 
     # Assert
-    assert any(
-        "Native toffoli gate in backend spin not supported for non-complete topology" in record.message
-        for record in caplog.records
-    )
-    # Target still gets created but without Toffoli gate
-    assert actual_instructions == [
-        ("x", (0,)),
-        ("x", (1,)),
-        ("x", (2,)),
-        ("x", (3,)),
-        ("rx", (0,)),
-        ("rx", (1,)),
-        ("rx", (2,)),
-        ("rx", (3,)),
-        ("ry", (0,)),
-        ("ry", (1,)),
-        ("ry", (2,)),
-        ("ry", (3,)),
-        ("rz", (0,)),
-        ("rz", (1,)),
-        ("rz", (2,)),
-        ("rz", (3,)),
-    ]
+    assert "ccx" not in instructions
+    # Target still gets created but without the toffoli gate
+    assert len(instructions) == 80
 
 
 def test_qi_backend_construction_unknown_gate_ignored(
@@ -267,32 +158,20 @@ def test_qi_backend_construction_unknown_gate_ignored(
 ) -> None:
     # Arrange
     # Create backend type with an unknown gate
+    nqubits = 3
     backend_type = create_backend_type(
-        name="spin", gateset=["unknown", "x"], topology=[[0, 1], [1, 2], [2, 0]], nqubits=3
+        name="spin",
+        gateset=["unknown", "x"],
+        topology=[[1, 0], [0, 1], [1, 2], [2, 1], [2, 0], [0, 2]],
+        nqubits=nqubits,
     )
+
     # Act
-    with caplog.at_level(logging.WARNING):
-        qi_backend = QIBackend(backend_type=backend_type)
+    qi_backend = QIBackend(backend_type=backend_type)
 
     target = qi_backend.target
-    actual_instructions = [(instruction.name, qubits) for instruction, qubits in target.instructions]
+    instructions: list[str] = [instruction.name for instruction, _ in target.instructions]
 
     # Assert
-    assert any(
-        "Ignoring unknown native gate(s) {'unknown'} for backend spin" in record.message for record in caplog.records
-    )
     # Target still gets created but without the unknown gate
-    assert actual_instructions == [
-        ("x", (0,)),
-        ("x", (1,)),
-        ("x", (2,)),
-        ("rx", (0,)),
-        ("rx", (1,)),
-        ("rx", (2,)),
-        ("ry", (0,)),
-        ("ry", (1,)),
-        ("ry", (2,)),
-        ("rz", (0,)),
-        ("rz", (1,)),
-        ("rz", (2,)),
-    ]
+    assert len(instructions) == NUM_SUPPORTED_INSTRUCTIONS
