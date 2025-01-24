@@ -6,7 +6,7 @@ from compute_api_client import BackendStatus
 from pytest_mock import MockerFixture
 from qiskit import QuantumCircuit
 
-from qiskit_quantuminspire.mapping.instructions import supported_opensquirrel_instructions
+from qiskit_quantuminspire.mapping.instruction_mapping import InstructionMapping
 from qiskit_quantuminspire.qi_backend import QIBackend
 from tests.helpers import create_backend_type
 
@@ -37,7 +37,7 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
 
 
 # Exclude the "barrier" instruction as it is not part of the target
-NUM_SUPPORTED_INSTRUCTIONS = len(supported_opensquirrel_instructions()) - 1
+NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_instructions()) - 1
 
 
 def test_qi_backend_construction_max_shots() -> None:

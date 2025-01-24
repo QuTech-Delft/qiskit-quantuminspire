@@ -8,7 +8,7 @@ from qiskit.providers import BackendV2 as Backend
 from qiskit.providers.options import Options
 from qiskit.transpiler import CouplingMap, Target
 
-from qiskit_quantuminspire.mapping.instructions import opensquirrel_to_qiskit, supported_opensquirrel_instructions
+from qiskit_quantuminspire.mapping.instruction_mapping import InstructionMapping
 from qiskit_quantuminspire.qi_jobs import QIJob
 from qiskit_quantuminspire.utils import is_coupling_map_complete, run_async
 
@@ -41,7 +41,7 @@ _IGNORED_GATES: set[str] = {
 class QIBaseBackend(Backend):  # type: ignore[misc]
     _max_shots: int
 
-    def __init__(self, backend_type: BackendType, **kwargs: Any):
+    def __init__(self, backend_type: BackendType, mapping: InstructionMapping = InstructionMapping(), **kwargs: Any):
         super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
         self._id: int = backend_type.id
 
@@ -55,7 +55,7 @@ class QIBaseBackend(Backend):  # type: ignore[misc]
             self._options.set_validator("memory", [False])
 
         # Determine supported gates
-        opensquirrel_gates = {inst.lower() for inst in supported_opensquirrel_instructions()}
+        opensquirrel_gates = {inst.lower() for inst in mapping.supported_opensquirrel_instructions()}
         available_gates = opensquirrel_gates - _IGNORED_GATES
 
         # Construct coupling map
@@ -67,7 +67,7 @@ class QIBaseBackend(Backend):  # type: ignore[misc]
             available_gates.remove("toffoli")
 
         self._target = Target().from_configuration(
-            basis_gates=[opensquirrel_to_qiskit(gate) for gate in available_gates],
+            basis_gates=[mapping.opensquirrel_to_qiskit(gate) for gate in available_gates],
             num_qubits=backend_type.nqubits,
             coupling_map=None if coupling_map_complete else coupling_map,
         )

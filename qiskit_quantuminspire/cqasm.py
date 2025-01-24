@@ -6,7 +6,9 @@ from opensquirrel.writer import writer
 from qiskit import QuantumCircuit
 from qiskit.circuit import CircuitInstruction
 
-from qiskit_quantuminspire.mapping.instructions import qiskit_to_opensquirrel
+from qiskit_quantuminspire.mapping.instruction_mapping import InstructionMapping
+
+_INSTRUCTION_MAPPING = InstructionMapping()
 
 
 def _add_instruction(builder: CircuitBuilder, circuit_instruction: Any) -> None:
@@ -20,7 +22,7 @@ def _add_instruction(builder: CircuitBuilder, circuit_instruction: Any) -> None:
         # Get the gate's method in the CircuitBuilder class, call with operands
         # All of the builder's methods follow the same pattern, first the qubit operands, then parameters
         # Only method with classical bit operands is measure, which does not have parameters
-        getattr(builder, qiskit_to_opensquirrel(name))(*qubit_operands, *clbit_operands, *params)
+        getattr(builder, _INSTRUCTION_MAPPING.qiskit_to_opensquirrel(name))(*qubit_operands, *clbit_operands, *params)
     except KeyError:
         raise NotImplementedError(
             f"Unsupported instruction: {name}. Please edit your circuit or use Qiskit transpilation to support "
