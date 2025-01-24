@@ -24,7 +24,9 @@ def qi_job_mock(mocker: MockerFixture) -> Generator[MagicMock, None, None]:
 def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
     def _generate_qi_backend(params: Optional[Dict[Any, Any]] = None) -> QIBackend:
         params = params or {}
-        backend_type = params.pop("backend_type", create_backend_type(max_number_of_shots=4096))
+        backend_type = params.pop(
+            "backend_type", create_backend_type(max_number_of_shots=4096, supports_raw_data=False)
+        )
         is_online = params.pop("backend_online", True)
         status = BackendStatus.IDLE if is_online else BackendStatus.OFFLINE
 

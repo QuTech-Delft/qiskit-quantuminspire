@@ -12,6 +12,7 @@ def create_backend_type(
     max_number_of_shots: int = 2048,
     name: str = "qi_backend",
     id: int = 1,
+    supports_raw_data: bool = True,
 ) -> BackendType:
     """Helper for creating a backendtype with only the fields you care about."""
     return BackendType(
@@ -30,7 +31,7 @@ def create_backend_type(
         infrastructure="QCI",
         description="A Quantum Inspire backend",
         native_gateset="",
-        supports_raw_data=True,
+        supports_raw_data=supports_raw_data,
     )
 
 
