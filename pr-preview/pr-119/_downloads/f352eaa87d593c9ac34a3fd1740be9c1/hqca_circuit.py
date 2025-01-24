@@ -41,8 +41,13 @@ def execute(qi: QuantumInterface) -> None:
         circuit = generate_circuit()
         _ = qi.execute_circuit(circuit, 1024)
         # To include measurement results per shot (raw_data):
-        # result = qi.execute_circuit(circuit, 1024, raw_data_enabled=True)
-        # raw_data = result.raw_data
+        # result = qi.execute_circuit(circuit, 1024,
+        # raw_data_enabled=True) raw_data = result.raw_data.
+
+        # Note that you can also use the QIHybridBackend to run QuantumCircuits directly, in which case the memory flag
+        # is used to enable/disable raw data.:
+        # backend = QIHybridBackend(qi)
+        # results = backend.run(circuit, shots=50, memory=False).result()
 
 
 def finalize(list_of_measurements: List[Dict[str, Any]]) -> Dict[str, Any]:
