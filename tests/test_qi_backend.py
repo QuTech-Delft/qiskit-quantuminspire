@@ -40,6 +40,81 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
 NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_instructions()) - 1
 
 
+@pytest.mark.parametrize(
+    "gateset, topology, nqubits, expected_instructions, mapping",
+    [
+        (
+            ["x", "sdag", "prep_y", "measure"],
+            [[0, 1], [1, 2], [2, 0]],
+            3,
+            [
+                ("x", (0,)),
+                ("sdg", (0,)),
+                ("measure", (0,)),
+                ("x", (1,)),
+                ("sdg", (1,)),
+                ("measure", (1,)),
+                ("x", (2,)),
+                ("sdg", (2,)),
+                ("measure", (2,)),
+            ],
+            InstructionMapping(qiskit_to_os={"sdg": "sDaG", "x": "X", "prep_y": "prep_y", "measure": "measure"}),
+        ),
+        (
+            # Gates in upper case
+            ["CZ", "X"],
+            [[0, 1], [1, 2], [2, 0], [1, 0], [1, 3]],
+            4,
+            [
+                ("x", (0,)),
+                ("x", (1,)),
+                ("x", (2,)),
+                ("x", (3,)),
+                ("cz", (0, 1)),
+                ("cz", (1, 0)),
+                ("cz", (1, 3)),
+                ("cz", (1, 2)),
+                ("cz", (2, 0)),
+            ],
+            InstructionMapping(qiskit_to_os={"cz": "CZ", "x": "X"}),
+        ),
+        (
+            # CouplingMap is complete
+            ["toffoli", "rx"],
+            [[1, 0], [0, 1], [1, 2], [2, 1], [2, 0], [0, 2]],
+            3,
+            [
+                ("rx", None),
+                ("ccx", None),
+            ],
+            InstructionMapping(qiskit_to_os={"ccx": "toffoli", "rx": "rx"}),
+        ),
+    ],
+)
+def test_qi_backend_construction_target(
+    gateset: list[str],
+    topology: list[list[int]],
+    nqubits: int,
+    expected_instructions: list[tuple[str, tuple[int, ...]]],
+    mapping: InstructionMapping,
+) -> None:
+    # Arrange
+    backend_type = create_backend_type(gateset=gateset, topology=topology, nqubits=nqubits)
+
+    # Act
+    qi_backend = QIBackend(backend_type=backend_type, mapping=mapping)
+
+    # Assert
+    target = qi_backend.target
+    actual_instructions = [(instruction.name, qubits) for instruction, qubits in target.instructions]
+
+    assert target.num_qubits == nqubits
+    for instruction in expected_instructions:
+        assert instruction in actual_instructions
+    for instruction in actual_instructions:
+        assert instruction in expected_instructions
+
+
 def test_qi_backend_construction_max_shots() -> None:
     # Arrange
     backend_type = create_backend_type(max_number_of_shots=4096)
