@@ -220,6 +220,7 @@ def test_process_results() -> None:
         meas_level=2,
         data=experiment_data,
         header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
+        status="Experiment was successful",
     )
     expected_results = Result(
         backend_name="qi_backend_1",
@@ -229,7 +230,7 @@ def test_process_results() -> None:
         success=True,
         results=[experiment_result],
         date=None,
-        status=None,
+        status="Result was successful",
         header=None,
         system_messages={},
     )
@@ -273,7 +274,7 @@ def test_process_results_handles_invalid_results() -> None:
     qi_job.circuits_run_data[0].job_id = 1  # Individual job_id
 
     qi_job.circuits_run_data[0].results = None
-    qi_job.circuits_run_data[0].system_message = "user-error, sytax error"
+    qi_job.circuits_run_data[0].system_message = "user-error, syntax error"
 
     with pytest.warns(ExperimentFailedWarning, match="Some experiments"):
 
@@ -291,12 +292,13 @@ def test_process_results_handles_invalid_results() -> None:
                     meas_level=2,
                     data=ExperimentResultData(counts={}),
                     header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
+                    status="Experiment was not successful. System Message: user-error, syntax error"
                 )
             ],
             date=None,
-            status=None,
+            status="Result was not successful",
             header=None,
-            system_messages={qc.name: "user-error, sytax error"},
+            system_messages={qc.name: "user-error, syntax error"},
         )
         assert processed_results.to_dict() == expected_results.to_dict()
 
