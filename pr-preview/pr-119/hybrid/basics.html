@@ -291,12 +291,9 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
         <span class="n">circuit</span> <span class="o">=</span> <span class="n">generate_circuit</span><span class="p">()</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">qi</span><span class="o">.</span><span class="n">execute_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
-        <span class="c1"># To include measurement results per shot (raw_data):</span>
-        <span class="c1"># result = qi.execute_circuit(circuit, 1024, raw_data_enabled=True)</span>
-        <span class="c1"># raw_data = result.raw_data</span>
-
 </pre></div>
 </div>
+<p>Refer to <a class="reference download internal" download="" href="../_downloads/f352eaa87d593c9ac34a3fd1740be9c1/hqca_circuit.py"><span class="xref download myst">this example</span></a> for some extra ways to interact with the <code class="docutils literal notranslate"><span class="pre">QuantumInterface</span></code>.</p>
 </section>
 <section id="finalize">
 <h3>Finalize<a class="headerlink" href="#finalize" title="Link to this heading">¶</a></h3>
