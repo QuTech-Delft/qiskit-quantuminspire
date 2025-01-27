@@ -214,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/qiskit_quantuminspire.html">qiskit_quantuminspire package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of qiskit_quantuminspire package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/qiskit_quantuminspire.hybrid.html">qiskit_quantuminspire.hybrid package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/qiskit_quantuminspire.mapping.html">qiskit_quantuminspire.mapping package</a></li>
 </ul>
 </li>
 </ul>
@@ -252,31 +253,36 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for qiskit_quantuminspire.cqasm</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">opensquirrel</span> <span class="kn">import</span> <span class="n">CircuitBuilder</span>
-<span class="kn">from</span> <span class="nn">opensquirrel.ir</span> <span class="kn">import</span> <span class="n">Bit</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Qubit</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">opensquirrel</span> <span class="kn">import</span> <span class="n">CircuitBuilder</span>
+<span class="kn">from</span> <span class="nn">opensquirrel.ir</span> <span class="kn">import</span> <span class="n">Bit</span><span class="p">,</span> <span class="n">Qubit</span>
 <span class="kn">from</span> <span class="nn">opensquirrel.writer</span> <span class="kn">import</span> <span class="n">writer</span>
 <span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">CircuitInstruction</span>
 
-<span class="n">_QISKIT_TO_OPENSQUIRREL_MAPPING</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="s2">&quot;Z&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;sdg&quot;</span><span class="p">:</span> <span class="s2">&quot;Sdag&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;tdg&quot;</span><span class="p">:</span> <span class="s2">&quot;Tdag&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;rx&quot;</span><span class="p">:</span> <span class="s2">&quot;Rx&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ry&quot;</span><span class="p">:</span> <span class="s2">&quot;Ry&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;rz&quot;</span><span class="p">:</span> <span class="s2">&quot;Rz&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cx&quot;</span><span class="p">:</span> <span class="s2">&quot;CNOT&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cz&quot;</span><span class="p">:</span> <span class="s2">&quot;CZ&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cp&quot;</span><span class="p">:</span> <span class="s2">&quot;CR&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;swap&quot;</span><span class="p">:</span> <span class="s2">&quot;SWAP&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;measure&quot;</span><span class="p">:</span> <span class="s2">&quot;measure&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;reset&quot;</span><span class="p">:</span> <span class="s2">&quot;reset&quot;</span><span class="p">,</span>
-<span class="p">}</span>
+<span class="kn">from</span> <span class="nn">qiskit_quantuminspire.mapping.instruction_mapping</span> <span class="kn">import</span> <span class="n">InstructionMapping</span>
+
+<span class="n">_INSTRUCTION_MAPPING</span> <span class="o">=</span> <span class="n">InstructionMapping</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_add_instruction</span><span class="p">(</span><span class="n">builder</span><span class="p">:</span> <span class="n">CircuitBuilder</span><span class="p">,</span> <span class="n">circuit_instruction</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">operation</span> <span class="o">=</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">operation</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">operation</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">operation</span><span class="o">.</span><span class="n">params</span><span class="p">]</span>
+    <span class="n">qubit_operands</span> <span class="o">=</span> <span class="p">[</span><span class="n">Qubit</span><span class="p">(</span><span class="n">qubit</span><span class="o">.</span><span class="n">_index</span><span class="p">)</span> <span class="k">for</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">qubits</span><span class="p">]</span>
+    <span class="n">clbit_operands</span> <span class="o">=</span> <span class="p">[</span><span class="n">Bit</span><span class="p">(</span><span class="n">clbit</span><span class="o">.</span><span class="n">_index</span><span class="p">)</span> <span class="k">for</span> <span class="n">clbit</span> <span class="ow">in</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">clbits</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Get the gate&#39;s method in the CircuitBuilder class, call with operands</span>
+        <span class="c1"># All of the builder&#39;s methods follow the same pattern, first the qubit operands, then parameters</span>
+        <span class="c1"># Only method with classical bit operands is measure, which does not have parameters</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">_INSTRUCTION_MAPPING</span><span class="o">.</span><span class="n">qiskit_to_opensquirrel</span><span class="p">(</span><span class="n">name</span><span class="p">))(</span><span class="o">*</span><span class="n">qubit_operands</span><span class="p">,</span> <span class="o">*</span><span class="n">clbit_operands</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unsupported instruction: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">. Please edit your circuit or use Qiskit transpilation to support &quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;your selected backend.&quot;</span>
+        <span class="p">)</span>
 
 
 <div class="viewcode-block" id="dumps">
@@ -287,24 +293,20 @@
     <span class="k">for</span> <span class="n">circuit_instruction</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
         <span class="n">operation</span> <span class="o">=</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">operation</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">operation</span><span class="o">.</span><span class="n">name</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">Float</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">operation</span><span class="o">.</span><span class="n">params</span><span class="p">]</span>
-        <span class="n">qubit_operands</span> <span class="o">=</span> <span class="p">[</span><span class="n">Qubit</span><span class="p">(</span><span class="n">qubit</span><span class="o">.</span><span class="n">_index</span><span class="p">)</span> <span class="k">for</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">qubits</span><span class="p">]</span>
-        <span class="n">clbit_operands</span> <span class="o">=</span> <span class="p">[</span><span class="n">Bit</span><span class="p">(</span><span class="n">clbit</span><span class="o">.</span><span class="n">_index</span><span class="p">)</span> <span class="k">for</span> <span class="n">clbit</span> <span class="ow">in</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">clbits</span><span class="p">]</span>
 
-        <span class="c1"># Only used as circuit compilation directive</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;delay&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;dt&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unsupported delay unit </span><span class="si">{</span><span class="n">circuit_instruction</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2"> in: </span><span class="si">{</span><span class="n">circuit_instruction</span><span class="si">}</span><span class="s2">. Only &#39;dt&#39;&quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot; is supported.&quot;</span>
+                <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;barrier&quot;</span><span class="p">:</span>
-            <span class="k">continue</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Get the gate&#39;s method in the CircuitBuilder class, call with operands</span>
-            <span class="c1"># All of the builder&#39;s methods follow the same pattern, first the qubit operands, then parameters</span>
-            <span class="c1"># Only method with classical bit operands is measure, which does not have parameters</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">_QISKIT_TO_OPENSQUIRREL_MAPPING</span><span class="p">[</span><span class="n">name</span><span class="p">])(</span><span class="o">*</span><span class="n">qubit_operands</span><span class="p">,</span> <span class="o">*</span><span class="n">clbit_operands</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unsupported instruction: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">. Please edit your circuit or use Qiskit transpilation to support &quot;</span>
-                <span class="o">+</span> <span class="s2">&quot;your selected backend.&quot;</span>
-            <span class="p">)</span>
+            <span class="c1"># Opensquirrel does not support multi-qubit barriers.</span>
+            <span class="k">for</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">qubits</span><span class="p">:</span>
+                <span class="n">_add_instruction</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">CircuitInstruction</span><span class="p">(</span><span class="n">operation</span><span class="o">=</span><span class="n">operation</span><span class="p">,</span> <span class="n">qubits</span><span class="o">=</span><span class="p">[</span><span class="n">qubit</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_add_instruction</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">circuit_instruction</span><span class="p">)</span>
 
     <span class="n">cqasm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="n">circuit_to_string</span><span class="p">(</span><span class="n">builder</span><span class="o">.</span><span class="n">to_circuit</span><span class="p">())</span>
 

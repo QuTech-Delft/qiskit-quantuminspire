@@ -214,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/qiskit_quantuminspire.html">qiskit_quantuminspire package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of qiskit_quantuminspire package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/qiskit_quantuminspire.hybrid.html">qiskit_quantuminspire.hybrid package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/qiskit_quantuminspire.mapping.html">qiskit_quantuminspire.mapping package</a></li>
 </ul>
 </li>
 </ul>
@@ -252,52 +253,21 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for qiskit_quantuminspire.qi_backend</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">PrettyPrinter</span>
+<span></span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">PrettyPrinter</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">compute_api_client</span> <span class="kn">import</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">BackendStatus</span><span class="p">,</span> <span class="n">BackendType</span><span class="p">,</span> <span class="n">BackendTypesApi</span>
 <span class="kn">from</span> <span class="nn">qi2_shared.client</span> <span class="kn">import</span> <span class="n">config</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">Instruction</span><span class="p">,</span> <span class="n">Measure</span><span class="p">,</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">CCXGate</span><span class="p">,</span>
-    <span class="n">CPhaseGate</span><span class="p">,</span>
-    <span class="n">CXGate</span><span class="p">,</span>
-    <span class="n">IGate</span><span class="p">,</span>
-    <span class="n">RXGate</span><span class="p">,</span>
-    <span class="n">RYGate</span><span class="p">,</span>
-    <span class="n">SdgGate</span><span class="p">,</span>
-    <span class="n">TdgGate</span><span class="p">,</span>
-    <span class="n">get_standard_gate_name_mapping</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.parameter</span> <span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">qiskit.providers</span> <span class="kn">import</span> <span class="n">BackendV2</span> <span class="k">as</span> <span class="n">Backend</span>
 <span class="kn">from</span> <span class="nn">qiskit.providers.options</span> <span class="kn">import</span> <span class="n">Options</span>
 <span class="kn">from</span> <span class="nn">qiskit.transpiler</span> <span class="kn">import</span> <span class="n">CouplingMap</span><span class="p">,</span> <span class="n">Target</span>
 
+<span class="kn">from</span> <span class="nn">qiskit_quantuminspire.mapping.instruction_mapping</span> <span class="kn">import</span> <span class="n">InstructionMapping</span>
 <span class="kn">from</span> <span class="nn">qiskit_quantuminspire.qi_jobs</span> <span class="kn">import</span> <span class="n">QIJob</span>
 <span class="kn">from</span> <span class="nn">qiskit_quantuminspire.utils</span> <span class="kn">import</span> <span class="n">is_coupling_map_complete</span><span class="p">,</span> <span class="n">run_async</span>
 
-<span class="c1"># Used for parameterizing Qiskit gates in the gate mapping</span>
-<span class="n">_THETA</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;ϴ&quot;</span><span class="p">)</span>
-
-<span class="c1"># Custom gate mapping for gates whose name do not match between cQASM and Qiskit</span>
-<span class="n">_CQASM_QISKIT_GATE_MAPPING</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Instruction</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;i&quot;</span><span class="p">:</span> <span class="n">IGate</span><span class="p">(),</span>
-    <span class="s2">&quot;x90&quot;</span><span class="p">:</span> <span class="n">RXGate</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="s2">&quot;mx90&quot;</span><span class="p">:</span> <span class="n">RXGate</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="s2">&quot;y90&quot;</span><span class="p">:</span> <span class="n">RYGate</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="s2">&quot;my90&quot;</span><span class="p">:</span> <span class="n">RYGate</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="s2">&quot;toffoli&quot;</span><span class="p">:</span> <span class="n">CCXGate</span><span class="p">(),</span>
-    <span class="s2">&quot;sdag&quot;</span><span class="p">:</span> <span class="n">SdgGate</span><span class="p">(),</span>
-    <span class="s2">&quot;tdag&quot;</span><span class="p">:</span> <span class="n">TdgGate</span><span class="p">(),</span>
-    <span class="s2">&quot;cr&quot;</span><span class="p">:</span> <span class="n">CPhaseGate</span><span class="p">(</span><span class="n">_THETA</span><span class="p">),</span>
-    <span class="s2">&quot;cnot&quot;</span><span class="p">:</span> <span class="n">CXGate</span><span class="p">(),</span>
-    <span class="s2">&quot;measure_z&quot;</span><span class="p">:</span> <span class="n">Measure</span><span class="p">(),</span>
-<span class="p">}</span>
-
-<span class="n">_IGNORED_GATES</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+<span class="n">_IGNORED_GATES</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># Prep not viewed as separate gates in Qiskit</span>
     <span class="s2">&quot;prep_x&quot;</span><span class="p">,</span>
     <span class="s2">&quot;prep_y&quot;</span><span class="p">,</span>
@@ -306,14 +276,19 @@
     <span class="s2">&quot;measure_x&quot;</span><span class="p">,</span>
     <span class="s2">&quot;measure_y&quot;</span><span class="p">,</span>
     <span class="s2">&quot;measure_all&quot;</span><span class="p">,</span>
+    <span class="c1"># Measure z is equivalent to measure</span>
+    <span class="s2">&quot;measure_z&quot;</span><span class="p">,</span>
     <span class="c1"># May be supportable through parameterized CPhaseGate.</span>
     <span class="c1"># For now, direct usage of CPhaseGate is required</span>
     <span class="s2">&quot;crk&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-
-<span class="n">_ALL_SUPPORTED_GATES</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">get_standard_gate_name_mapping</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span>
-    <span class="n">_CQASM_QISKIT_GATE_MAPPING</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="p">)</span>
+    <span class="c1"># No direct qiskit equivalent</span>
+    <span class="s2">&quot;x90&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mx90&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;y90&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;my90&quot;</span><span class="p">,</span>
+    <span class="c1"># Qiskit assumes barrier support and does not include it in its standard gate mapping</span>
+    <span class="s2">&quot;barrier&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
 
 <span class="c1"># Ignore type checking for QIBackend due to missing Qiskit type stubs,</span>
@@ -323,7 +298,7 @@
 <span class="k">class</span> <span class="nc">QIBaseBackend</span><span class="p">(</span><span class="n">Backend</span><span class="p">):</span>  <span class="c1"># type: ignore[misc]</span>
     <span class="n">_max_shots</span><span class="p">:</span> <span class="nb">int</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_type</span><span class="p">:</span> <span class="n">BackendType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_type</span><span class="p">:</span> <span class="n">BackendType</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">InstructionMapping</span> <span class="o">=</span> <span class="n">InstructionMapping</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">backend_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">backend_type</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">id</span>
 
@@ -336,27 +311,22 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">supports_raw_data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">set_validator</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">False</span><span class="p">])</span>
 
+        <span class="c1"># Determine supported gates</span>
+        <span class="n">opensquirrel_gates</span> <span class="o">=</span> <span class="p">{</span><span class="n">inst</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">supported_opensquirrel_instructions</span><span class="p">()}</span>
+        <span class="n">available_gates</span> <span class="o">=</span> <span class="n">opensquirrel_gates</span> <span class="o">-</span> <span class="n">_IGNORED_GATES</span>
+
         <span class="c1"># Construct coupling map</span>
-        <span class="n">native_gates</span> <span class="o">=</span> <span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">gateset</span><span class="p">]</span>
-        <span class="n">available_gates</span> <span class="o">=</span> <span class="p">[</span><span class="n">gate</span> <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">native_gates</span> <span class="k">if</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">_ALL_SUPPORTED_GATES</span><span class="p">]</span>
-        <span class="n">unknown_gates</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">native_gates</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">_ALL_SUPPORTED_GATES</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">_IGNORED_GATES</span><span class="p">)</span>
         <span class="n">coupling_map</span> <span class="o">=</span> <span class="n">CouplingMap</span><span class="p">(</span><span class="n">backend_type</span><span class="o">.</span><span class="n">topology</span><span class="p">)</span>
         <span class="n">coupling_map_complete</span> <span class="o">=</span> <span class="n">is_coupling_map_complete</span><span class="p">(</span><span class="n">coupling_map</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unknown_gates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring unknown native gate(s) </span><span class="si">{</span><span class="n">unknown_gates</span><span class="si">}</span><span class="s2"> for backend </span><span class="si">{</span><span class="n">backend_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="s2">&quot;toffoli&quot;</span> <span class="ow">in</span> <span class="n">available_gates</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">coupling_map_complete</span><span class="p">:</span>
+            <span class="c1"># &quot;Toffoli gate not supported for non-complete topology</span>
             <span class="n">available_gates</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;toffoli&quot;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Native toffoli gate in backend </span><span class="si">{</span><span class="n">backend_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> not supported for non-complete topology&quot;</span>
-            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="n">Target</span><span class="p">()</span><span class="o">.</span><span class="n">from_configuration</span><span class="p">(</span>
-            <span class="n">basis_gates</span><span class="o">=</span><span class="n">available_gates</span><span class="p">,</span>
+            <span class="n">basis_gates</span><span class="o">=</span><span class="p">[</span><span class="n">mapping</span><span class="o">.</span><span class="n">opensquirrel_to_qiskit</span><span class="p">(</span><span class="n">gate</span><span class="p">)</span> <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">available_gates</span><span class="p">],</span>
             <span class="n">num_qubits</span><span class="o">=</span><span class="n">backend_type</span><span class="o">.</span><span class="n">nqubits</span><span class="p">,</span>
             <span class="n">coupling_map</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">coupling_map_complete</span> <span class="k">else</span> <span class="n">coupling_map</span><span class="p">,</span>
-            <span class="n">custom_name_mapping</span><span class="o">=</span><span class="n">_CQASM_QISKIT_GATE_MAPPING</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr_pretty__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">PrettyPrinter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
