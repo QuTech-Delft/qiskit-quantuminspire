@@ -34,11 +34,9 @@ def execute(qi: QuantumInterface) -> None:
     for i in range(1, 5):
         circuit = generate_circuit()
         _ = qi.execute_circuit(circuit, 1024)
-        # To include measurement results per shot (raw_data):
-        # result = qi.execute_circuit(circuit, 1024, raw_data_enabled=True)
-        # raw_data = result.raw_data
-
 ```
+
+Refer to [this example](./hqca_circuit.py) for some extra ways to interact with the `QuantumInterface`.
 
 ### Finalize
 
