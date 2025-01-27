@@ -279,10 +279,12 @@
 <span class="sd">    qi.execute_circuit args:</span>
 <span class="sd">        circuit: a string representation of a quantum circuit</span>
 <span class="sd">        number_of_shots: how often to execute the circuit</span>
+<span class="sd">        raw_data_enabled (default: False): report measurement per shot (if supported by backend type)</span>
 
 <span class="sd">    qi.execute_circuit return value:</span>
 <span class="sd">        The results of executing the quantum circuit, this is an object with the following attributes</span>
 <span class="sd">            results: The results from iteration n-1.</span>
+<span class="sd">            raw_data: Measurement per shot as a list of strings (or None if disabled).</span>
 <span class="sd">            shots_requested: The number of shots requested by the user for the previous iteration.</span>
 <span class="sd">            shots_done: The number of shots actually run.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -291,6 +293,7 @@
         <span class="n">_</span> <span class="o">=</span> <span class="n">qi</span><span class="o">.</span><span class="n">execute_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Refer to <a class="reference download internal" download="" href="../_downloads/f352eaa87d593c9ac34a3fd1740be9c1/hqca_circuit.py"><span class="xref download myst">this example</span></a> for some extra ways to interact with the <code class="docutils literal notranslate"><span class="pre">QuantumInterface</span></code>.</p>
 </section>
 <section id="finalize">
 <h3>Finalize<a class="headerlink" href="#finalize" title="Link to this heading">¶</a></h3>
