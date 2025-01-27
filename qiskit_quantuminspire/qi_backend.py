@@ -1,49 +1,18 @@
-import logging
-import math
 from pprint import PrettyPrinter
 from typing import Any, List, Union
 
 from compute_api_client import ApiClient, BackendStatus, BackendType, BackendTypesApi
 from qi2_shared.client import config
-from qiskit.circuit import Instruction, Measure, QuantumCircuit
-from qiskit.circuit.library import (
-    CCXGate,
-    CPhaseGate,
-    CXGate,
-    IGate,
-    RXGate,
-    RYGate,
-    SdgGate,
-    TdgGate,
-    get_standard_gate_name_mapping,
-)
-from qiskit.circuit.parameter import Parameter
+from qiskit.circuit import QuantumCircuit
 from qiskit.providers import BackendV2 as Backend
 from qiskit.providers.options import Options
 from qiskit.transpiler import CouplingMap, Target
 
+from qiskit_quantuminspire.mapping.instruction_mapping import InstructionMapping
 from qiskit_quantuminspire.qi_jobs import QIJob
 from qiskit_quantuminspire.utils import is_coupling_map_complete, run_async
 
-# Used for parameterizing Qiskit gates in the gate mapping
-_THETA = Parameter("ϴ")
-
-# Custom gate mapping for gates whose name do not match between cQASM and Qiskit
-_CQASM_QISKIT_GATE_MAPPING: dict[str, Instruction] = {
-    "i": IGate(),
-    "x90": RXGate(math.pi / 2),
-    "mx90": RXGate(-math.pi / 2),
-    "y90": RYGate(math.pi / 2),
-    "my90": RYGate(-math.pi / 2),
-    "toffoli": CCXGate(),
-    "sdag": SdgGate(),
-    "tdag": TdgGate(),
-    "cr": CPhaseGate(_THETA),
-    "cnot": CXGate(),
-    "measure_z": Measure(),
-}
-
-_IGNORED_GATES: list[str] = [
+_IGNORED_GATES: set[str] = {
     # Prep not viewed as separate gates in Qiskit
     "prep_x",
     "prep_y",
@@ -52,14 +21,19 @@ _IGNORED_GATES: list[str] = [
     "measure_x",
     "measure_y",
     "measure_all",
+    # Measure z is equivalent to measure
+    "measure_z",
     # May be supportable through parameterized CPhaseGate.
     # For now, direct usage of CPhaseGate is required
     "crk",
-]
-
-_ALL_SUPPORTED_GATES: list[str] = list(get_standard_gate_name_mapping().keys()) + list(
-    _CQASM_QISKIT_GATE_MAPPING.keys()
-)
+    # No direct qiskit equivalent
+    "x90",
+    "mx90",
+    "y90",
+    "my90",
+    # Qiskit assumes barrier support and does not include it in its standard gate mapping
+    "barrier",
+}
 
 
 # Ignore type checking for QIBackend due to missing Qiskit type stubs,
@@ -67,7 +41,7 @@ _ALL_SUPPORTED_GATES: list[str] = list(get_standard_gate_name_mapping().keys()) 
 class QIBaseBackend(Backend):  # type: ignore[misc]
     _max_shots: int
 
-    def __init__(self, backend_type: BackendType, **kwargs: Any):
+    def __init__(self, backend_type: BackendType, mapping: InstructionMapping = InstructionMapping(), **kwargs: Any):
         super().__init__(name=backend_type.name, description=backend_type.description, **kwargs)
         self._id: int = backend_type.id
 
@@ -80,27 +54,22 @@ class QIBaseBackend(Backend):  # type: ignore[misc]
         if not backend_type.supports_raw_data:
             self._options.set_validator("memory", [False])
 
+        # Determine supported gates
+        opensquirrel_gates = {inst.lower() for inst in mapping.supported_opensquirrel_instructions()}
+        available_gates = opensquirrel_gates - _IGNORED_GATES
+
         # Construct coupling map
-        native_gates = [gate.lower() for gate in backend_type.gateset]
-        available_gates = [gate for gate in native_gates if gate in _ALL_SUPPORTED_GATES]
-        unknown_gates = set(native_gates) - set(_ALL_SUPPORTED_GATES) - set(_IGNORED_GATES)
         coupling_map = CouplingMap(backend_type.topology)
         coupling_map_complete = is_coupling_map_complete(coupling_map)
 
-        if len(unknown_gates) > 0:
-            logging.warning(f"Ignoring unknown native gate(s) {unknown_gates} for backend {backend_type.name}")
-
         if "toffoli" in available_gates and not coupling_map_complete:
+            # "Toffoli gate not supported for non-complete topology
             available_gates.remove("toffoli")
-            logging.warning(
-                f"Native toffoli gate in backend {backend_type.name} not supported for non-complete topology"
-            )
 
         self._target = Target().from_configuration(
-            basis_gates=available_gates,
+            basis_gates=[mapping.opensquirrel_to_qiskit(gate) for gate in available_gates],
             num_qubits=backend_type.nqubits,
             coupling_map=None if coupling_map_complete else coupling_map,
-            custom_name_mapping=_CQASM_QISKIT_GATE_MAPPING,
         )
 
     def __repr_pretty__(self, p: PrettyPrinter) -> None:
