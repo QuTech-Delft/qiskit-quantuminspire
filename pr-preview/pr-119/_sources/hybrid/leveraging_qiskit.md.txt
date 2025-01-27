@@ -1,3 +1,0 @@
-# Leveraging Qiskit
-
-Qiskit has a lot more to offer than execution of simple `QuantumCircuits`, and because QI2 allows for execution of both the classical and quantum parts of a hybrid algorithm you can achieve fast execution of many of the quantum algorithms the Qiskit ecosystem has to offer. Apart from ensuring your scripts use the format shown [here](./basics.md), you are required to use the special `QIHybridBackend()` as your Qiskit backend object. This backend ensures the correct quantum backend is inferred from what you selected when uploading the script. A full working example (that can be uploaded to QI2 as-is) can be found [here](./hydrogen.py).
