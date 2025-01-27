@@ -142,7 +142,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             job_id=str(self.batch_job_id),
             success=all(batch_job_success),
             results=results,
-            status="Result was successful" if all(batch_job_success) else "Result was not successful",
+            status="success" if all(batch_job_success) else "failed",
             system_messages=failed_experiments,
         )
         return result
@@ -165,7 +165,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             success=result.shots_done > 0,
             data=experiment_data,
             header=QobjExperimentHeader(name=circuit_name),
-            status="Experiment was successful",
+            status="success",
         )
 
     @staticmethod
@@ -176,7 +176,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             success=False,
             data=ExperimentResultData(counts={}),
             header=QobjExperimentHeader(name=circuit_name),
-            status=f"Experiment was not successful. System Message: {system_message}",
+            status=f"failed. System Message: {system_message}",
         )
 
 
