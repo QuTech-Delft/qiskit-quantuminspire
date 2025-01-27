@@ -111,7 +111,9 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
 
             if qi_result is None:
                 failed_experiments[circuit_name] = circuit_data.system_message
-                experiment_result = self._create_empty_experiment_result(circuit_name=circuit_name)
+                experiment_result = self._create_empty_experiment_result(
+                    circuit_name=circuit_name, system_message=circuit_data.system_message
+                )
                 results.append(experiment_result)
                 continue
 
@@ -140,6 +142,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             job_id=str(self.batch_job_id),
             success=all(batch_job_success),
             results=results,
+            status="Result successful" if all(batch_job_success) else "Result failed",
             system_messages=failed_experiments,
         )
         return result
@@ -162,16 +165,18 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             success=result.shots_done > 0,
             data=experiment_data,
             header=QobjExperimentHeader(name=circuit_name),
+            status="Experiment successful",
         )
 
     @staticmethod
-    def _create_empty_experiment_result(circuit_name: str) -> ExperimentResult:
+    def _create_empty_experiment_result(circuit_name: str, system_message: Optional[str]) -> ExperimentResult:
         """Create an empty ExperimentResult instance."""
         return ExperimentResult(
             shots=0,
             success=False,
             data=ExperimentResultData(counts={}),
             header=QobjExperimentHeader(name=circuit_name),
+            status=f"Experiment failed. System Message: {system_message}",
         )
 
 
