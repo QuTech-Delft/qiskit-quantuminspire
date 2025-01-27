@@ -220,6 +220,7 @@ def test_process_results() -> None:
         meas_level=2,
         data=experiment_data,
         header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
+        status="Experiment successful",
     )
     expected_results = Result(
         backend_name="qi_backend_1",
@@ -229,7 +230,7 @@ def test_process_results() -> None:
         success=True,
         results=[experiment_result],
         date=None,
-        status=None,
+        status="Result successful",
         header=None,
         system_messages={},
     )
@@ -291,10 +292,11 @@ def test_process_results_handles_invalid_results() -> None:
                     meas_level=2,
                     data=ExperimentResultData(counts={}),
                     header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
+                    status="Experiment failed. System Message: user-error, sytax error",
                 )
             ],
             date=None,
-            status=None,
+            status="Result failed",
             header=None,
             system_messages={qc.name: "user-error, sytax error"},
         )
