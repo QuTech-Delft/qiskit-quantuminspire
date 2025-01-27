@@ -49,7 +49,7 @@ def execute(qi: QuantumInterface) -> None:
         elif execution_method == "include_raw_data":
             # To include measurement results per shot (raw_data):
             result = qi.execute_circuit(cqasm.dumps(circuit), 1024, raw_data_enabled=True)
-            raw_data = result.raw_data
+            _ = result.raw_data
         elif execution_method == "use_hybrid_backend":
             # Note that you can also use the QIHybridBackend to run QuantumCircuits directly, in which case the memory
             # flag is used to enable/disable raw data.:
