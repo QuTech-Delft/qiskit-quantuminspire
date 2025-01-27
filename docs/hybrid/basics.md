@@ -22,10 +22,12 @@ def execute(qi: QuantumInterface) -> None:
     qi.execute_circuit args:
         circuit: a string representation of a quantum circuit
         number_of_shots: how often to execute the circuit
+        raw_data_enabled (default: False): report measurement per shot (if supported by backend type)
 
     qi.execute_circuit return value:
         The results of executing the quantum circuit, this is an object with the following attributes
             results: The results from iteration n-1.
+            raw_data: Measurement per shot as a list of strings (or None if disabled).
             shots_requested: The number of shots requested by the user for the previous iteration.
             shots_done: The number of shots actually run.
     """
@@ -33,6 +35,8 @@ def execute(qi: QuantumInterface) -> None:
         circuit = generate_circuit()
         _ = qi.execute_circuit(circuit, 1024)
 ```
+
+Refer to [this example](./hqca_circuit.py) for some extra ways to interact with the `QuantumInterface`.
 
 ### Finalize
 

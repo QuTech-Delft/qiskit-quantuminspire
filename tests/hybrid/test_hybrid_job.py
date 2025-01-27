@@ -20,6 +20,7 @@ def test_submit(quantum_interface: MagicMock) -> None:
             "10": 256,
             "11": 256,
         },
+        raw_data=None,
     )
     job = QIHybridJob(run_input=[circuit], backend=backend, quantum_interface=quantum_interface)
     job.submit()
