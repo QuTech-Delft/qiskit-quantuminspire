@@ -45,7 +45,7 @@ result = job.result()
 print(result.get_counts())
 ```
 
-When submitting circuits, it might happen that some circuits may fail during execution. To access error details about those circuits,
+When submitting circuits, it may happen that some circuits fail during execution. To access error details about those circuits,
 you can inspect the `system_messages` attribute of the result object, which returns a dictionary whose keys are circuit names and values are
 error messages retrieved from the system.
 
