@@ -158,48 +158,40 @@ def test_fetch_job_result_handles_invalid_results(
     mock_fetch_failed_jobs_message.assert_awaited_once()
 
 
-@pytest.mark.parametrize(
-    "failed_job_ids, error_message, expected_messages",
-    [
-        ([2], "system-error", [None, "system-error"]),  # Case when a job fails
-        ([], None, [None, None]),  # Case when no jobs fail
-    ],
-)
 def test_fetch_failed_jobs_message(
     mocker: MockerFixture,
-    failed_job_ids: List[int],
-    error_message: Optional[str],
-    expected_messages: List[Optional[str]],
 ) -> None:
     class MockJob:
-        def __init__(self, message: Optional[str], id: int, status: QIJobStatus):
+        def __init__(self, message: str, id: int, status: QIJobStatus):
             self.message = message
             self.id = id
             self.status = status
 
     # Arrange
     mock_jobs_api = MagicMock()
+    job_ids_to_check = [1, 2]
 
-    if failed_job_ids:
-        mock_jobs_api.read_job_jobs_id_get = AsyncMock(
-            side_effect=[MockJob(id=failed_job_ids[0], message=error_message, status=QIJobStatus.FAILED)]
-        )
+    mock_jobs_api.read_job_jobs_id_get = AsyncMock(
+        side_effect=[
+            MockJob(id=job_ids_to_check[0], message="failed", status=QIJobStatus.FAILED),  # Failed job
+            MockJob(id=job_ids_to_check[1], message="", status=QIJobStatus.COMPLETED),  # Job with no results
+        ]
+    )
 
     mocker.patch("qiskit_quantuminspire.qi_jobs.JobsApi", return_value=mock_jobs_api)
 
     circuits = [QuantumCircuit(1, 1), QuantumCircuit(2, 2)]
 
     job = QIJob(run_input=circuits, backend=None)
-    job.circuits_run_data[0].job_id = 1
-    if failed_job_ids:
-        job.circuits_run_data[1].job_id = failed_job_ids[0]
+    job.circuits_run_data[0].job_id = job_ids_to_check[0]
+    job.circuits_run_data[1].job_id = job_ids_to_check[1]
 
     # Act
-    asyncio.run(job._fetch_failed_jobs_message(MagicMock(), failed_job_ids))
+    asyncio.run(job._fetch_failed_jobs_message(MagicMock(), job_ids_to_check))
 
     # Assert
-    assert job.circuits_run_data[0].system_message == expected_messages[0]
-    assert job.circuits_run_data[1].system_message == expected_messages[1]
+    assert job.circuits_run_data[0].system_message == "failed"
+    assert job.circuits_run_data[1].system_message == "No Results"
 
 
 def test_process_results() -> None:

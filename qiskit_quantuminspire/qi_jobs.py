@@ -5,6 +5,7 @@ from functools import cache
 from pathlib import Path
 from typing import Any, List, Optional, Union, cast
 
+from colorama import Fore, Style
 from compute_api_client import (
     Algorithm,
     AlgorithmIn,
@@ -103,7 +104,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
 
         results = []
         batch_job_success = [False] * len(self.circuits_run_data)
-        failed_experiments = {}
+        failed_experiments = dict()
 
         for idx, circuit_data in enumerate(self.circuits_run_data):
             qi_result = circuit_data.results
@@ -125,15 +126,14 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             batch_job_success[idx] = qi_result.shots_done > 0
 
         if failed_experiments:
-            YELLOW = "\033[93m"
-            RESET = "\033[0m"
-            RED = "\033[91m"
 
-            warnings.warn(
-                f"\n{YELLOW}Some experiments {RED}FAILED. {YELLOW}You can view the detailed system messages \n"
-                f"in the 'system_messages' attribute of the result object. \nFor e.g: result.system_messages.{RESET}",
-                category=ExperimentFailedWarning,
+            warning_message = (
+                f"\n{Fore.YELLOW}Some experiments {Fore.RED}FAILED. "
+                f"{Fore.YELLOW}You can view the detailed system messages \n"
+                f"in the 'system_messages' attribute of the result object. "
+                f"\nFor e.g: result.system_messages.{Style.RESET_ALL}"
             )
+            warnings.warn(warning_message, category=ExperimentFailedWarning)
 
         result = Result(
             backend_name=self.backend().name,
@@ -331,7 +331,8 @@ class QIJob(QIBaseJob):
                     assert circuit_data.job_id is not None
                     job_ids_to_check.append(circuit_data.job_id)
 
-            await self._fetch_failed_jobs_message(client, job_ids_to_check)
+            if job_ids_to_check:
+                await self._fetch_failed_jobs_message(client, job_ids_to_check)
 
     async def _fetch_failed_jobs_message(self, api_client: ApiClient, job_ids_to_check: List[int]) -> None:
         """Fetch messages for failed jobs and update circuit data accordingly.
@@ -341,9 +342,6 @@ class QIJob(QIBaseJob):
             job_ids_to_check: List of job IDs that need to be inspected.
         """
 
-        if not job_ids_to_check:
-            return
-
         jobs_api = JobsApi(api_client)
 
         job_tasks = [jobs_api.read_job_jobs_id_get(id=_id) for _id in job_ids_to_check]
@@ -351,13 +349,18 @@ class QIJob(QIBaseJob):
         jobs: List[Job] = await asyncio.gather(*job_tasks)
 
         failed_jobs = [job for job in jobs if job.status == QIJobStatus.FAILED]
-
         failed_job_id_to_message = {job.id: job.message for job in failed_jobs}
 
+        jobs_with_no_results = list(set(jobs) - set(failed_jobs))
+        job_with_no_results_id_to_message = {job.id: "No Results" for job in jobs_with_no_results}
+
         for circuit_data in self.circuits_run_data:
-            if circuit_data.job_id not in failed_job_id_to_message:
-                continue
-            circuit_data.system_message = failed_job_id_to_message[circuit_data.job_id]
+
+            if circuit_data.job_id in failed_job_id_to_message:
+                circuit_data.system_message = failed_job_id_to_message[circuit_data.job_id]
+
+            if circuit_data.job_id in job_with_no_results_id_to_message:
+                circuit_data.system_message = job_with_no_results_id_to_message[circuit_data.job_id]
 
     def status(self) -> JobStatus:
         """Return the status of the (batch)job, among the values of ``JobStatus``."""
