@@ -358,8 +358,7 @@ class QIJob(QIBaseJob):
 
             if circuit_data.job_id in failed_job_id_to_message:
                 circuit_data.system_message = failed_job_id_to_message[circuit_data.job_id]
-
-            if circuit_data.job_id in job_with_no_results_id_to_message:
+            elif circuit_data.job_id in job_with_no_results_id_to_message:
                 circuit_data.system_message = job_with_no_results_id_to_message[circuit_data.job_id]
 
     def status(self) -> JobStatus:
