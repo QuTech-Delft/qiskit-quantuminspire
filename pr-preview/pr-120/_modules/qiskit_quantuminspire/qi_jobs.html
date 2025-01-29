@@ -627,8 +627,7 @@
 
             <span class="k">if</span> <span class="n">circuit_data</span><span class="o">.</span><span class="n">job_id</span> <span class="ow">in</span> <span class="n">failed_job_id_to_message</span><span class="p">:</span>
                 <span class="n">circuit_data</span><span class="o">.</span><span class="n">system_message</span> <span class="o">=</span> <span class="n">failed_job_id_to_message</span><span class="p">[</span><span class="n">circuit_data</span><span class="o">.</span><span class="n">job_id</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">circuit_data</span><span class="o">.</span><span class="n">job_id</span> <span class="ow">in</span> <span class="n">job_with_no_results_id_to_message</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">circuit_data</span><span class="o">.</span><span class="n">job_id</span> <span class="ow">in</span> <span class="n">job_with_no_results_id_to_message</span><span class="p">:</span>
                 <span class="n">circuit_data</span><span class="o">.</span><span class="n">system_message</span> <span class="o">=</span> <span class="n">job_with_no_results_id_to_message</span><span class="p">[</span><span class="n">circuit_data</span><span class="o">.</span><span class="n">job_id</span><span class="p">]</span>
 
 <div class="viewcode-block" id="QIJob.status">
