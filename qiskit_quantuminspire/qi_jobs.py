@@ -1,9 +1,11 @@
 import asyncio
+import warnings
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
 from typing import Any, List, Optional, Union, cast
 
+from colorama import Fore, Style
 from compute_api_client import (
     Algorithm,
     AlgorithmIn,
@@ -24,6 +26,7 @@ from compute_api_client import (
     Job,
     JobIn,
     JobsApi,
+    JobStatus as QIJobStatus,
     Language,
     LanguagesApi,
     PageBatchJob,
@@ -52,6 +55,10 @@ from qiskit_quantuminspire.base_provider import BaseProvider
 from qiskit_quantuminspire.utils import run_async
 
 
+class ExperimentFailedWarning(UserWarning):
+    pass
+
+
 @dataclass
 class CircuitExecutionData:
     """Class for book-keeping of individual jobs."""
@@ -59,6 +66,7 @@ class CircuitExecutionData:
     circuit: QuantumCircuit
     job_id: Optional[int] = None
     results: Optional[RawJobResult] = None
+    system_message: Optional[str] = None
 
 
 # Ignore type checking for QIBaseJob due to missing Qiskit type stubs,
@@ -96,13 +104,17 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
 
         results = []
         batch_job_success = [False] * len(self.circuits_run_data)
+        failed_experiments = dict()
 
         for idx, circuit_data in enumerate(self.circuits_run_data):
             qi_result = circuit_data.results
             circuit_name = circuit_data.circuit.name
 
             if qi_result is None:
-                experiment_result = self._create_empty_experiment_result(circuit_name=circuit_name)
+                failed_experiments[circuit_name] = circuit_data.system_message
+                experiment_result = self._create_empty_experiment_result(
+                    circuit_name=circuit_name, system_message=circuit_data.system_message
+                )
                 results.append(experiment_result)
                 continue
 
@@ -113,6 +125,16 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             results.append(experiment_result)
             batch_job_success[idx] = qi_result.shots_done > 0
 
+        if failed_experiments:
+
+            warning_message = (
+                f"\n{Fore.YELLOW}Some experiments {Fore.RED}FAILED. "
+                f"{Fore.YELLOW}You can view the detailed system messages \n"
+                f"in the 'system_messages' attribute of the result object. "
+                f"\nFor e.g: result.system_messages.{Style.RESET_ALL}"
+            )
+            warnings.warn(warning_message, category=ExperimentFailedWarning)
+
         result = Result(
             backend_name=self.backend().name,
             backend_version="1.0.0",
@@ -120,6 +142,8 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             job_id=str(self.batch_job_id),
             success=all(batch_job_success),
             results=results,
+            status="Result successful" if all(batch_job_success) else "Result failed",
+            system_messages=failed_experiments,
         )
         return result
 
@@ -141,16 +165,18 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             success=result.shots_done > 0,
             data=experiment_data,
             header=QobjExperimentHeader(name=circuit_name),
+            status="Experiment successful",
         )
 
     @staticmethod
-    def _create_empty_experiment_result(circuit_name: str) -> ExperimentResult:
+    def _create_empty_experiment_result(circuit_name: str, system_message: Optional[str]) -> ExperimentResult:
         """Create an empty ExperimentResult instance."""
         return ExperimentResult(
             shots=0,
             success=False,
             data=ExperimentResultData(counts={}),
             header=QobjExperimentHeader(name=circuit_name),
+            status=f"Experiment failed. System Message: {system_message}",
         )
 
 
@@ -297,9 +323,39 @@ class QIJob(QIBaseJob):
                 for circuit_data in self.circuits_run_data
             ]
             result_items = await asyncio.gather(*result_tasks)
+            job_ids_to_check = []
 
             for circuit_data, result_item in zip(self.circuits_run_data, result_items):
                 circuit_data.results = None if not result_item else result_item[0]
+                if circuit_data.results is None:
+                    assert circuit_data.job_id is not None
+                    job_ids_to_check.append(circuit_data.job_id)
+
+            if job_ids_to_check:
+                await self._fetch_failed_jobs_message(client, job_ids_to_check)
+
+    async def _fetch_failed_jobs_message(self, api_client: ApiClient, job_ids_to_check: List[int]) -> None:
+        """Fetch messages for failed jobs and update circuit data accordingly.
+
+        Args:
+            api_client: The API client for job communication.
+            job_ids_to_check: List of job IDs that need to be inspected.
+        """
+
+        jobs_api = JobsApi(api_client)
+
+        job_tasks = [jobs_api.read_job_jobs_id_get(id=_id) for _id in job_ids_to_check]
+
+        jobs: List[Job] = await asyncio.gather(*job_tasks)
+
+        failed_job_id_to_message = {
+            job.id: job.message if job.status == QIJobStatus.FAILED else "No Results" for job in jobs
+        }
+
+        for circuit_data in self.circuits_run_data:
+
+            if circuit_data.job_id in failed_job_id_to_message:
+                circuit_data.system_message = failed_job_id_to_message[circuit_data.job_id]
 
     def status(self) -> JobStatus:
         """Return the status of the (batch)job, among the values of ``JobStatus``."""
@@ -381,7 +437,7 @@ class QIJob(QIBaseJob):
             return job
 
     @cache
-    def result(self, wait_for_results: Optional[bool] = True, timeout: float = 60.0) -> Result:
+    def result(self, wait_for_results: bool = True, timeout: float = 60.0) -> Result:
         """Return the results of the job."""
         if wait_for_results:
             self.wait_for_final_state(timeout=timeout)
