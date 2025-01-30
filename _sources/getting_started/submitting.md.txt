@@ -41,7 +41,17 @@ print(qc)
 job = simulator_backend.run(qc)
 
 # Print the results.
-print(job.result().get_counts())
+result = job.result()
+print(result.get_counts())
+```
+
+When submitting circuits, it may happen that some circuits fail during execution. To access error details about those circuits,
+you can inspect the `system_messages` attribute of the result object, which returns a dictionary whose keys are circuit names and values are
+error messages retrieved from the system.
+
+```python
+# Get the error messages corresponding to each failed circuit
+print(result.system_messages)
 ```
 
 On backends that support the `raw data` feature, you can set the `memory` option to get the measurement result of each individual shot:
