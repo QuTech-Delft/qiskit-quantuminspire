@@ -348,18 +348,14 @@ class QIJob(QIBaseJob):
 
         jobs: List[Job] = await asyncio.gather(*job_tasks)
 
-        failed_jobs = [job for job in jobs if job.status == QIJobStatus.FAILED]
-        failed_job_id_to_message = {job.id: job.message for job in failed_jobs}
-
-        jobs_with_no_results = list(set(jobs) - set(failed_jobs))
-        job_with_no_results_id_to_message = {job.id: "No Results" for job in jobs_with_no_results}
+        failed_job_id_to_message = {
+            job.id: job.message if job.status == QIJobStatus.FAILED else "No Results" for job in jobs
+        }
 
         for circuit_data in self.circuits_run_data:
 
             if circuit_data.job_id in failed_job_id_to_message:
                 circuit_data.system_message = failed_job_id_to_message[circuit_data.job_id]
-            elif circuit_data.job_id in job_with_no_results_id_to_message:
-                circuit_data.system_message = job_with_no_results_id_to_message[circuit_data.job_id]
 
     def status(self) -> JobStatus:
         """Return the status of the (batch)job, among the values of ``JobStatus``."""
