@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qiskit-quantuminspire"
-version = "0.8.0"
+version = "0.8.1"
 description = "Qiskit provider for Quantum Inspire backends "
 authors = ["Quantum Inspire <support@quantum-inspire.com>"]
 readme = "README.md"
@@ -22,7 +22,7 @@ qiskit = "^1.2.0"
 qi-compute-api-client = "^0.46.0"
 pydantic = "^2.10.6"
 requests = "^2.32.3"
-opensquirrel = "0.3.0"
+opensquirrel = "0.3.1"
 
 [tool.poetry.group.dev.dependencies]
 black = {extras = ["jupyter"], version = ">=24.10,<26.0"}

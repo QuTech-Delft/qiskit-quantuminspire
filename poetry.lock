@@ -1803,13 +1803,13 @@ files = [
 
 [[package]]
 name = "opensquirrel"
-version = "0.3.0"
+version = "0.3.1"
 description = "A quantum circuit transformation and manipulation tool"
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "opensquirrel-0.3.0-py3-none-any.whl", hash = "sha256:1ba5e70ebb889222f5d67a1cb1cdec609d8b108e337e40deb5c3f91ff6d094c8"},
-    {file = "opensquirrel-0.3.0.tar.gz", hash = "sha256:35668ee3ba7f086d286c350502759fe6a83ddf46dcdeeae2b32858649bde95ca"},
+    {file = "opensquirrel-0.3.1-py3-none-any.whl", hash = "sha256:a48ca8a76e6946db97103438c9a8b78f290ce6ef08a9c491dccd9170c2e50b3b"},
+    {file = "opensquirrel-0.3.1.tar.gz", hash = "sha256:f562547042efb0bb22f0bc00b0f0ff1eaa602ca18cf5727a96d236560405e92f"},
 ]
 
 [package.dependencies]
@@ -3580,4 +3580,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "68cce048cc48e717a8b6576feff9a0421dc06dd932a2bb1ab60d8f85bf1c0515"
+content-hash = "312af1ae89b28dacbbceaac89621f9d1d8123f6d34816635cc39b40301c10c7b"
