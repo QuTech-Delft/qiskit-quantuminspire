@@ -1,14 +1,14 @@
 # Basics
 
-Quantum Inspire 2 supports hybrid classical-quantum algorithms, and allows execution of both the quantum and the classical part fully on the QI2 servers.
+Quantum Inspire supports hybrid classical-quantum algorithms, and allows execution of both the quantum and the classical part fully on the QI servers.
 
 ## Script format
 
-Any script that will be executed on the QI2 platform is required to have at least the `execute()` and `finalize()` functions.
+Any script that will be executed on the Quantum Inspire platform is required to have at least the `execute()` and `finalize()` functions.
 
 ### Execute
 
-The execute function is the function that gets called by QI2 first. As an argument it gets a `QuantumInterface`, which is what allows you to actually execute your circuit. A simple example, where a function `generate_circuit()` is called that returns cQASM as a string, is shown below. In this example, the same circuit is executed 5 times in a row as a simple illustration of the interchanging control between the hybrid and classical domains. Normally, you might want to change your `QuantumCircuit` between each execution based on your results.
+The execute function is the function that gets called by QI first. As an argument it gets a `QuantumInterface`, which is what allows you to actually execute your circuit. A simple example, where a function `generate_circuit()` is called that returns cQASM as a string, is shown below. In this example, the same circuit is executed 5 times in a row as a simple illustration of the interchanging control between the hybrid and classical domains. Normally, you might want to change your `QuantumCircuit` between each execution based on your results.
 
 ```python
 def execute(qi: QuantumInterface) -> None:
@@ -58,7 +58,7 @@ def finalize(list_of_measurements: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 ## Execution
 
-A complete script with both example functions can be found [here](./hqca_circuit.py). This can be uploaded to QI2 as follows (using the CLI), where `<backend_id>` is the id number of the selected quantum backend, which can be retrieved using the Qiskit-QuantumInspire QIProvider.
+A complete script with both example functions can be found [here](./hqca_circuit.py). This can be uploaded to QI as follows (using the CLI), where `<backend_id>` is the id number of the selected quantum backend, which can be retrieved using the Qiskit-QuantumInspire QIProvider.
 
 ```bash
 qi files upload ./hqca_circuit.py <backend_id>
