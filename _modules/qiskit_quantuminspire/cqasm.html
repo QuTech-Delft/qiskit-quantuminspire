@@ -295,9 +295,9 @@
         <span class="n">name</span> <span class="o">=</span> <span class="n">operation</span><span class="o">.</span><span class="n">name</span>
 
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;delay&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;dt&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">circuit_instruction</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;dt&quot;</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Unsupported delay unit </span><span class="si">{</span><span class="n">circuit_instruction</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2"> in: </span><span class="si">{</span><span class="n">circuit_instruction</span><span class="si">}</span><span class="s2">. Only &#39;dt&#39;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unsupported delay unit </span><span class="si">{</span><span class="n">circuit_instruction</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">unit</span><span class="si">}</span><span class="s2"> in: </span><span class="si">{</span><span class="n">circuit_instruction</span><span class="si">}</span><span class="s2">. Only &#39;dt&#39;&quot;</span>
                     <span class="o">+</span> <span class="s2">&quot; is supported.&quot;</span>
                 <span class="p">)</span>
 
