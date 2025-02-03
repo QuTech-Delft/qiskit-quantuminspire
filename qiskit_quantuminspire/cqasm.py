@@ -38,9 +38,9 @@ def dumps(circuit: QuantumCircuit) -> str:
         name = operation.name
 
         if name == "delay":
-            if circuit_instruction.unit != "dt":
+            if circuit_instruction.operation.unit != "dt":
                 raise NotImplementedError(
-                    f"Unsupported delay unit {circuit_instruction.unit} in: {circuit_instruction}. Only 'dt'"
+                    f"Unsupported delay unit {circuit_instruction.operation.unit} in: {circuit_instruction}. Only 'dt'"
                     + " is supported."
                 )
 
