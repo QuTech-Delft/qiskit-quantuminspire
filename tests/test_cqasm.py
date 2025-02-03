@@ -72,3 +72,29 @@ def test_cqasm_unsupported_instruction() -> None:
     # Act
     with pytest.raises(NotImplementedError):
         dumps(qc)
+
+
+def test_cqasm_unsupported_delay_unit() -> None:
+    # Arrange
+    qc = QuantumCircuit(3)
+    qc.h(0)
+    qc.delay(20, unit="ns")  # Unsupported delay unit
+    qc.x(1)
+
+    # Act
+    with pytest.raises(NotImplementedError):
+        dumps(qc)
+
+
+def test_cqasm_without_unit() -> None:
+    # Arrange
+    qc = QuantumCircuit(3)
+    qc.h(0)
+    qc.delay(20)
+    qc.x(1)
+
+    # Act
+    cqasm = dumps(qc)
+
+    # Assert
+    assert "wait(20)" in cqasm
