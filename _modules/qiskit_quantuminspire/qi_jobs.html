@@ -631,7 +631,7 @@
     <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobStatus</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the status of the (batch)job, among the values of ``JobStatus``.&quot;&quot;&quot;</span>
 
-        <span class="c1"># mapping of QI2 BatchJobStatus to Qiskit JobStatus</span>
+        <span class="c1"># mapping of QI BatchJobStatus to Qiskit JobStatus</span>
         <span class="n">status_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">BatchJobStatus</span><span class="o">.</span><span class="n">QUEUED</span><span class="p">:</span> <span class="n">JobStatus</span><span class="o">.</span><span class="n">QUEUED</span><span class="p">,</span>
             <span class="n">BatchJobStatus</span><span class="o">.</span><span class="n">RESERVED</span><span class="p">:</span> <span class="n">JobStatus</span><span class="o">.</span><span class="n">QUEUED</span><span class="p">,</span>

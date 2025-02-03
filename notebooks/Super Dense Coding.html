@@ -370,7 +370,7 @@
         <span class="c1"># results = execute_string(cqasm_string, iterations=100).results</span>
         <span class="c1"># result_map[f&#39;{bit_a}{bit_b}&#39;] = results</span>
 
-        <span class="c1"># if using thq QI2 Platform</span>
+        <span class="c1"># if using thq Quantum Inspire Platform</span>
         <span class="n">job</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">wait_for_results</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span>

@@ -6,10 +6,10 @@
    "metadata": {},
    "source": [
     "# Basic circuit execution\n",
-    "This notebooks illustrates how you can run your qiskit code on the Quantum Inspire 2 platform.\n",
+    "This notebooks illustrates how you can run your qiskit code on the Quantum Inspire platform.\n",
     "## This notebook makes the following assumptions:\n",
-    "- quantuminspire2 sdk installed\n",
-    "- account exists in the QI2 platform\n",
+    "- QI tool installed\n",
+    "- account exists on the Quantum Inspire platform\n",
     "- qiskit plugin installed (pip install qiskit-quantuminspire) in the same environment as this notebook"
    ]
   },
@@ -20,7 +20,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "# Be sure to have logged in to the QI2 platform via the SDK. If you have installed it in the same environment as\n",
+    "# Be sure to have logged in to the QI platform via the SDK. If you have installed it in the same environment as\n",
     "# this notebook, you may run this cell.\n",
     "\n",
     "!qi login \"https://staging.qi2.quantum-inspire.com\""

@@ -261,13 +261,13 @@
         <article role="main" id="furo-main-content">
           <section id="basics">
 <h1>Basics<a class="headerlink" href="#basics" title="Link to this heading">¶</a></h1>
-<p>Quantum Inspire 2 supports hybrid classical-quantum algorithms, and allows execution of both the quantum and the classical part fully on the QI2 servers.</p>
+<p>Quantum Inspire supports hybrid classical-quantum algorithms, and allows execution of both the quantum and the classical part fully on the QI servers.</p>
 <section id="script-format">
 <h2>Script format<a class="headerlink" href="#script-format" title="Link to this heading">¶</a></h2>
-<p>Any script that will be executed on the QI2 platform is required to have at least the <code class="docutils literal notranslate"><span class="pre">execute()</span></code> and <code class="docutils literal notranslate"><span class="pre">finalize()</span></code> functions.</p>
+<p>Any script that will be executed on the Quantum Inspire platform is required to have at least the <code class="docutils literal notranslate"><span class="pre">execute()</span></code> and <code class="docutils literal notranslate"><span class="pre">finalize()</span></code> functions.</p>
 <section id="execute">
 <h3>Execute<a class="headerlink" href="#execute" title="Link to this heading">¶</a></h3>
-<p>The execute function is the function that gets called by QI2 first. As an argument it gets a <code class="docutils literal notranslate"><span class="pre">QuantumInterface</span></code>, which is what allows you to actually execute your circuit. A simple example, where a function <code class="docutils literal notranslate"><span class="pre">generate_circuit()</span></code> is called that returns cQASM as a string, is shown below. In this example, the same circuit is executed 5 times in a row as a simple illustration of the interchanging control between the hybrid and classical domains. Normally, you might want to change your <code class="docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> between each execution based on your results.</p>
+<p>The execute function is the function that gets called by QI first. As an argument it gets a <code class="docutils literal notranslate"><span class="pre">QuantumInterface</span></code>, which is what allows you to actually execute your circuit. A simple example, where a function <code class="docutils literal notranslate"><span class="pre">generate_circuit()</span></code> is called that returns cQASM as a string, is shown below. In this example, the same circuit is executed 5 times in a row as a simple illustration of the interchanging control between the hybrid and classical domains. Normally, you might want to change your <code class="docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> between each execution based on your results.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">qi</span><span class="p">:</span> <span class="n">QuantumInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the classical part of the Hybrid Quantum/Classical Algorithm.</span>
 
@@ -315,7 +315,7 @@
 </section>
 <section id="execution">
 <h2>Execution<a class="headerlink" href="#execution" title="Link to this heading">¶</a></h2>
-<p>A complete script with both example functions can be found <a class="reference download internal" download="" href="../_downloads/f352eaa87d593c9ac34a3fd1740be9c1/hqca_circuit.py"><span class="xref download myst">here</span></a>. This can be uploaded to QI2 as follows (using the CLI), where <code class="docutils literal notranslate"><span class="pre">&lt;backend_id&gt;</span></code> is the id number of the selected quantum backend, which can be retrieved using the Qiskit-QuantumInspire QIProvider.</p>
+<p>A complete script with both example functions can be found <a class="reference download internal" download="" href="../_downloads/f352eaa87d593c9ac34a3fd1740be9c1/hqca_circuit.py"><span class="xref download myst">here</span></a>. This can be uploaded to QI as follows (using the CLI), where <code class="docutils literal notranslate"><span class="pre">&lt;backend_id&gt;</span></code> is the id number of the selected quantum backend, which can be retrieved using the Qiskit-QuantumInspire QIProvider.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qi<span class="w"> </span>files<span class="w"> </span>upload<span class="w"> </span>./hqca_circuit.py<span class="w"> </span>&lt;backend_id&gt;
 </pre></div>
 </div>
