@@ -360,7 +360,7 @@ class QIJob(QIBaseJob):
     def status(self) -> JobStatus:
         """Return the status of the (batch)job, among the values of ``JobStatus``."""
 
-        # mapping of QI2 BatchJobStatus to Qiskit JobStatus
+        # mapping of QI BatchJobStatus to Qiskit JobStatus
         status_map = {
             BatchJobStatus.QUEUED: JobStatus.QUEUED,
             BatchJobStatus.RESERVED: JobStatus.QUEUED,

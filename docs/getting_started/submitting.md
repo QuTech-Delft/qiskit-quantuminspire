@@ -2,7 +2,7 @@
 
 ## Getting a backend
 
-To instantiate the provider, make sure you are logged into QI2, then create a provider:
+To instantiate the provider, make sure you are logged into Quantum Inspire, then create a provider:
 
 ```python
 from qiskit_quantuminspire.qi_provider import QIProvider
