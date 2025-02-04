@@ -5,6 +5,7 @@ import warnings
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
+from qi2_shared.hybrid.quantum_interface import QuantumInterface
 from qiskit.primitives import BackendEstimator
 from qiskit_algorithms import NumPyMinimumEigensolverResult, VQEResult
 from qiskit_algorithms.minimum_eigensolvers import VQE
@@ -14,7 +15,6 @@ from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.mappers import ParityMapper
 
 from qiskit_quantuminspire.hybrid.hybrid_backend import QIHybridBackend
-from qiskit_quantuminspire.hybrid.quantum_interface import QuantumInterface
 
 resultstring = ""
 
