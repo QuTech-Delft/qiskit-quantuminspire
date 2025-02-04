@@ -6,6 +6,7 @@ authors = ["Quantum Inspire <support@quantum-inspire.com>"]
 readme = "README.md"
 homepage = "https://www.quantum-inspire.com"
 repository = "https://github.com/qutech-delft/qiskit-quantuminspire"
+documentation = "https://qutech-delft.github.io/qiskit-quantuminspire/"
 classifiers = [
   'Development Status :: 4 - Beta',
   'Programming Language :: Python :: 3',
