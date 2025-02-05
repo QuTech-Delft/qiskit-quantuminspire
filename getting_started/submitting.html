@@ -301,17 +301,29 @@ For example, running a Bell State:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">get_counts</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>When submitting circuits, it may happen that some circuits fail during execution. To access error details about those circuits,
-you can inspect the <code class="docutils literal notranslate"><span class="pre">system_messages</span></code> attribute of the result object, which returns a dictionary whose keys are circuit names and values are
-error messages retrieved from the system.</p>
+<p>When submitting circuits, some may fail during execution. To get details about these errors, check the <code class="docutils literal notranslate"><span class="pre">system_messages</span></code> attribute of the result object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the error messages corresponding to each failed circuit</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">system_messages</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The attribute returns a dictionary where:</p>
+<ul class="simple">
+<li><p><strong>Keys</strong>: Circuit names</p></li>
+<li><p><strong>Values</strong>: Dictionaries containing:</p>
+<ul>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">message</span></code></strong>: The error message from the system</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">trace_id</span></code></strong>: A unique identifier for debugging</p></li>
+</ul>
+</li>
+</ul>
+<section id="debugging-with-trace-id">
+<h3>Debugging with <code class="docutils literal notranslate"><span class="pre">trace_id</span></code><a class="headerlink" href="#debugging-with-trace-id" title="Link to this heading">¶</a></h3>
+<p>If you need support from Quantum Inspire, you can provide the <code class="docutils literal notranslate"><span class="pre">trace_id</span></code> to assist with troubleshooting.</p>
 <p>On backends that support the <code class="docutils literal notranslate"><span class="pre">raw</span> <span class="pre">data</span></code> feature, you can set the <code class="docutils literal notranslate"><span class="pre">memory</span></code> option to get the measurement result of each individual shot:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">job</span> <span class="o">=</span> <span class="n">simulator_backend</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
 </section>
 <section id="transpilation">
 <h2>Transpilation<a class="headerlink" href="#transpilation" title="Link to this heading">¶</a></h2>
@@ -394,7 +406,10 @@ circuits to use only supported gates:</p>
             <ul>
 <li><a class="reference internal" href="#">How to: Submit a circuit</a><ul>
 <li><a class="reference internal" href="#getting-a-backend">Getting a backend</a></li>
-<li><a class="reference internal" href="#submitting-a-circuit">Submitting a Circuit</a></li>
+<li><a class="reference internal" href="#submitting-a-circuit">Submitting a Circuit</a><ul>
+<li><a class="reference internal" href="#debugging-with-trace-id">Debugging with <code class="docutils literal notranslate"><span class="pre">trace_id</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#transpilation">Transpilation</a></li>
 </ul>
 </li>
