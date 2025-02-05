@@ -271,7 +271,7 @@ def test_process_results_handles_invalid_results() -> None:
     qi_job.circuits_run_data[0].job_id = 1  # Individual job_id
 
     qi_job.circuits_run_data[0].results = None
-    qi_job.circuits_run_data[0].system_message = "user-error, sytax error"
+    qi_job.circuits_run_data[0].system_message = {"message": "user-error, sytax error", "trace_id": "abc123"}
 
     with pytest.warns(ExperimentFailedWarning, match="Some experiments"):
 
@@ -289,13 +289,13 @@ def test_process_results_handles_invalid_results() -> None:
                     meas_level=2,
                     data=ExperimentResultData(counts={}),
                     header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
-                    status="Experiment failed. System Message: user-error, sytax error",
+                    status="Experiment failed. Trace_id: abc123, System Message: user-error, sytax error",
                 )
             ],
             date=None,
             status="Result failed",
             header=None,
-            system_messages={qc.name: "user-error, sytax error"},
+            system_messages={qc.name: {"message": "user-error, sytax error", "trace_id": "abc123"}},
         )
         assert processed_results.to_dict() == expected_results.to_dict()
 

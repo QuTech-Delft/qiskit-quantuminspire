@@ -111,6 +111,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             circuit_name = circuit_data.circuit.name
 
             if qi_result is None:
+                assert circuit_data.system_message is not None
                 failed_experiments[circuit_name] = circuit_data.system_message
                 trace_id = circuit_data.system_message.get("trace_id", "")
                 error_message = circuit_data.system_message.get("message", "")
@@ -351,10 +352,6 @@ class QIJob(QIBaseJob):
         job_tasks = [jobs_api.read_job_jobs_id_get(id=_id) for _id in job_ids_to_check]
 
         jobs: List[Job] = await asyncio.gather(*job_tasks)
-
-        failed_job_id_to_message = {
-            job.id: job.message if job.status == QIJobStatus.FAILED else "No Results" for job in jobs
-        }
 
         failed_job_id_to_message = {
             job.id: {
