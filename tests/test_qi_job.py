@@ -162,10 +162,11 @@ def test_fetch_failed_jobs_message(
     mocker: MockerFixture,
 ) -> None:
     class MockJob:
-        def __init__(self, message: str, id: int, status: QIJobStatus):
+        def __init__(self, message: str, id: int, status: QIJobStatus, trace_id: str):
             self.message = message
             self.id = id
             self.status = status
+            self.trace_id = trace_id
 
     # Arrange
     mock_jobs_api = MagicMock()
@@ -173,8 +174,12 @@ def test_fetch_failed_jobs_message(
 
     mock_jobs_api.read_job_jobs_id_get = AsyncMock(
         side_effect=[
-            MockJob(id=job_ids_to_check[0], message="failed", status=QIJobStatus.FAILED),  # Failed job
-            MockJob(id=job_ids_to_check[1], message="", status=QIJobStatus.COMPLETED),  # Job with no results
+            MockJob(
+                id=job_ids_to_check[0], message="failed", status=QIJobStatus.FAILED, trace_id="abc123"
+            ),  # Failed job
+            MockJob(
+                id=job_ids_to_check[1], message="", status=QIJobStatus.COMPLETED, trace_id=""
+            ),  # Job with no results
         ]
     )
 
@@ -190,8 +195,8 @@ def test_fetch_failed_jobs_message(
     asyncio.run(job._fetch_failed_jobs_message(MagicMock(), job_ids_to_check))
 
     # Assert
-    assert job.circuits_run_data[0].system_message == "failed"
-    assert job.circuits_run_data[1].system_message == "No Results"
+    assert job.circuits_run_data[0].system_message == {"message": "failed", "trace_id": "abc123"}
+    assert job.circuits_run_data[1].system_message == {"message": "No Results", "trace_id": ""}
 
 
 def test_process_results() -> None:
@@ -266,7 +271,7 @@ def test_process_results_handles_invalid_results() -> None:
     qi_job.circuits_run_data[0].job_id = 1  # Individual job_id
 
     qi_job.circuits_run_data[0].results = None
-    qi_job.circuits_run_data[0].system_message = "user-error, sytax error"
+    qi_job.circuits_run_data[0].system_message = {"message": "user-error, sytax error", "trace_id": "abc123"}
 
     with pytest.warns(ExperimentFailedWarning, match="Some experiments"):
 
@@ -284,13 +289,13 @@ def test_process_results_handles_invalid_results() -> None:
                     meas_level=2,
                     data=ExperimentResultData(counts={}),
                     header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
-                    status="Experiment failed. System Message: user-error, sytax error",
+                    status="Experiment failed. Trace_id: abc123, System Message: user-error, sytax error",
                 )
             ],
             date=None,
             status="Result failed",
             header=None,
-            system_messages={qc.name: "user-error, sytax error"},
+            system_messages={qc.name: {"message": "user-error, sytax error", "trace_id": "abc123"}},
         )
         assert processed_results.to_dict() == expected_results.to_dict()
 
