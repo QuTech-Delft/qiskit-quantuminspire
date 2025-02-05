@@ -1,0 +1,250 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "48c6731f-5188-41c1-afc4-123c6ed796ae",
+   "metadata": {},
+   "source": [
+    "# Basic circuit execution\n",
+    "This notebooks illustrates how you can run your qiskit code on the Quantum Inspire platform.\n",
+    "## This notebook makes the following assumptions:\n",
+    "- QI tool installed\n",
+    "- account exists on the Quantum Inspire platform\n",
+    "- qiskit plugin installed (pip install qiskit-quantuminspire) in the same environment as this notebook"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "id": "93fe4f56-4ced-41fc-b778-14d6c95e2434",
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2025-02-05T09:43:14.995856Z",
+     "start_time": "2025-02-05T09:43:12.134931Z"
+    }
+   },
+   "source": [
+    "# Be sure to have logged in to the QI platform via the SDK. If you have installed it in the same environment as\n",
+    "# this notebook, you may run this cell.\n",
+    "\n",
+    "!qi login"
+   ],
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001B[31m╭─\u001B[0m\u001B[31m────────────────────\u001B[0m\u001B[31m \u001B[0m\u001B[1;31mTraceback \u001B[0m\u001B[1;2;31m(most recent call last)\u001B[0m\u001B[31m \u001B[0m\u001B[31m─────────────────────\u001B[0m\u001B[31m─╮\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[2;33m/usr/local/lib/python3.9/site-packages/quantuminspire/cli/\u001B[0m\u001B[1;33mcommand_list.py\u001B[0m:\u001B[94m32\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[94m8\u001B[0m in \u001B[92mlogin\u001B[0m                                                                   \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m                                                                              \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m325 \u001B[0m\u001B[2m│   \u001B[0m                                                                   \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m326 \u001B[0m\u001B[2m│   \u001B[0mauth_session = OauthDeviceSession(settings.auths[host_url])        \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m327 \u001B[0m\u001B[2m│   \u001B[0m                                                                   \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[31m❱ \u001B[0m328 \u001B[2m│   \u001B[0mlogin_info = auth_session.initialize_authorization()               \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m329 \u001B[0m\u001B[2m│   \u001B[0mtyper.echo(\u001B[33mf\u001B[0m\u001B[33m\"\u001B[0m\u001B[33mPlease continue logging in by opening: \u001B[0m\u001B[33m{\u001B[0mlogin_info[\u001B[33m'\u001B[0m\u001B[33mv\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m330 \u001B[0m\u001B[2m│   \u001B[0mtyper.echo(\u001B[33mf\u001B[0m\u001B[33m\"\u001B[0m\u001B[33mIf promped to verify a code, please confirm it is as \u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m331 \u001B[0m\u001B[2m│   \u001B[0mwebbrowser.open(login_info[\u001B[33m\"\u001B[0m\u001B[33mverification_uri_complete\u001B[0m\u001B[33m\"\u001B[0m], new=\u001B[94m2\u001B[0m)    \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m                                                                              \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m╭─\u001B[0m\u001B[33m────────────────────────────────\u001B[0m\u001B[33m locals \u001B[0m\u001B[33m────────────────────────────────\u001B[0m\u001B[33m─╮\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m auth_session = \u001B[1m<\u001B[0m\u001B[1;95mquantuminspire.util.authentication.OauthDeviceSession\u001B[0m\u001B[39m \u001B[0m   \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[39mobject at \u001B[0m\u001B[94m0x10dfff640\u001B[0m\u001B[1m>\u001B[0m                                    \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m         host = \u001B[33m'https://staging.qi2.quantum-inspire.com'\u001B[0m                 \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m     host_url = \u001B[33m'https://staging.qi2.quantum-inspire.com'\u001B[0m                 \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m     settings = \u001B[1;35mSettings\u001B[0m\u001B[1m(\u001B[0m                                                 \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   \u001B[0m\u001B[33mauths\u001B[0m=\u001B[1m{\u001B[0m                                               \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   \u001B[0m\u001B[33m'https://staging.qi2.quantum-inspire.com'\u001B[0m:        \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[1;35mAuthSettings\u001B[0m\u001B[1m(\u001B[0m                                             \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mclient_id\u001B[0m=\u001B[33m'Yz7ni9PUAyT43eUASZfmc1yqI66QxLUJ'\u001B[0m, \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33maudience\u001B[0m=\u001B[33m'compute-job-manager'\u001B[0m,               \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mscope\u001B[0m=\u001B[33m'api-access openid profile email \u001B[0m       \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[33moffline_access'\u001B[0m,                                          \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mcode_challenge_method\u001B[0m=\u001B[33m'S256'\u001B[0m,                 \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mcode_verifyer_length\u001B[0m=\u001B[94m64\u001B[0m,                      \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m                                              \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[33mwell_known_endpoint\u001B[0m=\u001B[33m'https://quantum-inspire-staging.eu.…\u001B[0m \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mtokens\u001B[0m=\u001B[94mNone\u001B[0m,                                  \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mteam_member_id\u001B[0m=\u001B[94mNone\u001B[0m                           \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   \u001B[0m\u001B[1m)\u001B[0m,                                                \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   \u001B[0m\u001B[33m'https://api.qi2.quantum-inspire.com'\u001B[0m:            \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[1;35mAuthSettings\u001B[0m\u001B[1m(\u001B[0m                                             \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mclient_id\u001B[0m=\u001B[33m'compute-job-manager'\u001B[0m,              \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33maudience\u001B[0m=\u001B[33m'compute-job-manager'\u001B[0m,               \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mscope\u001B[0m=\u001B[33m'api-access openid profile email \u001B[0m       \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[33moffline_access'\u001B[0m,                                          \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mcode_challenge_method\u001B[0m=\u001B[33m'S256'\u001B[0m,                 \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mcode_verifyer_length\u001B[0m=\u001B[94m64\u001B[0m,                      \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m                                              \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[33mwell_known_endpoint\u001B[0m=\u001B[33m'https://auth.qi2.quantum-inspire.co…\u001B[0m \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mtokens\u001B[0m=\u001B[94mNone\u001B[0m,                                  \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   │   \u001B[0m\u001B[33mteam_member_id\u001B[0m=\u001B[94mNone\u001B[0m                           \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   │   \u001B[0m\u001B[1m)\u001B[0m                                                 \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   \u001B[0m\u001B[1m}\u001B[0m,                                                    \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[2m│   \u001B[0m                                                      \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[33mdefault_host\u001B[0m=\u001B[33m'https://staging.qi2.quantum-inspire.com'\u001B[0m    \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                \u001B[1m)\u001B[0m                                                         \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m╰──────────────────────────────────────────────────────────────────────────╯\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m                                                                              \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[2;33m/usr/local/lib/python3.9/site-packages/quantuminspire/util/\u001B[0m\u001B[1;33mauthentication.py\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m :\u001B[94m54\u001B[0m in \u001B[92minitialize_authorization\u001B[0m                                              \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m                                                                              \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m 51 \u001B[0m\u001B[2m│   │   \u001B[0m                                                               \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m 52 \u001B[0m\u001B[2m│   │   \u001B[0mresponse = requests.post(\u001B[96mself\u001B[0m._device_endpoint, data=data, hea \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m 53 \u001B[0m\u001B[2m│   │   \u001B[0m\u001B[94mif\u001B[0m \u001B[33m\"\u001B[0m\u001B[33merror\u001B[0m\u001B[33m\"\u001B[0m \u001B[95min\u001B[0m response:                                        \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[31m❱ \u001B[0m 54 \u001B[2m│   │   │   \u001B[0m\u001B[94mraise\u001B[0m AuthorisationError(response[\u001B[33m\"\u001B[0m\u001B[33merror_description\u001B[0m\u001B[33m\"\u001B[0m])    \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m 55 \u001B[0m\u001B[2m│   │   \u001B[0m                                                               \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m 56 \u001B[0m\u001B[2m│   │   \u001B[0m\u001B[96mself\u001B[0m.expires_in = \u001B[96mint\u001B[0m(response[\u001B[33m\"\u001B[0m\u001B[33mexpires_in\u001B[0m\u001B[33m\"\u001B[0m])                  \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m   \u001B[2m 57 \u001B[0m\u001B[2m│   │   \u001B[0m\u001B[96mself\u001B[0m.polling_interval = response[\u001B[33m\"\u001B[0m\u001B[33minterval\u001B[0m\u001B[33m\"\u001B[0m]                   \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m                                                                              \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m╭─\u001B[0m\u001B[33m────────────────────────────────\u001B[0m\u001B[33m locals \u001B[0m\u001B[33m────────────────────────────────\u001B[0m\u001B[33m─╮\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m code_verifier = \u001B[33m'BYvP3XmngGDhsn954sadRnBm6jFnohsBxhxHXLEXJGsoif-rTJ8BNf…\u001B[0m \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m          data = \u001B[1m{\u001B[0m                                                        \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[2m│   \u001B[0m\u001B[33m'client_id'\u001B[0m: \u001B[33m'Yz7ni9PUAyT43eUASZfmc1yqI66QxLUJ'\u001B[0m,     \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[2m│   \u001B[0m\u001B[33m'code_challenge_method'\u001B[0m: \u001B[33m'S256'\u001B[0m,                     \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[2m│   \u001B[0m\u001B[33m'code_challenge'\u001B[0m:                                    \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[33m'_nBNVZ0fLsPTwk1qzIYNMDxfVwI8dxm26nK39Fe-zYA'\u001B[0m,           \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[2m│   \u001B[0m\u001B[33m'audience'\u001B[0m: \u001B[33m'compute-job-manager'\u001B[0m,                   \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[2m│   \u001B[0m\u001B[33m'scope'\u001B[0m: \u001B[33m'api-access openid profile email \u001B[0m           \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[33moffline_access'\u001B[0m                                          \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[1m}\u001B[0m                                                        \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m      response = \u001B[1m{\u001B[0m                                                        \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[2m│   \u001B[0m\u001B[33m'error'\u001B[0m: \u001B[33m'unauthorized_client'\u001B[0m,                      \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[2m│   \u001B[0m\u001B[33m'error_description'\u001B[0m: \u001B[33m'Unauthorized or unknown \u001B[0m       \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[33mclient'\u001B[0m                                                  \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[1m}\u001B[0m                                                        \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m          self = \u001B[1m<\u001B[0m\u001B[1;95mquantuminspire.util.authentication.OauthDeviceSession\u001B[0m\u001B[39m \u001B[0m  \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m│\u001B[0m                 \u001B[39mobject at \u001B[0m\u001B[94m0x10dfff640\u001B[0m\u001B[1m>\u001B[0m                                   \u001B[33m│\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m│\u001B[0m \u001B[33m╰──────────────────────────────────────────────────────────────────────────╯\u001B[0m \u001B[31m│\u001B[0m\r\n",
+      "\u001B[31m╰──────────────────────────────────────────────────────────────────────────────╯\u001B[0m\r\n",
+      "\u001B[1;91mAuthorisationError: \u001B[0mUnauthorized or unknown client\r\n"
+     ]
+    }
+   ],
+   "execution_count": 2
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0d8ba9f9-9b38-4a86-9252-0b9b9fcdc83f",
+   "metadata": {},
+   "source": [
+    "## The necessary imports"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3d4b3950-fe75-47cf-afb5-2286be7c01b4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from qiskit import QuantumCircuit\n",
+    "\n",
+    "from qiskit_quantuminspire.qi_provider import QIProvider"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0b464f03-9573-4c3c-852c-3ea4477b59ec",
+   "metadata": {},
+   "source": [
+    "## What QI Backends are available?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "df119aa6-6b48-43a5-aa68-ecf4f7c0dc38",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "provider = QIProvider()\n",
+    "\n",
+    "# Show all current supported backends:\n",
+    "print(provider.backends())"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a9f9b123-9b11-4d62-a4ab-8af8f08f7153",
+   "metadata": {},
+   "source": [
+    "## Create your Qiskit Circuit\n",
+    "Let's create a bell state circuit."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e6bbe6af-9908-46cb-8638-8f29966fbf61",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "circuit = QuantumCircuit(3, 10)\n",
+    "circuit.h(0)\n",
+    "circuit.cx(0, 1)\n",
+    "circuit.measure(0, 0)\n",
+    "circuit.measure(1, 1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a638262c-c785-4a4f-9ba2-32cc534225f3",
+   "metadata": {},
+   "source": [
+    "## Create the Job in the Quantum Inspire Platform\n",
+    "On the appropriate backend, you run your circuit. Be aware that if your circuit contains gates that are not supported by the target, compilation errors may arise."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1f446ddc-7fe6-4731-9840-da1775e10e0f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "backend = provider.get_backend(name=\"QX emulator\")\n",
+    "job = backend.run(circuit, shots=1024)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9645611e-bd42-4814-9266-243676877e8d",
+   "metadata": {},
+   "source": [
+    "## Obtain the result\n",
+    "After a while the result should be available. Depending on the current load, the time for completion may vary."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4302f110-e5c1-47ea-8e48-994db317a74c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "result = job.result()\n",
+    "print(result)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "qiskit-quantuminspire-C0W6c0G_-py3.12",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
