@@ -7,7 +7,8 @@ from qiskit_quantuminspire.qi_provider import QIProvider
 
 
 def _run_e2e_tests(name: str) -> None:
-    qc = QuantumCircuit(3)
+    num_qubits = 3
+    qc = QuantumCircuit(num_qubits)
     qc.h(0)
     qc.x(1)
     qc.y(2)
@@ -31,6 +32,7 @@ def _run_e2e_tests(name: str) -> None:
 
     result = qi_job.result()
     assert result.success
+    assert all(len(key) == num_qubits for key in result.get_counts())
 
 
 def main(name: str) -> None:

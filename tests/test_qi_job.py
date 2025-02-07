@@ -216,7 +216,7 @@ def test_process_results() -> None:
         success=True,
         meas_level=2,
         data=experiment_data,
-        header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
+        header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name, memory_slots=2),
         status="Experiment successful",
     )
     expected_results = Result(
@@ -231,8 +231,10 @@ def test_process_results() -> None:
         header=None,
         system_messages={},
     )
+    # breakpoint()
     assert processed_results.to_dict() == expected_results.to_dict()
     assert processed_results.data(qc) == experiment_data.to_dict()
+    assert processed_results.get_counts() == {"00": 256, "01": 256, "10": 256, "11": 256}
 
 
 def test_process_results_raw_data() -> None:
@@ -288,7 +290,7 @@ def test_process_results_handles_invalid_results() -> None:
                     success=False,
                     meas_level=2,
                     data=ExperimentResultData(counts={}),
-                    header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
+                    header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name, memory_slots=2),
                     status="Experiment failed. Trace_id: abc123, System Message: user-error, sytax error",
                 )
             ],
