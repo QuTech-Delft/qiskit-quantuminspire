@@ -199,10 +199,18 @@ def test_fetch_failed_jobs_message(
     assert job.circuits_run_data[1].system_message == {"message": "No Results", "trace_id": ""}
 
 
-def test_process_results() -> None:
+@pytest.mark.parametrize(
+    "num_qubits, num_clbits, expected_memory_slots",
+    [
+        (3, 2, 2),  # Case: num_qubits > num_clbits
+        (2, 2, 2),  # Case: num_qubits == num_clbits
+        (4, 0, 4),  # Case: num_clbits == 0
+    ],
+)
+def test_process_results(num_qubits: int, num_clbits: int, expected_memory_slots: int) -> None:
     backend_type = create_backend_type(name="qi_backend_1")
     qi_backend = QIBackend(backend_type=backend_type)
-    qc = QuantumCircuit(2, 2)
+    qc = QuantumCircuit(num_qubits, num_clbits)
 
     qi_job = QIJob(run_input=qc, backend=qi_backend)
     qi_job.batch_job_id = 100
@@ -216,7 +224,7 @@ def test_process_results() -> None:
         success=True,
         meas_level=2,
         data=experiment_data,
-        header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
+        header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name, memory_slots=expected_memory_slots),
         status="Experiment successful",
     )
     expected_results = Result(
@@ -233,6 +241,7 @@ def test_process_results() -> None:
     )
     assert processed_results.to_dict() == expected_results.to_dict()
     assert processed_results.data(qc) == experiment_data.to_dict()
+    assert all(len(key) == expected_memory_slots for key in processed_results.get_counts())
 
 
 def test_process_results_raw_data() -> None:
@@ -263,7 +272,8 @@ def test_process_results_raw_data() -> None:
 
 def test_process_results_handles_invalid_results() -> None:
     qi_backend = create_backend_type(name="qi_backend_1")
-    qc = QuantumCircuit(2, 2)
+    num_bits = 2
+    qc = QuantumCircuit(num_bits, num_bits)
 
     qi_job = QIJob(run_input=qc, backend=qi_backend)
     batch_job_id = 100
@@ -288,7 +298,7 @@ def test_process_results_handles_invalid_results() -> None:
                     success=False,
                     meas_level=2,
                     data=ExperimentResultData(counts={}),
-                    header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
+                    header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name, memory_slots=num_bits),
                     status="Experiment failed. Trace_id: abc123, System Message: user-error, sytax error",
                 )
             ],

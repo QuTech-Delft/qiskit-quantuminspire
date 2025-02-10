@@ -109,6 +109,10 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
         for idx, circuit_data in enumerate(self.circuits_run_data):
             qi_result = circuit_data.results
             circuit_name = circuit_data.circuit.name
+            num_qubits = circuit_data.circuit.num_qubits
+            num_clbits = circuit_data.circuit.num_clbits
+            num_bits = num_qubits if (num_clbits == 0) else num_clbits
+            exp_header = QobjExperimentHeader(name=circuit_name, memory_slots=num_bits)
 
             if qi_result is None:
                 assert circuit_data.system_message is not None
@@ -116,13 +120,13 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
                 trace_id = circuit_data.system_message.get("trace_id", "")
                 error_message = circuit_data.system_message.get("message", "")
                 experiment_result = self._create_empty_experiment_result(
-                    circuit_name=circuit_name, trace_id=trace_id, message=error_message
+                    exp_header=exp_header, trace_id=trace_id, message=error_message
                 )
                 results.append(experiment_result)
                 continue
 
             experiment_result = self._create_experiment_result(
-                circuit_name=circuit_name,
+                exp_header=exp_header,
                 result=qi_result,
             )
             results.append(experiment_result)
@@ -152,7 +156,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
 
     @staticmethod
     def _create_experiment_result(
-        circuit_name: str,
+        exp_header: QobjExperimentHeader,
         result: RawJobResult,
     ) -> ExperimentResult:
         """Create an ExperimentResult instance based on RawJobResult parameters."""
@@ -167,20 +171,20 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             shots=result.shots_done,
             success=result.shots_done > 0,
             data=experiment_data,
-            header=QobjExperimentHeader(name=circuit_name),
+            header=exp_header,
             status="Experiment successful",
         )
 
     @staticmethod
     def _create_empty_experiment_result(
-        circuit_name: str, trace_id: Optional[str], message: Optional[str]
+        exp_header: QobjExperimentHeader, trace_id: Optional[str], message: Optional[str]
     ) -> ExperimentResult:
         """Create an empty ExperimentResult instance."""
         return ExperimentResult(
             shots=0,
             success=False,
             data=ExperimentResultData(counts={}),
-            header=QobjExperimentHeader(name=circuit_name),
+            header=exp_header,
             status=f"Experiment failed. Trace_id: {trace_id}, System Message: {message}",
         )
 
