@@ -110,7 +110,9 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             qi_result = circuit_data.results
             circuit_name = circuit_data.circuit.name
             num_qubits = circuit_data.circuit.num_qubits
-            exp_header = QobjExperimentHeader(name=circuit_name, memory_slots=num_qubits)
+            num_clbits = circuit_data.circuit.num_clbits
+            num_bits = num_qubits if (num_clbits == 0) or (num_qubits == num_clbits) else num_clbits
+            exp_header = QobjExperimentHeader(name=circuit_name, memory_slots=num_bits)
 
             if qi_result is None:
                 assert circuit_data.system_message is not None
