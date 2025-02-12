@@ -162,10 +162,11 @@ def test_fetch_failed_jobs_message(
     mocker: MockerFixture,
 ) -> None:
     class MockJob:
-        def __init__(self, message: str, id: int, status: QIJobStatus):
+        def __init__(self, message: str, id: int, status: QIJobStatus, trace_id: str):
             self.message = message
             self.id = id
             self.status = status
+            self.trace_id = trace_id
 
     # Arrange
     mock_jobs_api = MagicMock()
@@ -173,8 +174,12 @@ def test_fetch_failed_jobs_message(
 
     mock_jobs_api.read_job_jobs_id_get = AsyncMock(
         side_effect=[
-            MockJob(id=job_ids_to_check[0], message="failed", status=QIJobStatus.FAILED),  # Failed job
-            MockJob(id=job_ids_to_check[1], message="", status=QIJobStatus.COMPLETED),  # Job with no results
+            MockJob(
+                id=job_ids_to_check[0], message="failed", status=QIJobStatus.FAILED, trace_id="abc123"
+            ),  # Failed job
+            MockJob(
+                id=job_ids_to_check[1], message="", status=QIJobStatus.COMPLETED, trace_id=""
+            ),  # Job with no results
         ]
     )
 
@@ -190,14 +195,22 @@ def test_fetch_failed_jobs_message(
     asyncio.run(job._fetch_failed_jobs_message(MagicMock(), job_ids_to_check))
 
     # Assert
-    assert job.circuits_run_data[0].system_message == "failed"
-    assert job.circuits_run_data[1].system_message == "No Results"
+    assert job.circuits_run_data[0].system_message == {"message": "failed", "trace_id": "abc123"}
+    assert job.circuits_run_data[1].system_message == {"message": "No Results", "trace_id": ""}
 
 
-def test_process_results() -> None:
+@pytest.mark.parametrize(
+    "num_qubits, num_clbits, expected_memory_slots",
+    [
+        (3, 2, 2),  # Case: num_qubits > num_clbits
+        (2, 2, 2),  # Case: num_qubits == num_clbits
+        (4, 0, 4),  # Case: num_clbits == 0
+    ],
+)
+def test_process_results(num_qubits: int, num_clbits: int, expected_memory_slots: int) -> None:
     backend_type = create_backend_type(name="qi_backend_1")
     qi_backend = QIBackend(backend_type=backend_type)
-    qc = QuantumCircuit(2, 2)
+    qc = QuantumCircuit(num_qubits, num_clbits)
 
     qi_job = QIJob(run_input=qc, backend=qi_backend)
     qi_job.batch_job_id = 100
@@ -211,7 +224,7 @@ def test_process_results() -> None:
         success=True,
         meas_level=2,
         data=experiment_data,
-        header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
+        header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name, memory_slots=expected_memory_slots),
         status="Experiment successful",
     )
     expected_results = Result(
@@ -228,6 +241,7 @@ def test_process_results() -> None:
     )
     assert processed_results.to_dict() == expected_results.to_dict()
     assert processed_results.data(qc) == experiment_data.to_dict()
+    assert all(len(key) == expected_memory_slots for key in processed_results.get_counts())
 
 
 def test_process_results_raw_data() -> None:
@@ -258,7 +272,8 @@ def test_process_results_raw_data() -> None:
 
 def test_process_results_handles_invalid_results() -> None:
     qi_backend = create_backend_type(name="qi_backend_1")
-    qc = QuantumCircuit(2, 2)
+    num_bits = 2
+    qc = QuantumCircuit(num_bits, num_bits)
 
     qi_job = QIJob(run_input=qc, backend=qi_backend)
     batch_job_id = 100
@@ -266,7 +281,7 @@ def test_process_results_handles_invalid_results() -> None:
     qi_job.circuits_run_data[0].job_id = 1  # Individual job_id
 
     qi_job.circuits_run_data[0].results = None
-    qi_job.circuits_run_data[0].system_message = "user-error, sytax error"
+    qi_job.circuits_run_data[0].system_message = {"message": "user-error, sytax error", "trace_id": "abc123"}
 
     with pytest.warns(ExperimentFailedWarning, match="Some experiments"):
 
@@ -283,14 +298,14 @@ def test_process_results_handles_invalid_results() -> None:
                     success=False,
                     meas_level=2,
                     data=ExperimentResultData(counts={}),
-                    header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name),
-                    status="Experiment failed. System Message: user-error, sytax error",
+                    header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name, memory_slots=num_bits),
+                    status="Experiment failed. Trace_id: abc123, System Message: user-error, sytax error",
                 )
             ],
             date=None,
             status="Result failed",
             header=None,
-            system_messages={qc.name: "user-error, sytax error"},
+            system_messages={qc.name: {"message": "user-error, sytax error", "trace_id": "abc123"}},
         )
         assert processed_results.to_dict() == expected_results.to_dict()
 
