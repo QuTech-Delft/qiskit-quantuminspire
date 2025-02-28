@@ -278,6 +278,7 @@ class QIJob(QIBaseJob):
             language_id=language_id,
             compile_stage=CompileStage.NONE,
             compile_properties={},
+            name=circuit.name,
         )
         return await api_instance.create_file_files_post(obj)
 
