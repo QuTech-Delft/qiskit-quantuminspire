@@ -41,6 +41,7 @@ from compute_api_client import (
 from qi2_shared.client import config
 from qi2_shared.pagination import PageReader
 from qi2_shared.settings import ApiSettings
+from qi2_shared.utils import run_async
 from qiskit import qpy
 from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1
@@ -52,7 +53,6 @@ from qiskit.result.result import Result
 
 from qiskit_quantuminspire import cqasm
 from qiskit_quantuminspire.base_provider import BaseProvider
-from qiskit_quantuminspire.utils import run_async
 
 
 class ExperimentFailedWarning(UserWarning):
@@ -133,7 +133,6 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             batch_job_success[idx] = qi_result.shots_done > 0
 
         if failed_experiments:
-
             warning_message = (
                 f"\n{Fore.YELLOW}Some experiments {Fore.RED}FAILED. "
                 f"{Fore.YELLOW}You can view the detailed system messages \n"
@@ -367,7 +366,6 @@ class QIJob(QIBaseJob):
         }
 
         for circuit_data in self.circuits_run_data:
-
             if circuit_data.job_id in failed_job_id_to_message:
                 circuit_data.system_message = failed_job_id_to_message[circuit_data.job_id]
 

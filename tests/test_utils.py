@@ -1,9 +1,7 @@
-import asyncio
-
 import pytest
 from qiskit.transpiler import CouplingMap
 
-from qiskit_quantuminspire.utils import is_coupling_map_complete, run_async
+from qiskit_quantuminspire.utils import is_coupling_map_complete
 
 
 @pytest.mark.parametrize(
@@ -21,20 +19,3 @@ from qiskit_quantuminspire.utils import is_coupling_map_complete, run_async
 )
 def test_is_coupling_map_complete(coupling_map: CouplingMap, is_complete: bool) -> None:
     assert is_coupling_map_complete(coupling_map) == is_complete
-
-
-def test_async_run_no_loop() -> None:
-    async def t_coro() -> None:
-        await asyncio.sleep(1)
-
-    run_async(t_coro())
-
-
-def test_async_run_loop() -> None:
-    async def t_coro() -> None:
-        await asyncio.sleep(1)
-
-    async def main() -> None:
-        run_async(t_coro())
-
-    asyncio.run(main())
