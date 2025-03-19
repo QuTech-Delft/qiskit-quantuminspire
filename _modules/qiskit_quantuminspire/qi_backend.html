@@ -258,6 +258,7 @@
 
 <span class="kn">from</span> <span class="nn">compute_api_client</span> <span class="kn">import</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">BackendStatus</span><span class="p">,</span> <span class="n">BackendType</span><span class="p">,</span> <span class="n">BackendTypesApi</span>
 <span class="kn">from</span> <span class="nn">qi2_shared.client</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">qi2_shared.utils</span> <span class="kn">import</span> <span class="n">run_async</span>
 <span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">qiskit.providers</span> <span class="kn">import</span> <span class="n">BackendV2</span> <span class="k">as</span> <span class="n">Backend</span>
 <span class="kn">from</span> <span class="nn">qiskit.providers.options</span> <span class="kn">import</span> <span class="n">Options</span>
@@ -265,7 +266,7 @@
 
 <span class="kn">from</span> <span class="nn">qiskit_quantuminspire.mapping.instruction_mapping</span> <span class="kn">import</span> <span class="n">InstructionMapping</span>
 <span class="kn">from</span> <span class="nn">qiskit_quantuminspire.qi_jobs</span> <span class="kn">import</span> <span class="n">QIJob</span>
-<span class="kn">from</span> <span class="nn">qiskit_quantuminspire.utils</span> <span class="kn">import</span> <span class="n">is_coupling_map_complete</span><span class="p">,</span> <span class="n">run_async</span>
+<span class="kn">from</span> <span class="nn">qiskit_quantuminspire.utils</span> <span class="kn">import</span> <span class="n">is_coupling_map_complete</span>
 
 <span class="n">_IGNORED_GATES</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># Prep not viewed as separate gates in Qiskit</span>
