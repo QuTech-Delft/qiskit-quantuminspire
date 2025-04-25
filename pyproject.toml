@@ -20,7 +20,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.9"
 qiskit = "^1.2.0"
-qi-compute-api-client = "^0.49.0"
+qi-compute-api-client = "^0.50.0"
 pydantic = "^2.10.6"
 requests = "^2.32.3"
 opensquirrel = "0.3.1"
