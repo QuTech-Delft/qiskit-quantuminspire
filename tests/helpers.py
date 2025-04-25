@@ -24,7 +24,7 @@ def create_backend_type(
         is_hardware=True,
         image_id="qi_backend",
         features=[],
-        default_compiler_config="",
+        default_compiler_config={},
         status=BackendStatus.IDLE,
         default_number_of_shots=default_number_of_shots,
         max_number_of_shots=max_number_of_shots,
@@ -32,6 +32,7 @@ def create_backend_type(
         description="A Quantum Inspire backend",
         native_gateset="",
         supports_raw_data=supports_raw_data,
+        enabled=True,
     )
 
 
