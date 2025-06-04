@@ -47,7 +47,6 @@ from qiskit.circuit import QuantumCircuit
 from qiskit.providers import JobV1
 from qiskit.providers.backend import BackendV2
 from qiskit.providers.jobstatus import JobStatus
-from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
@@ -112,7 +111,8 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             num_qubits = circuit_data.circuit.num_qubits
             num_clbits = circuit_data.circuit.num_clbits
             num_bits = num_qubits if (num_clbits == 0) else num_clbits
-            exp_header = QobjExperimentHeader(name=circuit_name, memory_slots=num_bits)
+            exp_header = {"name": circuit_name, "memory_slots": num_bits}
+
 
             if qi_result is None:
                 assert circuit_data.system_message is not None
@@ -155,7 +155,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
 
     @staticmethod
     def _create_experiment_result(
-        exp_header: QobjExperimentHeader,
+        exp_header: Dict[str, Any],
         result: RawJobResult,
     ) -> ExperimentResult:
         """Create an ExperimentResult instance based on RawJobResult parameters."""
@@ -176,7 +176,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
 
     @staticmethod
     def _create_empty_experiment_result(
-        exp_header: QobjExperimentHeader, trace_id: Optional[str], message: Optional[str]
+        exp_header: Dict[str, Any], trace_id: Optional[str], message: Optional[str]
     ) -> ExperimentResult:
         """Create an empty ExperimentResult instance."""
         return ExperimentResult(

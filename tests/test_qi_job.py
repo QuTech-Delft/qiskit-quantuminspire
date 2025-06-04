@@ -10,7 +10,6 @@ from qiskit import QuantumCircuit, qpy
 from qiskit.providers import BackendV2
 from qiskit.providers.exceptions import JobTimeoutError
 from qiskit.providers.jobstatus import JobStatus
-from qiskit.qobj import QobjExperimentHeader
 from qiskit.result.models import ExperimentResult, ExperimentResultData
 from qiskit.result.result import Result
 
@@ -224,7 +223,7 @@ def test_process_results(num_qubits: int, num_clbits: int, expected_memory_slots
         success=True,
         meas_level=2,
         data=experiment_data,
-        header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name, memory_slots=expected_memory_slots),
+        header={"name": qi_job.circuits_run_data[0].circuit.name, "memory_slots": expected_memory_slots},
         status="Experiment successful",
     )
     expected_results = Result(
@@ -298,7 +297,7 @@ def test_process_results_handles_invalid_results() -> None:
                     success=False,
                     meas_level=2,
                     data=ExperimentResultData(counts={}),
-                    header=QobjExperimentHeader(name=qi_job.circuits_run_data[0].circuit.name, memory_slots=num_bits),
+                    header={"name": qi_job.circuits_run_data[0].circuit.name, "memory_slots": num_bits},
                     status="Experiment failed. Trace_id: abc123, System Message: user-error, sytax error",
                 )
             ],
