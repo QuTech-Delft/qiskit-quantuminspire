@@ -113,7 +113,6 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
             num_bits = num_qubits if (num_clbits == 0) else num_clbits
             exp_header = {"name": circuit_name, "memory_slots": num_bits}
 
-
             if qi_result is None:
                 assert circuit_data.system_message is not None
                 failed_experiments[circuit_name] = circuit_data.system_message
