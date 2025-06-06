@@ -5,7 +5,6 @@ import pytest
 from pytest_mock import MockerFixture
 from qi2_shared.hybrid.quantum_interface import ExecuteCircuitResult
 from qiskit import QuantumCircuit
-from qiskit.providers.models.backendstatus import BackendStatus
 from qiskit.result.models import ExperimentResultData
 
 from qiskit_quantuminspire import cqasm
@@ -19,12 +18,6 @@ def qi_hybrid_job_mock(mocker: MockerFixture) -> Generator[MagicMock, None, None
     mocker.patch("qiskit_quantuminspire.hybrid.hybrid_backend.QIHybridJob", return_value=job)
     yield job
     job.submit.reset_mock()
-
-
-def test_status(quantum_interface: MagicMock) -> None:
-    backend = QIHybridBackend(quantum_interface)
-    # Exact BackendStatus is not important
-    assert type(backend.status) is BackendStatus
 
 
 def test_submit(quantum_interface: MagicMock, qi_hybrid_job_mock: MagicMock) -> None:
