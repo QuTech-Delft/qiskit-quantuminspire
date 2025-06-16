@@ -1,7 +1,7 @@
 from qiskit.circuit import Instruction
 
 
-class Asm(Instruction):
+class Asm(Instruction):  # type: ignore[misc]
     def __init__(self, backend_name: str, asm_code: str):
         name = "asm"
         num_qubits = 0

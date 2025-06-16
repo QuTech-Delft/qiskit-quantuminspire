@@ -11,7 +11,7 @@ def test_cqasm_dumps() -> None:
     # Arrange
     qc = QuantumCircuit(3)
     qc.h(0)
-    qc.append(Asm(backend_name="TestBackend", asm_code=''' a ' " {} () [] b '''), [])
+    qc.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """), [])
     qc.x(1)
     qc.y(2)
     qc.cx(0, 1)
