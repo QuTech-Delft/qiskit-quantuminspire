@@ -4,12 +4,14 @@ import pytest
 from qiskit import QuantumCircuit
 
 from qiskit_quantuminspire.cqasm import dumps
+from qiskit_quantuminspire.qi_instructions import Asm
 
 
 def test_cqasm_dumps() -> None:
     # Arrange
     qc = QuantumCircuit(3)
     qc.h(0)
+    qc.append(Asm(backend_name="TestBackend", asm_code=''' a ' " {} () [] b '''), [])
     qc.x(1)
     qc.y(2)
     qc.cx(0, 1)
@@ -33,6 +35,7 @@ qubit[3] q
 bit[3] b
 
 H q[0]
+asm(TestBackend) ''' a ' " {} () [] b '''
 X q[1]
 Y q[2]
 CNOT q[0], q[1]
