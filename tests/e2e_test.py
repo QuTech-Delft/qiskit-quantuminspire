@@ -3,6 +3,7 @@ import math
 
 from qiskit import QuantumCircuit
 
+from qiskit_quantuminspire.qi_instructions import Asm
 from qiskit_quantuminspire.qi_provider import QIProvider
 
 
@@ -10,6 +11,7 @@ def _run_e2e_tests(name: str) -> None:
     num_qubits = 3
     qc = QuantumCircuit(num_qubits)
     qc.h(0)
+    qc.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """))
     qc.x(1)
     qc.y(2)
     qc.cx(0, 1)

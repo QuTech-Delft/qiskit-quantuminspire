@@ -49,7 +49,7 @@ def dumps(circuit: QuantumCircuit) -> str:
             for qubit in circuit_instruction.qubits:
                 _add_instruction(builder, CircuitInstruction(operation=operation, qubits=[qubit]))
         elif name == "asm":
-            getattr(builder, "asm")(*operation.params)
+            getattr(builder, name)(*operation.params)
         else:
             _add_instruction(builder, circuit_instruction)
 
