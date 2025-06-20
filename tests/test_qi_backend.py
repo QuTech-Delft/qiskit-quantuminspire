@@ -38,8 +38,9 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
     return _generate_qi_backend
 
 
-# Exclude the "barrier" instruction as it is not part of the target
-NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_instructions()) - 1
+# Exclude the "barrier" instruction as it is not part of the target, but include asm instruction which leaves the
+# number of instructions unchanged
+NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_instructions())
 
 
 @pytest.mark.parametrize(
@@ -254,4 +255,4 @@ def test_qi_backend_construction_unknown_gate_ignored(
 
     # Assert
     # Target still gets created but without the unknown gate
-    assert len(instructions) == NUM_SUPPORTED_INSTRUCTIONS + 1  # extra 1 is for asm instruction
+    assert len(instructions) == NUM_SUPPORTED_INSTRUCTIONS

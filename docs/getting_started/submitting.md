@@ -93,3 +93,34 @@ qc.measure([0, 1], [0, 1])
 qc_compiled = transpile(qc, simulator_backend)
 print(qc_compiled)
 ```
+
+## Support for Assembly declaration
+
+The qiskit-quantuminspire plugin also supports assembly declarations that can be used to add backend-specific (assembly) code to a qiskit circuit. 
+They are realized through an `Asm` instruction. 
+
+```python
+from qiskit import QuantumCircuit
+
+qc = QuantumCircuit(2, 2)
+qc.h(0)
+qc.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """))
+qc.cx(0, 1)
+qc.measure([0, 1], [0, 1])
+```
+
+The corresponding `cQASM` that gets generated for this circuit looks like 
+
+```
+version 3.0
+
+qubit[2] q
+bit[2] b
+
+H q[0]
+asm(TestBackend) ''' a ' " {} () [] b '''
+CNOT q[0], q[1]
+b[0] = measure q[0]
+b[1] = measure q[1]
+```
+See [Assembly declaration](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/assembly_declaration.html) for asm instructions.
