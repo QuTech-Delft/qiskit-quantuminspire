@@ -38,8 +38,9 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
     return _generate_qi_backend
 
 
-# Exclude the "barrier" instruction as it is not part of the target
-NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_instructions()) - 1
+# Exclude the "barrier" instruction as it is not part of the target, but include asm instruction which leaves the
+# number of instructions unchanged
+NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_instructions())
 
 
 @pytest.mark.parametrize(
@@ -59,6 +60,7 @@ NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_ins
                 ("x", (2,)),
                 ("sdg", (2,)),
                 ("measure", (2,)),
+                ("asm", None),
             ],
             InstructionMapping(qiskit_to_os={"sdg": "sDaG", "x": "X", "prep_y": "prep_y", "measure": "measure"}),
         ),
@@ -77,6 +79,7 @@ NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_ins
                 ("cz", (1, 3)),
                 ("cz", (1, 2)),
                 ("cz", (2, 0)),
+                ("asm", None),
             ],
             InstructionMapping(qiskit_to_os={"cz": "CZ", "x": "X"}),
         ),
@@ -88,6 +91,7 @@ NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_ins
             [
                 ("rx", None),
                 ("ccx", None),
+                ("asm", None),
             ],
             InstructionMapping(qiskit_to_os={"ccx": "toffoli", "rx": "rx"}),
         ),
@@ -227,7 +231,7 @@ def test_qi_backend_construction_toffoli_gate_unsupported(
     # Assert
     assert "ccx" not in instructions
     # Target still gets created but without the toffoli gate
-    assert len(instructions) == 80
+    assert len(instructions) == 81
 
 
 def test_qi_backend_construction_unknown_gate_ignored(

@@ -6,11 +6,13 @@ from qiskit.result.models import ExperimentResultData
 
 from qiskit_quantuminspire.hybrid.hybrid_backend import QIHybridBackend
 from qiskit_quantuminspire.hybrid.hybrid_job import QIHybridJob
+from qiskit_quantuminspire.qi_instructions import Asm
 
 
 def test_submit(quantum_interface: MagicMock) -> None:
     backend = QIHybridBackend(quantum_interface)
     circuit = QuantumCircuit(2, 2)
+    circuit.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """))
     quantum_interface.execute_circuit.return_value = ExecuteCircuitResult(
         shots_requested=2024,
         shots_done=1024,
