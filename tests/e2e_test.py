@@ -59,7 +59,6 @@ def main(name: str) -> None:
             executor.submit(_run_asm_decl_e2e_tests, name=name),
         ]
         for future in futures:
-            breakpoint()
             future.result()
 
 
