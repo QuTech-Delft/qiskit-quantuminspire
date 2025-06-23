@@ -1,5 +1,6 @@
 import argparse
 import math
+from concurrent.futures import ThreadPoolExecutor
 
 from qiskit import QuantumCircuit
 
@@ -36,9 +37,30 @@ def _run_e2e_tests(name: str) -> None:
     assert result.success
     assert all(len(key) == num_qubits for key in result.get_counts())
 
+def _run_asm_decl_e2e_tests(name: str) -> None:
+    qc = QuantumCircuit(2, 2)
+    qc.h(0)
+    qc.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """))
+    qc.cx(0, 1)
+    qc.measure([0, 1], [0, 1])
+    provider = QIProvider()
+    backend = provider.get_backend(name=name)
+    print(f"Running asm decl on backend: {backend.name}")
+    qi_job = backend.run(qc)
+
+    result = qi_job.result()
+    assert result.success
+
 
 def main(name: str) -> None:
-    _run_e2e_tests(name=name)
+    with ThreadPoolExecutor() as executor:
+        futures = [
+            executor.submit(_run_e2e_tests, name=name),
+            executor.submit(_run_asm_decl_e2e_tests, name=name),
+        ]
+        for future in futures:
+            breakpoint()
+            future.result()
 
 
 if __name__ == "__main__":
