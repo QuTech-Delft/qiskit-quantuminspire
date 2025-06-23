@@ -1,6 +1,5 @@
 import argparse
 import math
-from concurrent.futures import ThreadPoolExecutor
 
 from qiskit import QuantumCircuit
 
@@ -54,13 +53,8 @@ def _run_asm_decl_e2e_tests(name: str) -> None:
 
 
 def main(name: str) -> None:
-    with ThreadPoolExecutor() as executor:
-        futures = [
-            executor.submit(_run_e2e_tests, name=name),
-            executor.submit(_run_asm_decl_e2e_tests, name=name),
-        ]
-        for future in futures:
-            future.result()
+    _run_e2e_tests(name=name)
+    _run_asm_decl_e2e_tests(name=name)
 
 
 if __name__ == "__main__":
