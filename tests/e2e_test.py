@@ -37,6 +37,7 @@ def _run_e2e_tests(name: str) -> None:
     assert result.success
     assert all(len(key) == num_qubits for key in result.get_counts())
 
+
 def _run_asm_decl_e2e_tests(name: str) -> None:
     qc = QuantumCircuit(2, 2)
     qc.h(0)
