@@ -38,8 +38,9 @@ class QIHybridJob(QIBaseJob):
 
         for circuit_data in self.circuits_run_data:
             transpiled_circuit = transpile(circuit_data.circuit, backend=self.backend())
+            circuit_str = cqasm.dumps(transpiled_circuit)
             result = self._quantum_interface.execute_circuit(
-                cqasm.dumps(transpiled_circuit), options.get("shots"), raw_data_enabled=options.get("memory")
+                circuit_str, options.get("shots"), raw_data_enabled=options.get("memory")
             )
 
             # Store retrieved results in format expected by Job

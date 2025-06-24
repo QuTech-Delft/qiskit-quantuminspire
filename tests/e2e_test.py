@@ -3,6 +3,7 @@ import math
 
 from qiskit import QuantumCircuit
 
+from qiskit_quantuminspire.qi_instructions import Asm
 from qiskit_quantuminspire.qi_provider import QIProvider
 
 
@@ -10,6 +11,7 @@ def _run_e2e_tests(name: str) -> None:
     num_qubits = 3
     qc = QuantumCircuit(num_qubits)
     qc.h(0)
+    qc.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """))
     qc.x(1)
     qc.y(2)
     qc.cx(0, 1)
@@ -35,8 +37,24 @@ def _run_e2e_tests(name: str) -> None:
     assert all(len(key) == num_qubits for key in result.get_counts())
 
 
+def _run_asm_decl_e2e_tests(name: str) -> None:
+    qc = QuantumCircuit(2, 2)
+    qc.h(0)
+    qc.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """))
+    qc.cx(0, 1)
+    qc.measure([0, 1], [0, 1])
+    provider = QIProvider()
+    backend = provider.get_backend(name=name)
+    print(f"Running asm decl on backend: {backend.name}")
+    qi_job = backend.run(qc)
+
+    result = qi_job.result()
+    assert result.success
+
+
 def main(name: str) -> None:
     _run_e2e_tests(name=name)
+    _run_asm_decl_e2e_tests(name=name)
 
 
 if __name__ == "__main__":

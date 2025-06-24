@@ -10,6 +10,7 @@ from qiskit.providers.options import Options
 from qiskit.transpiler import CouplingMap, Target
 
 from qiskit_quantuminspire.mapping.instruction_mapping import InstructionMapping
+from qiskit_quantuminspire.qi_instructions import Asm
 from qiskit_quantuminspire.qi_jobs import QIJob
 from qiskit_quantuminspire.utils import is_coupling_map_complete
 
@@ -72,6 +73,8 @@ class QIBaseBackend(Backend):  # type: ignore[misc]
             num_qubits=backend_type.nqubits,
             coupling_map=None if coupling_map_complete else coupling_map,
         )
+
+        self._target.add_instruction(Asm())
 
     def __repr_pretty__(self, p: PrettyPrinter) -> None:
         p.pprint(f"QIBackend(name={self.name}, id={self.id})")
