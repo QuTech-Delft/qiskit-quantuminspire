@@ -37,6 +37,14 @@ qiskit\_quantuminspire.qi\_backend module
    :undoc-members:
    :show-inheritance:
 
+qiskit\_quantuminspire.qi\_instructions module
+----------------------------------------------
+
+.. automodule:: qiskit_quantuminspire.qi_instructions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 qiskit\_quantuminspire.qi\_jobs module
 --------------------------------------
 

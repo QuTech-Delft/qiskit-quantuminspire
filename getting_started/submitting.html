@@ -347,6 +347,34 @@ circuits to use only supported gates:</p>
 </pre></div>
 </div>
 </section>
+<section id="support-for-assembly-declaration">
+<h2>Support for Assembly declaration<a class="headerlink" href="#support-for-assembly-declaration" title="Link to this heading">¶</a></h2>
+<p>The qiskit-quantuminspire plugin also supports assembly declarations that can be used to add backend-specific (assembly) code to a qiskit circuit.
+They are realized through an <code class="docutils literal notranslate"><span class="pre">Asm</span></code> instruction.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+
+<span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Asm</span><span class="p">(</span><span class="n">backend_name</span><span class="o">=</span><span class="s2">&quot;TestBackend&quot;</span><span class="p">,</span> <span class="n">asm_code</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; a &#39; &quot; </span><span class="si">{}</span><span class="s2"> () [] b &quot;&quot;&quot;</span><span class="p">))</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The corresponding <code class="docutils literal notranslate"><span class="pre">cQASM</span></code> that gets generated for this circuit looks like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">version</span> <span class="mf">3.0</span>
+
+<span class="n">qubit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">q</span>
+<span class="n">bit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">b</span>
+
+<span class="n">H</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">asm</span><span class="p">(</span><span class="n">TestBackend</span><span class="p">)</span> <span class="s1">&#39;&#39;&#39; a &#39; &quot; </span><span class="si">{}</span><span class="s1"> () [] b &#39;&#39;&#39;</span>
+<span class="n">CNOT</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">measure</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">measure</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/assembly_declaration.html">Assembly declaration</a> for asm instructions.</p>
+</section>
 </section>
 
         </article>
@@ -411,6 +439,7 @@ circuits to use only supported gates:</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#transpilation">Transpilation</a></li>
+<li><a class="reference internal" href="#support-for-assembly-declaration">Support for Assembly declaration</a></li>
 </ul>
 </li>
 </ul>
