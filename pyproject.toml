@@ -31,7 +31,7 @@ coverage = {extras = ["toml"], version = "^7.6.10"}
 docformatter = "1.7.7"
 mypy = "^1.14"
 pytest = {extras = ["toml"], version = "^8.3.4"}
-pytest-asyncio = ">=0.25.2,<1.1.0"
+pytest-asyncio = ">=0.25.2,<1.2.0"
 pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
 ruff = ">=0.9.3,<0.13.0"
