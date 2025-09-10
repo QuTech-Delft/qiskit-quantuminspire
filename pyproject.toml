@@ -32,7 +32,7 @@ docformatter = "1.7.7"
 mypy = "^1.14"
 pytest = {extras = ["toml"], version = "^8.3.4"}
 pytest-asyncio = ">=0.25.2,<1.2.0"
-pytest-cov = "^6.0.0"
+pytest-cov = ">=6,<8"
 pytest-mock = "^3.14.0"
 ruff = ">=0.9.3,<0.13.0"
 freezegun = "^1.5.1"
