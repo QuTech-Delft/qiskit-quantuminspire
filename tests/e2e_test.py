@@ -1,13 +1,20 @@
 import argparse
 import math
+import os
 
+import pytest
 from qiskit import QuantumCircuit
 
 from qiskit_quantuminspire.qi_instructions import Asm
 from qiskit_quantuminspire.qi_provider import QIProvider
 
 
-def _run_e2e_tests(name: str) -> None:
+@pytest.fixture
+def backend_name() -> str:
+    return os.getenv("BACKEND_NAME")
+
+
+def test_normal_flow(backend_name: str) -> None:
     num_qubits = 3
     qc = QuantumCircuit(num_qubits)
     qc.h(0)
@@ -28,7 +35,7 @@ def _run_e2e_tests(name: str) -> None:
     qc.id(0)
     qc.measure_all()
     provider = QIProvider()
-    backend = provider.get_backend(name=name)
+    backend = provider.get_backend(name=backend_name)
     print(f"Running on backend: {backend.name}")
     qi_job = backend.run(qc)
 
@@ -37,33 +44,16 @@ def _run_e2e_tests(name: str) -> None:
     assert all(len(key) == num_qubits for key in result.get_counts())
 
 
-def _run_asm_decl_e2e_tests(name: str) -> None:
+def test_asm_decl(backend_name: str) -> None:
     qc = QuantumCircuit(2, 2)
     qc.h(0)
     qc.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """))
     qc.cx(0, 1)
     qc.measure([0, 1], [0, 1])
     provider = QIProvider()
-    backend = provider.get_backend(name=name)
+    backend = provider.get_backend(name=backend_name)
     print(f"Running asm decl on backend: {backend.name}")
     qi_job = backend.run(qc)
 
     result = qi_job.result()
     assert result.success
-
-
-def main(name: str) -> None:
-    _run_e2e_tests(name=name)
-    _run_asm_decl_e2e_tests(name=name)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run E2E test on a backend.")
-    parser.add_argument(
-        "name",
-        type=str,
-        help="Name of the backend where the E2E tests will run.",
-    )
-
-    args = parser.parse_args()
-    main(args.name)
