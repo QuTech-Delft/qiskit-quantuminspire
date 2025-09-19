@@ -1,4 +1,3 @@
-import argparse
 import math
 import os
 
@@ -11,7 +10,7 @@ from qiskit_quantuminspire.qi_provider import QIProvider
 
 @pytest.fixture
 def backend_name() -> str:
-    return os.getenv("BACKEND_NAME")
+    return os.getenv("BACKEND_NAME", "")
 
 
 def test_normal_flow(backend_name: str) -> None:
