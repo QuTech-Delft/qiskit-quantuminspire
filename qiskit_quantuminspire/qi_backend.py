@@ -74,7 +74,7 @@ class QIBaseBackend(Backend):  # type: ignore[misc]
             coupling_map=None if coupling_map_complete else coupling_map,
         )
 
-        self._target.add_instruction(Asm(), properties={(): None})
+        self._target.add_instruction(Asm, name=Asm.NAME)
 
     def __repr_pretty__(self, p: PrettyPrinter) -> None:
         p.pprint(f"QIBackend(name={self.name}, id={self.id})")
