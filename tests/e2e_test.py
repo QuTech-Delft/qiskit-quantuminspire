@@ -2,8 +2,9 @@ import math
 import os
 
 import pytest
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, transpile
 
+from qiskit_quantuminspire import cqasm
 from qiskit_quantuminspire.qi_instructions import Asm
 from qiskit_quantuminspire.qi_provider import QIProvider
 
@@ -56,3 +57,21 @@ def test_asm_decl(backend_name: str) -> None:
 
     result = qi_job.result()
     assert result.success
+
+
+def test_transpilation(backend_name: str) -> None:
+    qc = QuantumCircuit(2, 2)
+    qc.h(0)
+    qc.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """))
+    qc.cx(0, 1)
+    qc.measure([0, 1], [0, 1])
+
+    provider = QIProvider()
+    backend = provider.get_backend(name=backend_name)
+
+    transpiled_circuit = transpile(qc, backend=backend)
+    _ = cqasm.dumps(transpiled_circuit)
+
+    if backend.target.qargs is not None:
+        assert None not in backend.target.qargs
+
