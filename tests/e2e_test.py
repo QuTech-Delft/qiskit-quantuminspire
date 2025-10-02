@@ -74,4 +74,3 @@ def test_transpilation(backend_name: str) -> None:
 
     if backend.target.qargs is not None:
         assert None not in backend.target.qargs
-
