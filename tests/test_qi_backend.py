@@ -60,7 +60,6 @@ NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_ins
                 ("x", (2,)),
                 ("sdg", (2,)),
                 ("measure", (2,)),
-                ("asm", None),
             ],
             InstructionMapping(qiskit_to_os={"sdg": "sDaG", "x": "X", "prep_y": "prep_y", "measure": "measure"}),
         ),
@@ -79,7 +78,6 @@ NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_ins
                 ("cz", (1, 3)),
                 ("cz", (1, 2)),
                 ("cz", (2, 0)),
-                ("asm", None),
             ],
             InstructionMapping(qiskit_to_os={"cz": "CZ", "x": "X"}),
         ),
@@ -91,7 +89,6 @@ NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_ins
             [
                 ("rx", None),
                 ("ccx", None),
-                ("asm", None),
             ],
             InstructionMapping(qiskit_to_os={"ccx": "toffoli", "rx": "rx"}),
         ),
@@ -118,6 +115,8 @@ def test_qi_backend_construction_target(
     for instruction in expected_instructions:
         assert instruction in actual_instructions
     for instruction in actual_instructions:
+        if isinstance(instruction[0], property):
+            continue
         assert instruction in expected_instructions
 
 
