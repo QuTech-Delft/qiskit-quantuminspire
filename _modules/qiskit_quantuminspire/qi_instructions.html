@@ -262,9 +262,10 @@
     <span class="c1"># Mark as directive like Barrier,</span>
     <span class="c1"># see https://docs.quantum.ibm.com/api/qiskit/circuit_library#standard-directives</span>
     <span class="n">_directive</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;asm&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">asm_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;asm&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="n">backend_name</span><span class="p">,</span> <span class="n">asm_code</span><span class="p">])</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="n">backend_name</span><span class="p">,</span> <span class="n">asm_code</span><span class="p">])</span></div>
 
 </pre></div>
         </article>

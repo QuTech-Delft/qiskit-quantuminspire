@@ -331,7 +331,10 @@
             <span class="n">coupling_map</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">coupling_map_complete</span> <span class="k">else</span> <span class="n">coupling_map</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">add_instruction</span><span class="p">(</span><span class="n">Asm</span><span class="p">())</span>
+        <span class="c1"># From doc strings of the add_instruction</span>
+        <span class="c1"># When a class is used the gate is treated as global</span>
+        <span class="c1"># and not having any properties set.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">add_instruction</span><span class="p">(</span><span class="n">Asm</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">Asm</span><span class="o">.</span><span class="n">NAME</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr_pretty__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">PrettyPrinter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">p</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;QIBackend(name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
