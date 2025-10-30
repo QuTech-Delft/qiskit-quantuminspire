@@ -18,12 +18,12 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 qiskit = ">=2.0.0,<2.2.0"
 qi-compute-api-client = "^0.50.0"
 pydantic = "^2.10.6"
 requests = "^2.32.3"
-opensquirrel = "0.5.0"
+opensquirrel = "0.7.0"
 
 [tool.poetry.group.dev.dependencies]
 black = { extras = ["jupyter"], version = ">=24.10,<26.0" }
