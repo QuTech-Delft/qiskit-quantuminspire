@@ -37,7 +37,7 @@ def test_normal_flow(backend_name: str) -> None:
     provider = QIProvider()
     backend = provider.get_backend(name=backend_name)
     print(f"Running on backend: {backend.name}")
-    qi_job = backend.run(qc)
+    qi_job = backend.run(qc, program_name="E2E test program")
 
     result = qi_job.result()
     assert result.success
