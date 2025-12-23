@@ -143,6 +143,7 @@ class QIBackend(QIBaseBackend):
 
         Args:
             run_input: A single or list of Qiskit QuantumCircuit objects or hybrid algorithms.
+            **options: Execution options (shots, memory, etc.)
 
         Returns:
             QIJob: A reference to the batch job that was submitted.

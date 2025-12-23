@@ -16,7 +16,7 @@ def backend_name() -> str:
 
 def test_normal_flow(backend_name: str) -> None:
     num_qubits = 3
-    qc = QuantumCircuit(num_qubits)
+    qc = QuantumCircuit(num_qubits, name="E2E test circuit")
     qc.h(0)
     qc.append(Asm(backend_name="TestBackend", asm_code=""" a ' " {} () [] b """))
     qc.x(1)

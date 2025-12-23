@@ -90,7 +90,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
         super().__init__(backend, "", **kwargs)
         self.circuits_run_data = []
         self._add_circuits(run_input)
-        self.program_name = "Program created by SDK"
+        self.program_name = self.circuits_run_data[0].circuit.name if self.circuits_run_data else "Default program"
         self.batch_job_id: Union[int, None] = None
 
     def _add_circuits(self, circuits: Union[QuantumCircuit, List[QuantumCircuit]]) -> None:
@@ -246,7 +246,7 @@ class QIJob(QIBaseJob):
         obj = ProjectIn(
             owner_id=owner_id,
             name=self.program_name,
-            description="Project created by SDK",
+            description=self.program_name,
             starred=False,
         )
         return await api_instance.create_project_projects_post(obj)
@@ -261,7 +261,7 @@ class QIJob(QIBaseJob):
     async def _create_commit(self, api_client: ApiClient, algorithm_id: int) -> Commit:
         api_instance = CommitsApi(api_client)
         obj = CommitIn(
-            description="Commit created by SDK",
+            description=f"Commit created by {self.program_name}",
             algorithm_id=algorithm_id,
         )
         return await api_instance.create_commit_commits_post(obj)
