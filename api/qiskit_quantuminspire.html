@@ -356,7 +356,10 @@
 <dd><p>Create and run a (batch)job on an QuantumInspire Backend.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>run_input</strong> – A single or list of Qiskit QuantumCircuit objects or hybrid algorithms.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_input</strong> – A single or list of Qiskit QuantumCircuit objects or hybrid algorithms.</p></li>
+<li><p><strong>**options</strong> – Execution options (shots, memory, etc.)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A reference to the batch job that was submitted.</p>

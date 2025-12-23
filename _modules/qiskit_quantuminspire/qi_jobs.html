@@ -353,7 +353,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_circuits</span><span class="p">(</span><span class="n">run_input</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">program_name</span> <span class="o">=</span> <span class="s2">&quot;Program created by SDK&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">program_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">circuit</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span> <span class="k">else</span> <span class="s2">&quot;Default program&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_job_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_add_circuits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -515,7 +515,7 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="n">ProjectIn</span><span class="p">(</span>
             <span class="n">owner_id</span><span class="o">=</span><span class="n">owner_id</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">program_name</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Project created by SDK&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">program_name</span><span class="p">,</span>
             <span class="n">starred</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">api_instance</span><span class="o">.</span><span class="n">create_project_projects_post</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
@@ -530,7 +530,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_create_commit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">algorithm_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Commit</span><span class="p">:</span>
         <span class="n">api_instance</span> <span class="o">=</span> <span class="n">CommitsApi</span><span class="p">(</span><span class="n">api_client</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">CommitIn</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Commit created by SDK&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Commit created by </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">program_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">algorithm_id</span><span class="o">=</span><span class="n">algorithm_id</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">api_instance</span><span class="o">.</span><span class="n">create_commit_commits_post</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
