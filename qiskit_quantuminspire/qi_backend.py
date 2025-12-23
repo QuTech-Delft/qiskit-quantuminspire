@@ -1,5 +1,5 @@
 from pprint import PrettyPrinter
-from typing import Any, List, Optional, Union
+from typing import Any, List, Union
 
 from compute_api_client import ApiClient, BackendStatus, BackendType, BackendTypesApi
 from qi2_shared.client import config
@@ -138,14 +138,11 @@ class QIBackend(QIBaseBackend):
     def available(self) -> bool:
         return bool(self.status != BackendStatus.OFFLINE)
 
-    def run(
-        self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], program_name: Optional[str] = None, **options: Any
-    ) -> QIJob:
+    def run(self, run_input: Union[QuantumCircuit, List[QuantumCircuit]], **options: Any) -> QIJob:
         """Create and run a (batch)job on an QuantumInspire Backend.
 
         Args:
             run_input: A single or list of Qiskit QuantumCircuit objects or hybrid algorithms.
-            program_name: Optional metadata name for the program.
             **options: Execution options (shots, memory, etc.)
 
         Returns:
@@ -154,6 +151,6 @@ class QIBackend(QIBaseBackend):
         if not self.available:
             raise RuntimeError(f"{self.name} is {self.status.value}, jobs can't be submitted")
         self.set_options(**options)
-        job = QIJob(run_input=run_input, backend=self, program_name=program_name)
+        job = QIJob(run_input=run_input, backend=self)
         job.submit()
         return job

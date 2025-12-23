@@ -77,7 +77,6 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
         self,
         run_input: Union[QuantumCircuit, List[QuantumCircuit]],
         backend: Union[BackendV2, None],
-        program_name: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a QIJob instance.
@@ -91,7 +90,7 @@ class QIBaseJob(JobV1):  # type: ignore[misc]
         super().__init__(backend, "", **kwargs)
         self.circuits_run_data = []
         self._add_circuits(run_input)
-        self.program_name = program_name or "Default Program"
+        self.program_name = self.circuits_run_data[0].circuit.name if self.circuits_run_data else "Default program"
         self.batch_job_id: Union[int, None] = None
 
     def _add_circuits(self, circuits: Union[QuantumCircuit, List[QuantumCircuit]]) -> None:
