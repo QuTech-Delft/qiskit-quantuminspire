@@ -5,9 +5,9 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>qiskit_quantuminspire.qi_jobs - Qiskit-QuantumInspire 0.14.0 documentation</title>
+        <title>qiskit_quantuminspire.qi_jobs - Qiskit-QuantumInspire 0.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -159,7 +159,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Qiskit-QuantumInspire 0.14.0 documentation</div></a>
+      <a href="../../index.html"><div class="brand">Qiskit-QuantumInspire 0.16.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">Qiskit-QuantumInspire 0.14.0 documentation</span>
+  <span class="sidebar-brand-text">Qiskit-QuantumInspire 0.16.0 documentation</span>
   
 </a>
 <form class="sidebar-search-container" method="get" action="../../search.html" role="search">
@@ -253,15 +253,15 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for qiskit_quantuminspire.qi_jobs</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cache</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
 
-<span class="kn">from</span> <span class="nn">colorama</span> <span class="kn">import</span> <span class="n">Fore</span><span class="p">,</span> <span class="n">Style</span>
-<span class="kn">from</span> <span class="nn">compute_api_client</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">colorama</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fore</span><span class="p">,</span> <span class="n">Style</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compute_api_client</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Algorithm</span><span class="p">,</span>
     <span class="n">AlgorithmIn</span><span class="p">,</span>
     <span class="n">AlgorithmsApi</span><span class="p">,</span>
@@ -293,25 +293,25 @@
     <span class="n">ResultsApi</span><span class="p">,</span>
     <span class="n">ShareType</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">qi2_shared.client</span> <span class="kn">import</span> <span class="n">config</span>
-<span class="kn">from</span> <span class="nn">qi2_shared.pagination</span> <span class="kn">import</span> <span class="n">PageReader</span>
-<span class="kn">from</span> <span class="nn">qi2_shared.settings</span> <span class="kn">import</span> <span class="n">ApiSettings</span>
-<span class="kn">from</span> <span class="nn">qi2_shared.utils</span> <span class="kn">import</span> <span class="n">run_async</span>
-<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">qpy</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.providers</span> <span class="kn">import</span> <span class="n">JobV1</span>
-<span class="kn">from</span> <span class="nn">qiskit.providers.backend</span> <span class="kn">import</span> <span class="n">BackendV2</span>
-<span class="kn">from</span> <span class="nn">qiskit.providers.jobstatus</span> <span class="kn">import</span> <span class="n">JobStatus</span>
-<span class="kn">from</span> <span class="nn">qiskit.result.models</span> <span class="kn">import</span> <span class="n">ExperimentResult</span><span class="p">,</span> <span class="n">ExperimentResultData</span>
-<span class="kn">from</span> <span class="nn">qiskit.result.result</span> <span class="kn">import</span> <span class="n">Result</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qi2_shared.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qi2_shared.pagination</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageReader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qi2_shared.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiSettings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qi2_shared.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_async</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">qpy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobV1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.providers.backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.providers.jobstatus</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.result.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExperimentResult</span><span class="p">,</span> <span class="n">ExperimentResultData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.result.result</span><span class="w"> </span><span class="kn">import</span> <span class="n">Result</span>
 
-<span class="kn">from</span> <span class="nn">qiskit_quantuminspire</span> <span class="kn">import</span> <span class="n">cqasm</span>
-<span class="kn">from</span> <span class="nn">qiskit_quantuminspire.base_provider</span> <span class="kn">import</span> <span class="n">BaseProvider</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_quantuminspire</span><span class="w"> </span><span class="kn">import</span> <span class="n">cqasm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_quantuminspire.base_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseProvider</span>
 
 
 <div class="viewcode-block" id="ExperimentFailedWarning">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.ExperimentFailedWarning">[docs]</a>
-<span class="k">class</span> <span class="nc">ExperimentFailedWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExperimentFailedWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
@@ -319,7 +319,7 @@
 <div class="viewcode-block" id="CircuitExecutionData">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.CircuitExecutionData">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">CircuitExecutionData</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CircuitExecutionData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for book-keeping of individual jobs.&quot;&quot;&quot;</span>
 
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span>
@@ -333,10 +333,10 @@
 <span class="c1"># which causes the base class &#39;Job&#39; to be treated as &#39;Any&#39;.</span>
 <div class="viewcode-block" id="QIBaseJob">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIBaseJob">[docs]</a>
-<span class="k">class</span> <span class="nc">QIBaseJob</span><span class="p">(</span><span class="n">JobV1</span><span class="p">):</span>  <span class="c1"># type: ignore[misc]</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">QIBaseJob</span><span class="p">(</span><span class="n">JobV1</span><span class="p">):</span>  <span class="c1"># type: ignore[misc]</span>
     <span class="n">circuits_run_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CircuitExecutionData</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">run_input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]],</span>
         <span class="n">backend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BackendV2</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
@@ -356,12 +356,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">program_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">circuit</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span> <span class="k">else</span> <span class="s2">&quot;Default program&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_job_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_add_circuits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_circuits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add circuits to the list of circuits to be run.&quot;&quot;&quot;</span>
         <span class="n">circuits</span> <span class="o">=</span> <span class="p">[</span><span class="n">circuits</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">QuantumCircuit</span><span class="p">)</span> <span class="k">else</span> <span class="n">circuits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">circuits_run_data</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">CircuitExecutionData</span><span class="p">(</span><span class="n">circuit</span><span class="o">=</span><span class="n">circuit</span><span class="p">)</span> <span class="k">for</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="n">circuits</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_process_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the raw job results obtained from QuantumInspire.&quot;&quot;&quot;</span>
 
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
@@ -416,7 +416,7 @@
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_create_experiment_result</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_experiment_result</span><span class="p">(</span>
         <span class="n">exp_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
         <span class="n">result</span><span class="p">:</span> <span class="n">RawJobResult</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentResult</span><span class="p">:</span>
@@ -437,7 +437,7 @@
         <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_create_empty_experiment_result</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_empty_experiment_result</span><span class="p">(</span>
         <span class="n">exp_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">trace_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an empty ExperimentResult instance.&quot;&quot;&quot;</span>
@@ -453,16 +453,16 @@
 
 <div class="viewcode-block" id="QIJob">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob">[docs]</a>
-<span class="k">class</span> <span class="nc">QIJob</span><span class="p">(</span><span class="n">QIBaseJob</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">QIJob</span><span class="p">(</span><span class="n">QIBaseJob</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper class for QuantumInspire batch jobs to integrate with Qiskit&#39;s Job interface.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="QIJob.submit">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob.submit">[docs]</a>
-    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">run_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_submit_async</span><span class="p">())</span></div>
 
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_submit_async</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_submit_async</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Submit the (batch)job to the quantum inspire backend.</span>
 
 <span class="sd">        Use compute-api-client to call the cjm endpoints in the correct order, to submit the jobs.</span>
@@ -483,7 +483,7 @@
             <span class="n">project</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_project</span><span class="p">(</span><span class="n">api_client</span><span class="p">,</span> <span class="n">team_member_id</span><span class="p">)</span>
             <span class="n">batch_job</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_batch_job</span><span class="p">(</span><span class="n">api_client</span><span class="p">,</span> <span class="n">backend_type_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
-            <span class="k">async</span> <span class="k">def</span> <span class="nf">job_run_sequence</span><span class="p">(</span>
+            <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">job_run_sequence</span><span class="p">(</span>
                 <span class="n">in_api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span>
                 <span class="n">in_project</span><span class="p">:</span> <span class="n">Project</span><span class="p">,</span>
                 <span class="n">in_batch_job</span><span class="p">:</span> <span class="n">BatchJob</span><span class="p">,</span>
@@ -510,7 +510,7 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enqueue_batch_job</span><span class="p">(</span><span class="n">api_client</span><span class="p">,</span> <span class="n">batch_job</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">batch_job_id</span> <span class="o">=</span> <span class="n">batch_job</span><span class="o">.</span><span class="n">id</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_create_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">owner_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">owner_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
         <span class="n">api_instance</span> <span class="o">=</span> <span class="n">ProjectsApi</span><span class="p">(</span><span class="n">api_client</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">ProjectIn</span><span class="p">(</span>
             <span class="n">owner_id</span><span class="o">=</span><span class="n">owner_id</span><span class="p">,</span>
@@ -520,14 +520,14 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">api_instance</span><span class="o">.</span><span class="n">create_project_projects_post</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_create_algorithm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">project_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Algorithm</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_algorithm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">project_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Algorithm</span><span class="p">:</span>
         <span class="n">api_instance</span> <span class="o">=</span> <span class="n">AlgorithmsApi</span><span class="p">(</span><span class="n">api_client</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">AlgorithmIn</span><span class="p">(</span>
             <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">AlgorithmType</span><span class="o">.</span><span class="n">QUANTUM</span><span class="p">,</span> <span class="n">shared</span><span class="o">=</span><span class="n">ShareType</span><span class="o">.</span><span class="n">PRIVATE</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">program_name</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">api_instance</span><span class="o">.</span><span class="n">create_algorithm_algorithms_post</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_create_commit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">algorithm_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Commit</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_commit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">algorithm_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Commit</span><span class="p">:</span>
         <span class="n">api_instance</span> <span class="o">=</span> <span class="n">CommitsApi</span><span class="p">(</span><span class="n">api_client</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">CommitIn</span><span class="p">(</span>
             <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Commit created by </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">program_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
@@ -535,7 +535,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">api_instance</span><span class="o">.</span><span class="n">create_commit_commits_post</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_create_file</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_file</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">commit_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">language_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">File</span><span class="p">:</span>
         <span class="n">api_instance</span> <span class="o">=</span> <span class="n">FilesApi</span><span class="p">(</span><span class="n">api_client</span><span class="p">)</span>
@@ -549,12 +549,12 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">api_instance</span><span class="o">.</span><span class="n">create_file_files_post</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_create_batch_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">backend_type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchJob</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_batch_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">backend_type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchJob</span><span class="p">:</span>
         <span class="n">api_instance</span> <span class="o">=</span> <span class="n">BatchJobsApi</span><span class="p">(</span><span class="n">api_client</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">BatchJobIn</span><span class="p">(</span><span class="n">backend_type_id</span><span class="o">=</span><span class="n">backend_type_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">api_instance</span><span class="o">.</span><span class="n">create_batch_job_batch_jobs_post</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_create_job</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_create_job</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span>
         <span class="n">file_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -571,11 +571,11 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">api_instance</span><span class="o">.</span><span class="n">create_job_jobs_post</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_enqueue_batch_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">batch_job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchJob</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_enqueue_batch_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">batch_job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchJob</span><span class="p">:</span>
         <span class="n">api_instance</span> <span class="o">=</span> <span class="n">BatchJobsApi</span><span class="p">(</span><span class="n">api_client</span><span class="p">)</span>
         <span class="k">return</span> <span class="k">await</span> <span class="n">api_instance</span><span class="o">.</span><span class="n">enqueue_batch_job_batch_jobs_id_enqueue_patch</span><span class="p">(</span><span class="n">batch_job_id</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_get_language</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_get_language</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">language_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language_version</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Language</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="n">language_api_instance</span> <span class="o">=</span> <span class="n">LanguagesApi</span><span class="p">(</span><span class="n">api_client</span><span class="p">)</span>
@@ -587,7 +587,7 @@
 
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_fetch_job_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_fetch_job_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch results for job_ids from CJM using api client.&quot;&quot;&quot;</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">ApiClient</span><span class="p">(</span><span class="n">config</span><span class="p">())</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
             <span class="n">page_reader</span> <span class="o">=</span> <span class="n">PageReader</span><span class="p">[</span><span class="n">PageResult</span><span class="p">,</span> <span class="n">RawJobResult</span><span class="p">]()</span>
@@ -611,7 +611,7 @@
             <span class="k">if</span> <span class="n">job_ids_to_check</span><span class="p">:</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_failed_jobs_message</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">job_ids_to_check</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_fetch_failed_jobs_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">job_ids_to_check</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_fetch_failed_jobs_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">job_ids_to_check</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch messages for failed jobs and update circuit data accordingly.</span>
 
 <span class="sd">        Args:</span>
@@ -639,7 +639,7 @@
 
 <div class="viewcode-block" id="QIJob.status">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob.status">[docs]</a>
-    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobStatus</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobStatus</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the status of the (batch)job, among the values of ``JobStatus``.&quot;&quot;&quot;</span>
 
         <span class="c1"># mapping of QI BatchJobStatus to Qiskit JobStatus</span>
@@ -655,7 +655,7 @@
         <span class="k">return</span> <span class="n">status_map</span><span class="p">[</span><span class="n">batch_job</span><span class="o">.</span><span class="n">status</span><span class="p">]</span></div>
 
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_fetch_batchjob_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchJob</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_fetch_batchjob_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchJob</span><span class="p">:</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">ApiClient</span><span class="p">(</span><span class="n">config</span><span class="p">())</span> <span class="k">as</span> <span class="n">api_client</span><span class="p">:</span>
             <span class="n">api_instance</span> <span class="o">=</span> <span class="n">BatchJobsApi</span><span class="p">(</span><span class="n">api_client</span><span class="p">)</span>
 
@@ -668,7 +668,7 @@
 
 <div class="viewcode-block" id="QIJob.serialize">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob.serialize">[docs]</a>
-    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize job information in this class to a file.</span>
 
 <span class="sd">        Uses Qiskit serialization to write circuits to a .qpy file, and includes</span>
@@ -694,7 +694,7 @@
 <div class="viewcode-block" id="QIJob.deserialize">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob.deserialize">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="n">BaseProvider</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;QIJob&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deserialize</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="n">BaseProvider</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;QIJob&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recover a prior job from a file written by QIJob.serialize().</span>
 
 <span class="sd">        Args:</span>
@@ -728,7 +728,7 @@
 <div class="viewcode-block" id="QIJob.result">
 <a class="viewcode-back" href="../../api/qiskit_quantuminspire.html#qiskit_quantuminspire.qi_jobs.QIJob.result">[docs]</a>
     <span class="nd">@cache</span>
-    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_for_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">60.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_for_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">60.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the results of the job.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">wait_for_results</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_final_state</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
@@ -770,7 +770,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=9e420a66"></script>
+</div><script src="../../_static/documentation_options.js?v=7de89ed4"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

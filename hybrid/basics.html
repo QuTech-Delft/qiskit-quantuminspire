@@ -6,9 +6,9 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Leveraging Qiskit" href="leveraging_qiskit.html" /><link rel="prev" title="Hybrid Algorithms" href="index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Basics - Qiskit-QuantumInspire 0.14.0 documentation</title>
+        <title>Basics - Qiskit-QuantumInspire 0.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
@@ -160,7 +160,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit-QuantumInspire 0.14.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">Qiskit-QuantumInspire 0.16.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">Qiskit-QuantumInspire 0.14.0 documentation</span>
+  <span class="sidebar-brand-text">Qiskit-QuantumInspire 0.16.0 documentation</span>
   
 </a>
 <form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -268,7 +268,7 @@
 <section id="execute">
 <h3>Execute<a class="headerlink" href="#execute" title="Link to this heading">¶</a></h3>
 <p>The execute function is the function that gets called by QI first. As an argument it gets a <code class="docutils literal notranslate"><span class="pre">QuantumInterface</span></code>, which is what allows you to actually execute your circuit. A simple example, where a function <code class="docutils literal notranslate"><span class="pre">generate_circuit()</span></code> is called that returns cQASM as a string, is shown below. In this example, the same circuit is executed 5 times in a row as a simple illustration of the interchanging control between the hybrid and classical domains. Normally, you might want to change your <code class="docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> between each execution based on your results.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">qi</span><span class="p">:</span> <span class="n">QuantumInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="n">qi</span><span class="p">:</span> <span class="n">QuantumInterface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the classical part of the Hybrid Quantum/Classical Algorithm.</span>
 
 <span class="sd">    Args:</span>
@@ -298,7 +298,7 @@
 <section id="finalize">
 <h3>Finalize<a class="headerlink" href="#finalize" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">finalize()</span></code> function allows you to aggregate your results. It should return a dictionary which will be stored as the final result. By default it takes a list of all measurements as an argument, but through the use of globals you could also export other data.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="n">list_of_measurements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="n">list_of_measurements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Aggregate the results from all iterations into one final result.</span>
 
 <span class="sd">    Args:</span>
@@ -399,7 +399,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=9e420a66"></script>
+</div><script src="../_static/documentation_options.js?v=7de89ed4"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
