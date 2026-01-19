@@ -35,7 +35,7 @@ def create_backend_type(
         enabled=True,
         messages={},
         job_execution_time_limit=3600,
-        identifier="dummy"
+        identifier="dummy",
     )
 
 
