@@ -26,7 +26,7 @@ opensquirrel = "0.8.0"
 colorama = "^0.4.6"
 
 [tool.poetry.group.dev.dependencies]
-black = { extras = ["jupyter"], version = ">=24.10,<26.0" }
+black = { extras = ["jupyter"], version = ">=24.10,<27.0" }
 coverage = { extras = ["toml"], version = "^7.6.10" }
 docformatter = "1.7.7"
 mypy = "^1.14"
