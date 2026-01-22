@@ -1,5 +1,7 @@
+import logging
 from typing import Any, List, Optional, Sequence
 
+from colorama import Fore, Style
 from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBackendType
 from qi2_shared.client import config
 from qi2_shared.pagination import PageReader
@@ -48,6 +50,9 @@ class QIProvider(BaseProvider):
 
         for backend in self._qiskit_backends:
             if all(getattr(backend, key) == value for key, value in filter_arguments.items()):
+                if backend.message:
+                    logging.basicConfig(format="%(levelname)s: %(message)s")
+                    logging.warning(f"{Fore.BLUE}{backend.message}{Style.RESET_ALL}")
                 return backend
 
         raise ValueError(f"Backend {name} not found")

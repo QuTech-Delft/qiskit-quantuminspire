@@ -129,6 +129,14 @@ class QIBackend(QIBaseBackend):
         backend_type: BackendType = run_async(self._get_backend_type())
         return backend_type.status
 
+    @property
+    def message(self) -> str:
+        backend_type: BackendType = run_async(self._get_backend_type())
+        messages = ""
+        for backend_name in backend_type.messages.keys():
+            messages += f"{backend_name}: {backend_type.messages[backend_name].content}\n"
+        return messages.rstrip("\n")
+
     async def _get_backend_type(self) -> BackendType:
         async with ApiClient(config()) as client:
             backend_types_api = BackendTypesApi(client)

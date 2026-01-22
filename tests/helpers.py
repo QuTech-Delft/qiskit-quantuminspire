@@ -33,7 +33,7 @@ def create_backend_type(
         native_gateset="",
         supports_raw_data=supports_raw_data,
         enabled=True,
-        messages={},
+        messages={"backend": {"content": "message for backend"}},
         job_execution_time_limit=3600,
         identifier="dummy",
     )
