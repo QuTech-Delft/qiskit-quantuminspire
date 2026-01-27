@@ -142,6 +142,19 @@ def test_qi_backend_repr() -> None:
     assert qi_backend.name in repr(qi_backend)
 
 
+def test_qi_backend_construction_messages(mocker: MockerFixture, qi_backend_factory: Callable[..., QIBackend]) -> None:
+    # Arrange
+    backend_type = create_backend_type()
+    mock_run_async = mocker.patch("qiskit_quantuminspire.qi_backend.run_async")
+    mock_run_async.return_value = backend_type
+
+    # Act
+    qi_backend = QIBackend(backend_type=backend_type)
+
+    # Assert
+    assert qi_backend.message == "backend: message for backend"
+
+
 @pytest.mark.parametrize("backend_online", [True, False])  # Test cases for backend being available and offline
 def test_qi_backend_run_backend_status(
     qi_job_mock: MagicMock, qi_backend_factory: Callable[..., QIBackend], backend_online: bool

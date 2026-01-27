@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 from unittest.mock import AsyncMock
 
@@ -13,6 +14,8 @@ from tests.helpers import create_backend_type
 def backend_repository(mocker: MockerFixture, mock_job_api: Any, page_reader_mock: AsyncMock) -> None:
     mocker.patch("qiskit_quantuminspire.qi_provider.config")
     mocker.patch("qiskit_quantuminspire.qi_provider.ApiClient")
+    mock_run_async = mocker.patch("qiskit_quantuminspire.qi_backend.run_async")
+    mock_run_async.return_value = create_backend_type()
     page_reader_mock.get_all.return_value = [
         create_backend_type(name="qi_backend_1", id=10),
         create_backend_type(name="spin", id=20),
@@ -59,6 +62,19 @@ def test_get_backend_no_arguments_gets_first(backend_repository: None) -> None:
 
     # Assert
     assert backend.id == 10
+
+
+def test_get_backend_print_message(backend_repository: None, caplog: Any) -> None:
+    # Arrange
+    provider = QIProvider()
+
+    # Act
+    with caplog.at_level(logging.WARNING):
+        provider.get_backend(name="qi_backend_1")
+
+    # Assert
+    assert len(caplog.records) == 1
+    assert "backend: message for backend" in caplog.text
 
 
 @pytest.mark.parametrize("name,id", [("not_existing", None), (None, 6), ("not_existing", 6)])

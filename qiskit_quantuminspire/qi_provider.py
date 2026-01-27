@@ -1,3 +1,4 @@
+import logging
 from typing import Any, List, Optional, Sequence
 
 from compute_api_client import ApiClient, BackendType, BackendTypesApi, PageBackendType
@@ -48,6 +49,9 @@ class QIProvider(BaseProvider):
 
         for backend in self._qiskit_backends:
             if all(getattr(backend, key) == value for key, value in filter_arguments.items()):
+                if backend.message:
+                    logging.basicConfig(format="%(levelname)s: %(message)s")
+                    logging.warning(f"{backend.message}")
                 return backend
 
         raise ValueError(f"Backend {name} not found")
