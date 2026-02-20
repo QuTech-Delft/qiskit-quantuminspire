@@ -38,7 +38,7 @@ pytest-mock = "^3.14.0"
 pytest-xdist = ">=3.6.1"
 ruff = ">=0.9.3,<0.16.0"
 freezegun = "^1.5.1"
-responses = "^0.25.6"
+responses = ">=0.25.6,<0.27.0"
 types-requests = "^2.32.0"
 
 [tool.poetry.group.docs.dependencies]
