@@ -38,6 +38,4 @@ After creating the environment, you need to activate it (use your custom environ
 conda activate qiskit-qi
 ```
 
-> [!NOTE]
-> Note that due to dependency conflicts, an older version of the plugin might be installed. You can check the version using `pip show qiskit-quantuminspire` from the Conda environment.
-
+> **Note:** Note that due to dependency conflicts, an older version of the plugin might be installed. You can check the version using `pip show qiskit-quantuminspire` from the Conda environment.
