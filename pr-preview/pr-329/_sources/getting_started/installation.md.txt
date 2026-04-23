@@ -21,13 +21,13 @@ Check you Conda version with `conda --version`, then run the appropriate command
 Conda >= 26.3:
 
 ```bash
-conda create --file https://conda.quantum-inspire.com/qiskit
+conda create --file https://conda.quantum-inspire.com/qiskit.yml
 ```
 
 Conda < 26.3:
 
 ```bash
-conda env create --file https://conda.quantum-inspire.com/qiskit
+conda env create --file https://conda.quantum-inspire.com/qiskit.yml
 ```
 
 By default, the environment that will be created will be named `qiskit-qi`; use the `-n/--name <CUSTOM-ENV-NAME>` option to overwrite this.

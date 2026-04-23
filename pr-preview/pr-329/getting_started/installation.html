@@ -274,11 +274,11 @@
 <p>You can easily create a Conda environment that automatically comes with <code class="docutils literal notranslate"><span class="pre">quantuminspire</span></code> and <code class="docutils literal notranslate"><span class="pre">qiskit-quantuminspire</span></code> installed by using an <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> file.</p>
 <p>Check you Conda version with <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">--version</span></code>, then run the appropriate command:</p>
 <p>Conda &gt;= 26.3:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>--file<span class="w"> </span>https://conda.quantum-inspire.com/qiskit
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>--file<span class="w"> </span>https://conda.quantum-inspire.com/qiskit.yml
 </pre></div>
 </div>
 <p>Conda &lt; 26.3:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>--file<span class="w"> </span>https://conda.quantum-inspire.com/qiskit
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>--file<span class="w"> </span>https://conda.quantum-inspire.com/qiskit.yml
 </pre></div>
 </div>
 <p>By default, the environment that will be created will be named <code class="docutils literal notranslate"><span class="pre">qiskit-qi</span></code>; use the <code class="docutils literal notranslate"><span class="pre">-n/--name</span> <span class="pre">&lt;CUSTOM-ENV-NAME&gt;</span></code> option to overwrite this.</p>
