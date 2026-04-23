@@ -1,4 +1,4 @@
-name: quantuminspire
+name: qiskit-qi
 dependencies:
   - python>=3.10,<3.14
   - pip
