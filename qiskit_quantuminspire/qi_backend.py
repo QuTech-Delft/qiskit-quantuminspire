@@ -142,7 +142,7 @@ class QIBackend(QIBaseBackend):
         async with ApiClient(config()) as client:
             backend_types_api = BackendTypesApi(client)
             return await backend_types_api.read_backend_type_backend_types_id_get(self._id)
-        
+
     def get_backend_type(self) -> BackendType:
         """Synchronous wrapper for backend type fetch."""
         return run_async(self._get_backend_type())

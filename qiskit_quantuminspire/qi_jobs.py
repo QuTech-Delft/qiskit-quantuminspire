@@ -256,7 +256,6 @@ class QIJob(QIBaseJob):
         )
         raise ValueError(error_message)
 
-
     async def _create_project(self, api_client: ApiClient, owner_id: int) -> Project:
         api_instance = ProjectsApi(api_client)
         obj = ProjectIn(
