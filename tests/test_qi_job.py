@@ -67,6 +67,7 @@ def backend(mocker: MockerFixture) -> MagicMock:
     backend_mock.options.get = get_mock
     backend_mock.id = 0
     backend_mock.name = "qi_backend_1"
+    backend_mock.get_backend_type = MagicMock(return_value=create_backend_type())
     return backend_mock
 
 
@@ -206,12 +207,9 @@ def test_fetch_failed_jobs_message(
         (4, 0, 4),  # Case: num_clbits == 0
     ],
 )
-def test_process_results(num_qubits: int, num_clbits: int, expected_memory_slots: int) -> None:
-    backend_type = create_backend_type(name="qi_backend_1")
-    qi_backend = QIBackend(backend_type=backend_type)
+def test_process_results(num_qubits: int, num_clbits: int, expected_memory_slots: int, backend: MagicMock) -> None:
     qc = QuantumCircuit(num_qubits, num_clbits)
-
-    qi_job = QIJob(run_input=qc, backend=qi_backend)
+    qi_job = QIJob(run_input=qc, backend=backend)
     qi_job.batch_job_id = 100
     qi_job.circuits_run_data[0].job_id = 1
     qi_job.circuits_run_data[0].results = create_raw_job_result()
@@ -243,12 +241,12 @@ def test_process_results(num_qubits: int, num_clbits: int, expected_memory_slots
     assert all(len(key) == expected_memory_slots for key in processed_results.get_counts())
 
 
-def test_process_results_raw_data() -> None:
-    backend_type = create_backend_type(name="qi_backend_1")
-    qi_backend = QIBackend(backend_type=backend_type)
+def test_process_results_raw_data(
+    backend: MagicMock,
+) -> None:
     qc = QuantumCircuit(2, 2)
 
-    qi_job = QIJob(run_input=qc, backend=qi_backend)
+    qi_job = QIJob(run_input=qc, backend=backend)
     qi_job.batch_job_id = 100
     qi_job.circuits_run_data[0].job_id = 1
     qi_job.circuits_run_data[0].results = create_raw_job_result(
@@ -269,12 +267,13 @@ def test_process_results_raw_data() -> None:
     assert processed_results.data(qc) == experiment_data.to_dict()
 
 
-def test_process_results_handles_invalid_results() -> None:
-    qi_backend = create_backend_type(name="qi_backend_1")
+def test_process_results_handles_invalid_results(
+    backend: MagicMock,
+) -> None:
     num_bits = 2
     qc = QuantumCircuit(num_bits, num_bits)
 
-    qi_job = QIJob(run_input=qc, backend=qi_backend)
+    qi_job = QIJob(run_input=qc, backend=backend)
     batch_job_id = 100
     qi_job.batch_job_id = batch_job_id
     qi_job.circuits_run_data[0].job_id = 1  # Individual job_id
@@ -363,6 +362,13 @@ def test_submit_multiple_jobs(
 
     assert mock_job_api.create_job_jobs_post.call_count == 3
     assert mock_batchjob_api.enqueue_batch_job_batch_jobs_id_enqueue_patch.call_count == 1
+
+
+def test_check_backendtype_job_limits(backend: MagicMock) -> None:
+    run_input = [QuantumCircuit()] * 6
+    job = QIJob(run_input=run_input, backend=backend)
+    with pytest.raises(ValueError):
+        job.submit()
 
 
 def test_job_status(
