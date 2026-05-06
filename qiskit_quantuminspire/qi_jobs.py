@@ -12,6 +12,7 @@ from compute_api_client import (
     AlgorithmsApi,
     AlgorithmType,
     ApiClient,
+    BackendType,
     BatchJob,
     BatchJobIn,
     BatchJobsApi,
@@ -191,6 +192,7 @@ class QIJob(QIBaseJob):
     """A wrapper class for QuantumInspire batch jobs to integrate with Qiskit's Job interface."""
 
     def submit(self) -> None:
+        self._check_backendtype_job_limits()
         run_async(self._submit_async())
 
     async def _submit_async(self) -> None:
@@ -240,6 +242,19 @@ class QIJob(QIBaseJob):
             await asyncio.gather(*run_coroutines)
             await self._enqueue_batch_job(api_client, batch_job.id)
             self.batch_job_id = batch_job.id
+
+    def _check_backendtype_job_limits(self) -> None:
+        """Check if the submitted jobs are within batchjob size limits of the backendtype."""
+        backend_type: BackendType = self.backend().get_backend_type()
+        max_jobs_per_batch_job = backend_type.max_jobs_per_batch_job
+        batch_job_size = len(self.circuits_run_data)
+        if batch_job_size <= max_jobs_per_batch_job:
+            return
+        error_message = (
+            f"Backend type '{backend_type.name}' allows a maximum of "
+            f"{max_jobs_per_batch_job} jobs per batch_job but {batch_job_size} were submitted."
+        )
+        raise ValueError(error_message)
 
     async def _create_project(self, api_client: ApiClient, owner_id: int) -> Project:
         api_instance = ProjectsApi(api_client)
