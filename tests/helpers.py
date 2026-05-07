@@ -36,6 +36,7 @@ def create_backend_type(
         messages={"backend": {"content": "message for backend"}},
         job_execution_time_limit=3600,
         max_jobs_per_batch_job=5,
+        batchjobs_per_queue_limit=5,
         identifier="dummy",
     )
 
