@@ -30,7 +30,7 @@ colorama = "^0.4.6"
 black = { extras = ["jupyter"], version = ">=24.10,<27.0" }
 coverage = { extras = ["toml"], version = "^7.6.10" }
 docformatter = "1.7.7"
-mypy = "^1.14"
+mypy = ">=1.14,<3.0"
 pytest = { extras = ["toml"], version = ">=8.3.4,<10.0.0" }
 pytest-asyncio = ">=0.25.2,<1.4.0"
 pytest-cov = ">=6,<8"
