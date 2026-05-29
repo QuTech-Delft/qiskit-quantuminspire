@@ -19,7 +19,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
-qiskit = ">=2.0.0,<2.2.0"
+qiskit = ">=2.3.0,<2.4.0"
 qi-compute-api-client = "^0.60.0"
 pydantic = "^2.10.6"
 requests = "^2.32.3"
