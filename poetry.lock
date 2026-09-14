@@ -34,12 +34,8 @@ name = "aiohttp"
 version = "3.14.3"
 description = "Async http client/server framework (asyncio)"
 optional = false
-<<<<<<< HEAD
 python-versions = ">=3.10"
 groups = ["main"]
-=======
-python-versions = ">=3.9"
->>>>>>> f2fc4dd (Bump ruff from 0.16.6 to 0.16.7 (#390))
 files = [
     {file = "aiohttp-3.14.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:eb0495d778817619273c108784292be161a924b9f5ae5cbbc70a2caa6838250b"},
     {file = "aiohttp-3.14.3-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:c3c200cf9757edd785051dc699c7ecbec22110dbfcb3fefc7a9f9695eda8ea7a"},
@@ -4096,8 +4092,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.14"
-<<<<<<< HEAD
 content-hash = "d29d9388e463f4e88479e452505f32939b59e614cb0126730e0da4728f42537c"
-=======
-content-hash = "42547176d7b3c46127b62088f369b4bf90f305ceaf37801e6644e396b713c960"
->>>>>>> 7b85d72 (Updated lock file)
