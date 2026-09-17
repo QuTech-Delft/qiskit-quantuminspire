@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qiskit-quantuminspire"
-version = "0.18.3"
+version = "0.18.4"
 description = "Qiskit provider for Quantum Inspire backends "
 authors = ["Quantum Inspire <support@quantum-inspire.com>"]
 readme = "README.md"
