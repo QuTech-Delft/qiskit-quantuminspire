@@ -1,3 +1,4 @@
+import logging
 from pprint import PrettyPrinter
 from typing import Any, List, Union
 
@@ -35,6 +36,9 @@ _IGNORED_GATES: set[str] = {
     "my90",
     # Qiskit assumes barrier support and does not include it in its standard gate mapping
     "barrier",
+    # Real backend gatesets report "init" as a native gate, but Qiskit has no separate instruction
+    # for it (its behaviour is covered by "reset")
+    "init",
 }
 
 
@@ -56,20 +60,28 @@ class QIBaseBackend(Backend):  # type: ignore[misc]
         if not backend_type.supports_raw_data:
             self._options.set_validator("memory", [False])
 
-        # Determine supported gates
-        opensquirrel_gates = {inst.lower() for inst in mapping.supported_opensquirrel_instructions()}
-        available_gates = opensquirrel_gates - _IGNORED_GATES
+        # Determine supported gates: intersect the backend's own native gate set with what the
+        # InstructionMapping can translate to a Qiskit instruction.
+        native_gates = {gate.lower() for gate in backend_type.gateset if gate is not None}
+        translatable_gates = {inst.lower() for inst in mapping.supported_opensquirrel_instructions()}
+        available_gates = (native_gates & translatable_gates) - _IGNORED_GATES
+        unknown_gates = native_gates - translatable_gates - _IGNORED_GATES
+        if len(unknown_gates) > 0:
+            logging.warning(f"Ignoring unknown native gate(s) {unknown_gates} for backend {backend_type.name}")
 
         # Construct coupling map
         coupling_map = CouplingMap(backend_type.topology)
         coupling_map_complete = is_coupling_map_complete(coupling_map)
 
         if "toffoli" in available_gates and not coupling_map_complete:
-            # "Toffoli gate not supported for non-complete topology
+            # Toffoli gate not supported for non-complete topology
             available_gates.remove("toffoli")
+            logging.warning(
+                f"Native toffoli gate in backend {backend_type.name} not supported for non-complete topology"
+            )
 
         self._target = Target().from_configuration(
-            basis_gates=[mapping.opensquirrel_to_qiskit(gate) for gate in available_gates],
+            basis_gates=sorted(mapping.opensquirrel_to_qiskit(gate) for gate in available_gates),
             num_qubits=backend_type.nqubits,
             coupling_map=None if coupling_map_complete else coupling_map,
         )
