@@ -244,7 +244,8 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for qiskit_quantuminspire.qi_backend</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrettyPrinter</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrettyPrinter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">compute_api_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiClient</span><span class="p">,</span> <span class="n">BackendStatus</span><span class="p">,</span> <span class="n">BackendType</span><span class="p">,</span> <span class="n">BackendTypesApi</span>
@@ -281,6 +282,9 @@
     <span class="s2">&quot;my90&quot;</span><span class="p">,</span>
     <span class="c1"># Qiskit assumes barrier support and does not include it in its standard gate mapping</span>
     <span class="s2">&quot;barrier&quot;</span><span class="p">,</span>
+    <span class="c1"># Real backend gatesets report &quot;init&quot; as a native gate, but Qiskit has no separate instruction</span>
+    <span class="c1"># for it (its behaviour is covered by &quot;reset&quot;)</span>
+    <span class="s2">&quot;init&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -304,20 +308,28 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">supports_raw_data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">set_validator</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">False</span><span class="p">])</span>
 
-        <span class="c1"># Determine supported gates</span>
-        <span class="n">opensquirrel_gates</span> <span class="o">=</span> <span class="p">{</span><span class="n">inst</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">supported_opensquirrel_instructions</span><span class="p">()}</span>
-        <span class="n">available_gates</span> <span class="o">=</span> <span class="n">opensquirrel_gates</span> <span class="o">-</span> <span class="n">_IGNORED_GATES</span>
+        <span class="c1"># Determine supported gates: intersect the backend&#39;s own native gate set with what the</span>
+        <span class="c1"># InstructionMapping can translate to a Qiskit instruction.</span>
+        <span class="n">native_gates</span> <span class="o">=</span> <span class="p">{</span><span class="n">gate</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">gateset</span> <span class="k">if</span> <span class="n">gate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">translatable_gates</span> <span class="o">=</span> <span class="p">{</span><span class="n">inst</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">supported_opensquirrel_instructions</span><span class="p">()}</span>
+        <span class="n">available_gates</span> <span class="o">=</span> <span class="p">(</span><span class="n">native_gates</span> <span class="o">&amp;</span> <span class="n">translatable_gates</span><span class="p">)</span> <span class="o">-</span> <span class="n">_IGNORED_GATES</span>
+        <span class="n">unknown_gates</span> <span class="o">=</span> <span class="n">native_gates</span> <span class="o">-</span> <span class="n">translatable_gates</span> <span class="o">-</span> <span class="n">_IGNORED_GATES</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unknown_gates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring unknown native gate(s) </span><span class="si">{</span><span class="n">unknown_gates</span><span class="si">}</span><span class="s2"> for backend </span><span class="si">{</span><span class="n">backend_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Construct coupling map</span>
         <span class="n">coupling_map</span> <span class="o">=</span> <span class="n">CouplingMap</span><span class="p">(</span><span class="n">backend_type</span><span class="o">.</span><span class="n">topology</span><span class="p">)</span>
         <span class="n">coupling_map_complete</span> <span class="o">=</span> <span class="n">is_coupling_map_complete</span><span class="p">(</span><span class="n">coupling_map</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s2">&quot;toffoli&quot;</span> <span class="ow">in</span> <span class="n">available_gates</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">coupling_map_complete</span><span class="p">:</span>
-            <span class="c1"># &quot;Toffoli gate not supported for non-complete topology</span>
+            <span class="c1"># Toffoli gate not supported for non-complete topology</span>
             <span class="n">available_gates</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;toffoli&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Native toffoli gate in backend </span><span class="si">{</span><span class="n">backend_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> not supported for non-complete topology&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="n">Target</span><span class="p">()</span><span class="o">.</span><span class="n">from_configuration</span><span class="p">(</span>
-            <span class="n">basis_gates</span><span class="o">=</span><span class="p">[</span><span class="n">mapping</span><span class="o">.</span><span class="n">opensquirrel_to_qiskit</span><span class="p">(</span><span class="n">gate</span><span class="p">)</span> <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">available_gates</span><span class="p">],</span>
+            <span class="n">basis_gates</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">mapping</span><span class="o">.</span><span class="n">opensquirrel_to_qiskit</span><span class="p">(</span><span class="n">gate</span><span class="p">)</span> <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">available_gates</span><span class="p">),</span>
             <span class="n">num_qubits</span><span class="o">=</span><span class="n">backend_type</span><span class="o">.</span><span class="n">nqubits</span><span class="p">,</span>
             <span class="n">coupling_map</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">coupling_map_complete</span> <span class="k">else</span> <span class="n">coupling_map</span><span class="p">,</span>
         <span class="p">)</span>
