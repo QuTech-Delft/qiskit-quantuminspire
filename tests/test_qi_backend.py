@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Callable, Dict, Generator, Optional, Type
 from unittest.mock import MagicMock, PropertyMock
 
@@ -36,11 +37,6 @@ def qi_backend_factory(mocker: MockerFixture) -> Callable[..., QIBackend]:
         return qi_backend
 
     return _generate_qi_backend
-
-
-# Exclude the "barrier" instruction as it is not part of the target, but include asm instruction which leaves the
-# number of instructions unchanged
-NUM_SUPPORTED_INSTRUCTIONS = len(InstructionMapping().supported_opensquirrel_instructions())
 
 
 @pytest.mark.parametrize(
@@ -235,15 +231,22 @@ def test_qi_backend_construction_toffoli_gate_unsupported(
     )
 
     # Act
-    qi_backend = QIBackend(backend_type=backend_type)
+    with caplog.at_level(logging.WARNING):
+        qi_backend = QIBackend(backend_type=backend_type)
 
     target = qi_backend.target
-    instructions: list[str] = [instruction.name for instruction, _ in target.instructions]
+    per_qubit_instructions: list[str] = [
+        instruction.name for instruction, _ in target.instructions if not isinstance(instruction.name, property)
+    ]
 
     # Assert
-    assert "ccx" not in instructions
-    # Target still gets created but without the toffoli gate
-    assert len(instructions) == 81
+    # Toffoli is not advertised because the topology is not complete
+    assert "ccx" not in target.operation_names
+    # x is per-qubit since the topology is not complete: one entry per qubit
+    assert per_qubit_instructions.count("x") == nqubits
+    # No gate outside the backend's own gateset (x) should be advertised
+    assert set(target.operation_names) == {"x", "asm"}
+    assert "not supported for non-complete topology" in caplog.text
 
 
 def test_qi_backend_construction_unknown_gate_ignored(
@@ -260,11 +263,73 @@ def test_qi_backend_construction_unknown_gate_ignored(
     )
 
     # Act
-    qi_backend = QIBackend(backend_type=backend_type)
+    with caplog.at_level(logging.WARNING):
+        qi_backend = QIBackend(backend_type=backend_type)
 
     target = qi_backend.target
-    instructions: list[str] = [instruction.name for instruction, _ in target.instructions]
 
     # Assert
     # Target still gets created but without the unknown gate
-    assert len(instructions) == NUM_SUPPORTED_INSTRUCTIONS
+    assert set(target.operation_names) == {"x", "asm"}
+    assert "unknown" in caplog.text
+
+
+def test_qi_backend_target_only_advertises_backend_gateset(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    # Arrange
+    # Regression test for QuTech-Delft/qiskit-quantuminspire#394: the target used to always
+    # advertise every gate the InstructionMapping could translate, regardless of the backend's
+    # actual gateset. A Tuna-17-like gateset (only CZ as a two-qubit gate, plus several native
+    # gates that have no Qiskit equivalent) on a non-complete topology.
+    nqubits = 17
+    tuna_17_gateset = [
+        "I",
+        "Rx",
+        "X",
+        "X90",
+        "mX90",
+        "Ry",
+        "Y",
+        "Y90",
+        "mY90",
+        "Rz",
+        "Z",
+        "S",
+        "T",
+        "Sdag",
+        "Tdag",
+        "H",
+        "CZ",
+        "init",
+        "measure",
+        "reset",
+        "barrier",
+        "wait",
+    ]
+    backend_type = create_backend_type(
+        name="Tuna-17",
+        gateset=tuna_17_gateset,
+        topology=[[0, 1], [1, 2], [2, 3], [3, 4]],
+        nqubits=nqubits,
+    )
+
+    # Act
+    with caplog.at_level(logging.WARNING):
+        qi_backend = QIBackend(backend_type=backend_type)
+
+    operation_names = qi_backend.target.operation_names
+
+    # Assert
+    # Gates the backend does not natively support must not be advertised, even though the
+    # default InstructionMapping can translate them
+    for unsupported in ("cx", "cp", "swap", "ccx"):
+        assert unsupported not in operation_names
+
+    # Gates the backend does natively support (and that Qiskit has an equivalent for) must be advertised
+    for supported in ("cz", "h", "x", "rx", "measure", "reset", "id", "y", "z", "s", "t", "sdg", "tdg", "delay"):
+        assert supported in operation_names
+
+    # init/x90/y90/mx90/my90/barrier are known-but-unmappable native gates and must be silently
+    # ignored (no unknown-gate warning)
+    assert "Ignoring unknown native gate" not in caplog.text
