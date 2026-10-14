@@ -3282,14 +3282,14 @@ visualization = ["Pillow (>=4.2.1)", "matplotlib (>=3.3)", "pydot", "pylatexenc 
 
 [[package]]
 name = "qiskit-sphinx-theme"
-version = "2.1.0"
+version = "2.1.1"
 description = "A Sphinx theme for Qiskit and Qiskit Ecosystem projects"
 optional = false
 python-versions = "*"
 groups = ["docs"]
 files = [
-    {file = "qiskit_sphinx_theme-2.1.0-py3-none-any.whl", hash = "sha256:19fb393a5b1200e2c212a0e4f0317abbfb2a0272af66b9f6a2137acd09923657"},
-    {file = "qiskit_sphinx_theme-2.1.0.tar.gz", hash = "sha256:5abd24d33dfe6488d3fc8e9e48905592b36366ad304bb3ce09c3f95b7320dfb0"},
+    {file = "qiskit_sphinx_theme-2.1.1-py3-none-any.whl", hash = "sha256:e21dc6607ef511223d7de58b2a868e2a096d5c7c378f0da1b49d34772485db11"},
+    {file = "qiskit_sphinx_theme-2.1.1.tar.gz", hash = "sha256:aad41382a460e004b99f9dbba59cda3d489dcff25a7f2c3f11fa3358da87c116"},
 ]
 
 [package.dependencies]
